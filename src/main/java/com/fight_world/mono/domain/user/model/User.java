@@ -1,5 +1,6 @@
 package com.fight_world.mono.domain.user.model;
 
+import com.fight_world.mono.domain.model.TimeBase;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 import jakarta.persistence.Embedded;
@@ -8,14 +9,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends TimeBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

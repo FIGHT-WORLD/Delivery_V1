@@ -14,7 +14,7 @@ public class UserEmailConverter implements AttributeConverter<UserEmail, String>
             return null;
         }
 
-        return userEmail.value();
+        return userEmail.getValue();
     }
 
     @Override
