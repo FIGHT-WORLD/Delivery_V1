@@ -2,7 +2,6 @@ package com.fight_world.mono.domain.report.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
 import com.fight_world.mono.domain.store.model.Store;
-import com.fight_world.mono.domain.store_category.model.StoreCategory;
 import com.fight_world.mono.domain.user.model.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Report extends TimeBase {
+public class Report<R> extends TimeBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,4 +50,8 @@ public class Report extends TimeBase {
     @JoinColumn(name = "store_id")
     private Store store;
 
+    public static Report createReport(User user, Store store, String title, String content,
+            LocalDateTime issueDate, String reportType) {
+        return new Report(null, title, content, issueDate, reportType, null, user, store);
+    }
 }
