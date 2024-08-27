@@ -16,7 +16,6 @@ import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.service.UserServiceImpl;
 import com.fight_world.mono.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.Update;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -80,7 +79,7 @@ public class UserController {
             @RequestBody UpdateUserRequestDto requestDto
     ) {
 
-        UpdateUserResponseDto responseDto =userServiceImpl.updateUser(requestDto, id);
+        UpdateUserResponseDto responseDto = userServiceImpl.updateUser(requestDto, id);
 
         return ResponseEntity
                 .status(UPDATE_SUCCESS_USER.getHttpStatus())
