@@ -4,6 +4,7 @@ import com.fight_world.mono.domain.store.exception.StoreException;
 import com.fight_world.mono.domain.store.message.ExceptionMessage;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -12,6 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Getter
+@EqualsAndHashCode
 public class StorePhoneNumber {
 
     @Column(name = "phone_number", nullable = false)
@@ -22,28 +24,6 @@ public class StorePhoneNumber {
             throw new StoreException(ExceptionMessage.STORE_PHONE_NUMBER_VALID);
         }
         this.value = value;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-
-        if(this == o) {
-            return true;
-        }
-
-        if(o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        StorePhoneNumber storePhoneNumber = (StorePhoneNumber) o;
-
-        return value.equals(storePhoneNumber.value);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return value.hashCode();
     }
 
 }
