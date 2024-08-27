@@ -10,6 +10,7 @@ public interface StoreService {
     StoreResponseDto registerStore(UserDetails userDetails, StoreRegisterRequestDto requestDto);
 
     // 가게 상세 조회
+    StoreResponseDto getStore(String storeId);
 
     // 가게 목록 조회
 
