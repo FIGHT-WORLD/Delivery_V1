@@ -1,7 +1,7 @@
 package com.fight_world.mono.domain.user.dto.request;
 
 // TODO Valid 추가
-public record SignUpUserRequestDto(
+public record UserSignUpDto(
         String username,
 
         String password,
