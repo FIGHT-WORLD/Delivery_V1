@@ -2,6 +2,7 @@ package com.fight_world.mono.domain.user.service;
 
 import com.fight_world.mono.domain.user.dto.request.*;
 import com.fight_world.mono.domain.user.dto.response.*;
+import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,10 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
 
     @Override
-    public UserSignUpDto signUpUser(UserSignUpDto req) {
+    public SignUpUserResponseDto signUpUser(UserSignUpDto req) {
+
+        User user = User.of(req, req.password());
+
         return null;
     }
 
@@ -25,22 +29,12 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public PatchUserPasswordResponseDto changeUserPassword(PatchUserPasswordRequestDto req) {
+    public UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long id) {
         return null;
     }
 
     @Override
-    public PatchUserEmailResponseDto changeUserEmail(PatchUserEmailRequestDto req) {
-        return null;
-    }
-
-    @Override
-    public PatchUserNicknameResponseDto changeUserNickname(PatchUserNicknameRequestDto req) {
-        return null;
-    }
-
-    @Override
-    public DeleteUserResponseDto deleteUser(DeleteUserRequestDto req) {
+    public DeleteUserResponseDto deleteUser(Long id) {
         return null;
     }
 }
