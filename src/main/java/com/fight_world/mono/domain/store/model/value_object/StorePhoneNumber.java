@@ -25,5 +25,4 @@ public class StorePhoneNumber {
         }
         this.value = value;
     }
-
 }
