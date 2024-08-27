@@ -1,10 +1,9 @@
 package com.fight_world.mono.domain.store.dto.request;
 
-import com.fight_world.mono.domain.store.model.Store;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
 

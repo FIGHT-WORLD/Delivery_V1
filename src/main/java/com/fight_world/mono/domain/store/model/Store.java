@@ -90,4 +90,8 @@ public class Store extends TimeBase {
                 .user(user)
                 .build();
     }
+
+    public void changeStatus(StoreStatus storeStatus) {
+        this.status = storeStatus;
+    }
 }

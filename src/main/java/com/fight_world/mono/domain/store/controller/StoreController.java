@@ -1,10 +1,12 @@
 package com.fight_world.mono.domain.store.controller;
 
+import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_CHANGE_STORE_STATUS;
 import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_GET_ONE_STORE;
 import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_REGISTER_STORE;
 import static com.fight_world.mono.global.response.SuccessResponse.success;
 
 import com.fight_world.mono.domain.store.dto.request.StoreRegisterRequestDto;
+import com.fight_world.mono.domain.store.dto.request.StoreStatusRequestDto;
 import com.fight_world.mono.domain.store.service.StoreService;
 import com.fight_world.mono.global.response.CommonResponse;
 import jakarta.validation.Valid;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,8 +34,7 @@ public class StoreController {
      */
     @PostMapping("/")
     public ResponseEntity<? extends CommonResponse> registerStore(
-           @Valid @RequestBody StoreRegisterRequestDto requestDto,
-           @AuthenticationPrincipal UserDetails userDetails) {
+           @Valid @RequestBody StoreRegisterRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
 
         return ResponseEntity.status(SUCCESS_REGISTER_STORE.getHttpStatus())
                              .body(success(SUCCESS_REGISTER_STORE.getMessage(), storeService.registerStore(userDetails, requestDto)));
@@ -47,6 +49,20 @@ public class StoreController {
 
         return ResponseEntity.status(SUCCESS_GET_ONE_STORE.getHttpStatus())
                 .body(success(SUCCESS_GET_ONE_STORE.getMessage(), storeService.getStore(storeId)));
+
+    }
+
+    /**
+     * 가게 주문 가능여부 상태 변경 api
+     */
+    @PatchMapping("/{storeId}/status")
+    public ResponseEntity<? extends CommonResponse> changeStoreStatus(@PathVariable(name = "storeId") String storeId,
+                @RequestBody StoreStatusRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails ) {
+
+        storeService.changeStoreStatus(userDetails, storeId, requestDto);
+
+        return ResponseEntity.status(SUCCESS_CHANGE_STORE_STATUS.getHttpStatus())
+                .body(success(SUCCESS_CHANGE_STORE_STATUS.getMessage()));
 
     }
 }
