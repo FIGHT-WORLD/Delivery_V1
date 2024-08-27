@@ -4,6 +4,7 @@ import com.fight_world.mono.domain.menu.exception.MenuException;
 import com.fight_world.mono.domain.menu.message.ExceptionMessage;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -15,10 +16,11 @@ import lombok.ToString;
 public class MenuPrice {
 
     @Column(name = "price", nullable = false)
-    Integer value;
+    BigDecimal value;
 
-    public MenuPrice(Integer value) {
-        if (value == null || value < 1) {
+    public MenuPrice(BigDecimal value) {
+        // TODO: if조건문 확인하기
+        if (value == null) {
             throw new MenuException(ExceptionMessage.MENU_PRICE_VALID);
         }
         this.value = value;
