@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.user.model;
 
-import com.fight_world.mono.domain.user.dto.request.SignUpUserRequestDto;
+import com.fight_world.mono.domain.model.TimeBase;
+import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -41,7 +42,7 @@ public class User {
         this.nickname = nickname;
     }
 
-    public static User of(SignUpUserRequestDto userSignUpDto, String encodedPassword) {
+    public static User of(UserSignUpDto userSignUpDto, String encodedPassword) {
 
         return User.builder()
                    .username(userSignUpDto.username())
