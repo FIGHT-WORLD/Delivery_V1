@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.store.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
+import com.fight_world.mono.domain.store.dto.request.StoreRegisterRequestDto;
 import com.fight_world.mono.domain.store.model.constant.StoreStatus;
 import com.fight_world.mono.domain.store.model.value_object.StorePhoneNumber;
 import com.fight_world.mono.domain.store_category.model.StoreCategory;
@@ -65,12 +66,28 @@ public class Store extends TimeBase {
     private StorePhoneNumber phoneNumber;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public Store(String name, String address, LocalTime openAt, LocalTime closeAt, StoreStatus status, StorePhoneNumber phoneNumber) {
+    public Store(String name, String address, LocalTime openAt, LocalTime closeAt, StoreStatus status, StorePhoneNumber phoneNumber, StoreCategory storeCategory, User user) {
         this.name = name;
         this.address = address;
         this.openAt = openAt;
         this.closeAt = closeAt;
         this.status = status;
         this.phoneNumber = phoneNumber;
+        this.storeCategory = storeCategory;
+        this.user = user;
+    }
+
+    public static Store of(StoreRegisterRequestDto requestDto, StoreCategory storeCategory, User user) {
+
+        return Store.builder()
+                .name(requestDto.name())
+                .address(requestDto.address())
+                .openAt(requestDto.openAt())
+                .closeAt(requestDto.closeAt())
+                .phoneNumber(new StorePhoneNumber(requestDto.phoneNumber()))
+                .status(StoreStatus.CLOSED)
+                .storeCategory(storeCategory)
+                .user(user)
+                .build();
     }
 }
