@@ -56,11 +56,9 @@ public class User {
 
     @LastModifiedDate
     @Column(name = "modified_at")
-    @DateTimeFormat(iso = ISO.DATE)
     private LocalDateTime modifiedAt;
 
     @Column(name = "deleted_at")
-    @DateTimeFormat(iso = ISO.DATE)
     private LocalDateTime deletedAt;
 
     @Builder(access = AccessLevel.PRIVATE)
