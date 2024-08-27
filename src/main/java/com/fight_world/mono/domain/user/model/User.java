@@ -1,6 +1,5 @@
 package com.fight_world.mono.domain.user.model;
 
-import com.fight_world.mono.domain.model.TimeBase;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 import jakarta.persistence.Embedded;
@@ -29,12 +28,12 @@ public class User {
     @Embedded
     private UserEmail email;
 
-    private String role;
+    private UserRole role;
 
     private String nickname;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public User(String username, String password, UserEmail email, String role, String nickname) {
+    public User(String username, String password, UserEmail email, UserRole role, String nickname) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -42,14 +41,17 @@ public class User {
         this.nickname = nickname;
     }
 
+    /*
+    권한과 함께 유저 생성
+     */
     public static User of(UserSignUpDto userSignUpDto, String encodedPassword) {
 
         return User.builder()
-                   .username(userSignUpDto.username())
+                   .username(userSignUpDto.getUsername())
                    .password(encodedPassword)
-                   .email(new UserEmail(userSignUpDto.email()))
-                   .role(userSignUpDto.role())
-                   .nickname(userSignUpDto.nickname())
+                   .email(new UserEmail(userSignUpDto.getEmail()))
+                   .role(UserRole.valueOf(userSignUpDto.getRole()))
+                   .nickname(userSignUpDto.getNickname())
                    .build();
     }
 }
