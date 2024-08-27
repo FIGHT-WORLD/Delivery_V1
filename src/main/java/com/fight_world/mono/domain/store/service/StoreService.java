@@ -3,6 +3,8 @@ package com.fight_world.mono.domain.store.service;
 import com.fight_world.mono.domain.store.dto.request.StoreRegisterRequestDto;
 import com.fight_world.mono.domain.store.dto.request.StoreStatusRequestDto;
 import com.fight_world.mono.domain.store.dto.response.StoreResponseDto;
+import com.fight_world.mono.domain.store.model.Store;
+import com.fight_world.mono.domain.user.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface StoreService {
@@ -21,9 +23,13 @@ public interface StoreService {
     void changeStoreStatus(UserDetails userDetails, String storeId, StoreStatusRequestDto requestDto);
 
     // 가게 삭제
+    void deleteStore(UserDetails userDetails, String storeId);
 
     // 가게 검색
 
     // id로 가게 검색하기
-//    Store findById(String storeId);
+    Store findById(String storeId);
+
+    // 가게 주인인지 확인하기
+    User checkIsStoreOwner(UserDetails userDetails, Store store);
 }

@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.store.controller;
 
 import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_CHANGE_STORE_STATUS;
+import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_DELETE_STORE;
 import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_GET_ONE_STORE;
 import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_REGISTER_STORE;
 import static com.fight_world.mono.global.response.SuccessResponse.success;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,12 +59,25 @@ public class StoreController {
      */
     @PatchMapping("/{storeId}/status")
     public ResponseEntity<? extends CommonResponse> changeStoreStatus(@PathVariable(name = "storeId") String storeId,
-                @RequestBody StoreStatusRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails ) {
+                @RequestBody StoreStatusRequestDto requestDto, @AuthenticationPrincipal UserDetails userDetails) {
 
         storeService.changeStoreStatus(userDetails, storeId, requestDto);
 
         return ResponseEntity.status(SUCCESS_CHANGE_STORE_STATUS.getHttpStatus())
                 .body(success(SUCCESS_CHANGE_STORE_STATUS.getMessage()));
+
+    }
+
+    /**
+     * 가게 삭제 api
+     */
+    @DeleteMapping("/{storeId}")
+    public ResponseEntity<? extends CommonResponse> deleteStore(@PathVariable(name = "storeId") String storeId, @AuthenticationPrincipal UserDetails userDetails) {
+
+        storeService.deleteStore(userDetails, storeId);
+
+        return ResponseEntity.status(SUCCESS_DELETE_STORE.getHttpStatus())
+                .body(success(SUCCESS_DELETE_STORE.getMessage()));
 
     }
 }

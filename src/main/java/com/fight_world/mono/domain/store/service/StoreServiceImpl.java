@@ -43,8 +43,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreResponseDto getStore(String storeId) {
 
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreException(ExceptionMessage.STORE_NOT_FOUND));
+        Store store = findById(storeId);
 
         return StoreResponseDto.of(store);
     }
@@ -52,20 +51,39 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public void changeStoreStatus(UserDetails userDetails, String storeId, StoreStatusRequestDto requestDto) {
 
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreException(ExceptionMessage.STORE_NOT_FOUND));
+        Store store = findById(storeId);
 
         checkIsStoreOwner(userDetails, store);
 
         store.changeStatus(StoreStatus.valueOf(requestDto.status()));
     }
 
-    public void checkIsStoreOwner(UserDetails userDetails, Store store) {
+    @Override
+    public void deleteStore(UserDetails userDetails, String storeId) {
+
+        Store store = findById(storeId);
+
+        User user = checkIsStoreOwner(userDetails, store);
+
+        store.deleteStore(user.getId());
+
+    }
+
+    @Override
+    public Store findById(String storeId) {
+
+        return storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreException(ExceptionMessage.STORE_NOT_FOUND));
+    }
+
+    public User checkIsStoreOwner(UserDetails userDetails, Store store) {
 
         User user = null; // userService.findById(userDetails.getUser().getId());
 
         if(!store.getUser().equals(user)) {
             throw new StoreException(ExceptionMessage.STORE_UNAUTHORIZED);
         }
+
+        return user;
     }
 }

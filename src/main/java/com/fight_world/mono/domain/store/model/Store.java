@@ -18,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -94,4 +95,9 @@ public class Store extends TimeBase {
     public void changeStatus(StoreStatus storeStatus) {
         this.status = storeStatus;
     }
+
+    public void deleteStore(Long deletedByUserId) {
+        // TODO: deletedAt, deletedBy 필드 값 변경하기
+    }
+
 }
