@@ -2,9 +2,11 @@ package com.fight_world.mono.domain.store.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
 import com.fight_world.mono.domain.store.model.constant.StoreStatus;
+import com.fight_world.mono.domain.store.model.value_object.StorePhoneNumber;
 import com.fight_world.mono.domain.store_category.model.StoreCategory;
 import com.fight_world.mono.domain.user.model.User;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -59,11 +61,11 @@ public class Store extends TimeBase {
     @Enumerated(EnumType.STRING)
     private StoreStatus status;
 
-    @Column(name = "phone_number")  // 값객체 변경하기
-    private String phoneNumber;
+    @Embedded
+    private StorePhoneNumber phoneNumber;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public Store(String name, String address, LocalTime openAt, LocalTime closeAt, StoreStatus status, String phoneNumber) {
+    public Store(String name, String address, LocalTime openAt, LocalTime closeAt, StoreStatus status, StorePhoneNumber phoneNumber) {
         this.name = name;
         this.address = address;
         this.openAt = openAt;
@@ -71,5 +73,4 @@ public class Store extends TimeBase {
         this.status = status;
         this.phoneNumber = phoneNumber;
     }
-
 }
