@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ExceptionMessage {
 
-    USER_EMAIL_VALID(HttpStatus.BAD_REQUEST, "유저 이메일은 3글자 이상이어야 합니다.");
+    USER_EMAIL_VALID(HttpStatus.BAD_REQUEST, "유저 이메일은 3글자 이상이어야 합니다."),
+
+    USER_FORBIDDEN(HttpStatus.FORBIDDEN, "접근 권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
