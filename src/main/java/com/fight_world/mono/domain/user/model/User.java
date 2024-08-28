@@ -1,5 +1,6 @@
 package com.fight_world.mono.domain.user.model;
 
+import com.fight_world.mono.domain.user.dto.request.UpdateUserRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 import jakarta.persistence.Column;
@@ -12,6 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -74,12 +76,35 @@ public class User {
     public static User of(UserSignUpDto userSignUpDto, String encodedPassword) {
 
         return User.builder()
-                .username(userSignUpDto.getUsername())
+                .username(userSignUpDto.username())
                 .password(encodedPassword)
-                .email(new UserEmail(userSignUpDto.getEmail()))
-                .role(UserRole.valueOf(userSignUpDto.getRole()))
-                .nickname(userSignUpDto.getNickname())
+                .email(new UserEmail(userSignUpDto.email()))
+                .role(UserRole.valueOf(userSignUpDto.role()))
+                .nickname(userSignUpDto.nickname())
                 .build();
+    }
+
+    public void updatePassword(UpdateUserRequestDto requestDto) {
+        if (requestDto.password() != null) {
+            this.password = requestDto.nickname();
+        }
+    }
+
+    public void updateNickname(UpdateUserRequestDto requestDto) {
+        if (requestDto.nickname() != null) {
+            this.nickname = requestDto.nickname();
+        }
+    }
+
+    public void updateEmail(UpdateUserRequestDto requestDto) {
+        if (requestDto.email() != null) {
+            this.email = new UserEmail(requestDto.email());
+        }
+    }
+
+    public void deleteUser() {
+        this.deletedAt = LocalDateTime.parse(
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
     }
 }
 
