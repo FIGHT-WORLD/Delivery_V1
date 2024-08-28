@@ -57,28 +57,41 @@ public class Order extends TimeBase {
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_address_id")
-    private UserAddress userAddress;
+    @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
+    private String detailAddress;
+
+    @Column(nullable = false)
+    private String request;
 
     @OneToMany(mappedBy = "order")
     private Set<OrderMenu> orderMenus = new HashSet<>();
 
     @Builder(access = AccessLevel.PRIVATE)
-    public Order(OrderStatus orderStatus, OrderDeliveryType orderDeliveryType, User user, Store store) {
-        this.status = orderStatus;
-        this.deliveryType = orderDeliveryType;
+    public Order(OrderStatus status, OrderDeliveryType deliveryType, User user, Store store,
+            String address, String detailAddress, String request, Set<OrderMenu> orderMenus) {
+        this.status = status;
+        this.deliveryType = deliveryType;
         this.user = user;
         this.store = store;
+        this.address = address;
+        this.detailAddress = detailAddress;
+        this.request = request;
     }
+
 
     public static Order of(OrderCreateRequestDto requestDto, User user, Store store) {
 
         return Order.builder()
-                    .orderDeliveryType(OrderDeliveryType.valueOf(requestDto.delivery_type()))
-                    .orderStatus(OrderStatus.CART)
+                    .deliveryType(OrderDeliveryType.valueOf(requestDto.delivery_type()))
+                    .status(OrderStatus.CART)
                     .user(user)
                     .store(store)
+                    .address(requestDto.address())
+                    .detailAddress(requestDto.detail_address())
+                    .request(requestDto.request())
                     .build();
     }
 

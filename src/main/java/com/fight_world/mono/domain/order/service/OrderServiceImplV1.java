@@ -6,7 +6,8 @@ import static com.fight_world.mono.domain.order.message.ExceptionMessage.ORDER_U
 import com.fight_world.mono.domain.order.dto.request.OrderCreateRequestDto;
 import com.fight_world.mono.domain.order.dto.response.OrderDetailResponseDto;
 import com.fight_world.mono.domain.order.dto.response.OrderResponseDto;
-import com.fight_world.mono.domain.order.dto.response.OrderWithPaymentAndAddressDetailResponseDto;
+import com.fight_world.mono.domain.order.dto.response.OrderWithPaymentDetailBeforeMixResponseDto;
+import com.fight_world.mono.domain.order.dto.response.OrderWithPaymentDetailResponseDto;
 import com.fight_world.mono.domain.order.exception.OrderException;
 import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.domain.order.repository.OrderRepository;
@@ -64,7 +65,7 @@ public class OrderServiceImplV1 implements OrderService {
             String orderId
     ) {
 
-        OrderWithPaymentAndAddressDetailResponseDto orderWithPaymentAndAddressDetail =
+        OrderWithPaymentDetailResponseDto orderWithPaymentAndAddressDetail =
                 orderRepository.findOrderWithPaymentAndAddressDetail(orderId).orElseThrow(
                         () -> new OrderException(NOT_FOUND_ORDER));
 

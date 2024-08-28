@@ -24,7 +24,7 @@ public record OrderDetailResponseDto(
         String payment_type
 ) {
 
-    public static OrderDetailResponseDto of(OrderWithPaymentAndAddressDetailResponseDto responseDto) {
+    public static OrderDetailResponseDto of(OrderWithPaymentDetailResponseDto responseDto) {
 
         return OrderDetailResponseDto.builder()
                                      .order_id(responseDto.order_id())
@@ -40,8 +40,8 @@ public record OrderDetailResponseDto(
                                      .address(responseDto.address())
                                      .detail_address(responseDto.detail_address())
                                      .request(responseDto.request())
-                                     .total_price(responseDto.total_price())
-                                     .payment_type(responseDto.payment_type().getType())
+                                     .total_price(responseDto.total_price() == null ? null : responseDto.total_price())
+                                     .payment_type(responseDto.payment_type() == null ? null : responseDto.payment_type().getType())
                                      .build();
     }
 }
