@@ -12,7 +12,7 @@ public record OrderMenuResponseDto (
         Integer cnt
 ){
 
-    public static OrderMenuResponseDto of(OrderMenu orderMenu) {
+    public static OrderMenuResponseDto from(OrderMenu orderMenu) {
 
         return OrderMenuResponseDto.builder()
                 .menu_id(orderMenu.getMenu().getId())

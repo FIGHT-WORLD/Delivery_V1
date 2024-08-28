@@ -26,7 +26,7 @@ public record OrderResponseDto(
         String order_status
 ) {
 
-    public static OrderResponseDto of(Order order) {
+    public static OrderResponseDto from(Order order) {
 
         return OrderResponseDto.builder()
                                .order_id(order.getId())
@@ -34,7 +34,7 @@ public record OrderResponseDto(
                                .store_name(order.getStore().getName())
                                .menu_ids(order.getOrderMenus()
                                        .stream()
-                                       .map(o -> OrderMenuResponseDto.of(o)).collect(Collectors.toSet()))
+                                       .map(OrderMenuResponseDto::from).collect(Collectors.toSet()))
                                .delivery_type(order.getDeliveryType().getType())
                                .created_at(order.getCreatedAt())
                                .order_status(order.getStatus().getStatus())

@@ -10,13 +10,3 @@ public record OrderCreateRequestDto(
 ) {
 
 }
-//{
-//   "store_id":"id",
-//           "menu_ids":[
-//    {
-//        "id":"id",
-//            "cnt":1
-//    }
-//   ],
-//           "delivery_type":"DELIVERY"
-//}
