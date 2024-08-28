@@ -1,5 +1,6 @@
 package com.fight_world.mono.domain.user.service;
 
+import com.fight_world.mono.domain.auth.dto.LoginRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UpdateUserRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
@@ -24,4 +25,7 @@ public interface UserService {
 
     // 다른 서비스용 유저 조회
     User findByUserId(Long id);
+
+    // login 나중에 분리 필요
+    void login(LoginRequestDto requestDto);
 }
