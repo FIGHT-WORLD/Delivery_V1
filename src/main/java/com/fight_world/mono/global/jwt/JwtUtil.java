@@ -15,17 +15,18 @@ import javax.crypto.SecretKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
+@PropertySource("classpath:application.yml")
 public class JwtUtil {
 
     // Header Key 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
-    public static final String ACCESS_TYPE = "ACCESS";
     // access token 1시간
     public static final long ACTIVE_TOKEN_TIME = 60 * 60 * 1000;
 
