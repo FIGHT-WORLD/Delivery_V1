@@ -1,22 +1,31 @@
 package com.fight_world.mono.domain.user.service;
 
+import com.fight_world.mono.domain.auth.dto.LoginRequestDto;
+import com.fight_world.mono.domain.user.dto.request.UpdateUserRequestDto;
+import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
+import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
+import com.fight_world.mono.domain.user.dto.response.GetUserResponseDto;
+import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
+import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.model.User;
 
 public interface UserService {
 
-//    // 회원가입
-//    SignUpUserResponseDto signUpUser(SignUpUserRequestDto req);
-//
-//    // 유저조회
-//    GetUserResponseDto getUser(Long id);
-//
-//    // 유저 수정
-//    PatchUserPasswordResponseDto changeUserPassword(PatchUserPasswordRequestDto req);
-//    PatchUserEmailResponseDto changeUserEmail(PatchUserEmailRequestDto req);
-//    PatchUserNicknameResponseDto changeUserNickname(PatchUserNicknameRequestDto req);
-//
-//    // 유저 삭제
-//    DeleteUserResponseDto deleteUser(DeleteUserRequestDto req);
+    // 회원가입
+    SignUpUserResponseDto signUpUser(UserSignUpDto req);
 
-    User findById(Long id);
+    // 유저조회
+    GetUserResponseDto getUser(Long id);
+
+    // 유저 수정
+    UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long id);
+
+    // 유저 삭제
+    DeleteUserResponseDto deleteUser(Long id);
+
+    // 다른 서비스용 유저 조회
+    User findByUserId(Long id);
+
+    // login 나중에 분리 필요
+    void login(LoginRequestDto requestDto);
 }

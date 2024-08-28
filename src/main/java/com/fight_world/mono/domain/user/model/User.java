@@ -1,44 +1,70 @@
 package com.fight_world.mono.domain.user.model;
 
-import com.fight_world.mono.domain.model.TimeBase;
+import com.fight_world.mono.domain.user.dto.request.UpdateUserRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "p_user")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends TimeBase {
+@EntityListeners(AuditingEntityListener.class)
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false)
     private String password;
 
     @Embedded
     private UserEmail email;
 
-    private String role;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
+    @Column(nullable = false)
     private String nickname;
 
+    @CreatedDate
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "modified_at")
+    private LocalDateTime modifiedAt;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @Builder(access = AccessLevel.PRIVATE)
-    public User(String username, String password, UserEmail email, String role, String nickname) {
+    public User(String username, String password, UserEmail email, UserRole role, String nickname) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -46,14 +72,40 @@ public class User extends TimeBase {
         this.nickname = nickname;
     }
 
+    /*
+    권한과 함께 유저 생성
+     */
     public static User of(UserSignUpDto userSignUpDto, String encodedPassword) {
 
         return User.builder()
-                   .username(userSignUpDto.username())
-                   .password(encodedPassword)
-                   .email(new UserEmail(userSignUpDto.email()))
-                   .role(userSignUpDto.role())
-                   .nickname(userSignUpDto.nickname())
-                   .build();
+                .username(userSignUpDto.username())
+                .password(encodedPassword)
+                .email(new UserEmail(userSignUpDto.email()))
+                .role(UserRole.valueOf(userSignUpDto.role()))
+                .nickname(userSignUpDto.nickname())
+                .build();
+    }
+
+    public void updatePassword(UpdateUserRequestDto requestDto) {
+        if (requestDto.password() != null) {
+            this.password = requestDto.nickname();
+        }
+    }
+
+    public void updateNickname(UpdateUserRequestDto requestDto) {
+        if (requestDto.nickname() != null) {
+            this.nickname = requestDto.nickname();
+        }
+    }
+
+    public void updateEmail(UpdateUserRequestDto requestDto) {
+        if (requestDto.email() != null) {
+            this.email = new UserEmail(requestDto.email());
+        }
+    }
+
+    public void deleteUser() {
+        this.deletedAt = LocalDateTime.now();
     }
 }
+
