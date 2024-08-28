@@ -1,5 +1,6 @@
 package com.fight_world.mono.domain.store.service;
 
+import com.fight_world.mono.domain.store.dto.request.StoreModifyRequestDto;
 import com.fight_world.mono.domain.store.dto.request.StoreRegisterRequestDto;
 import com.fight_world.mono.domain.store.dto.request.StoreStatusRequestDto;
 import com.fight_world.mono.domain.store.dto.response.StoreResponseDto;
@@ -26,9 +27,10 @@ public class StoreServiceImpl implements StoreService {
     private final UserService userService;
     private final StoreCategoryService storeCategoryService;
 
-    // TODO:  테스트 필요
+    // 가게 등록
     @Override
-    public StoreResponseDto registerStore(UserDetails userDetails, StoreRegisterRequestDto requestDto) {
+    public StoreResponseDto registerStore(UserDetails userDetails,
+            StoreRegisterRequestDto requestDto) {
 
         User user = null; // userService.findById(userDetails.getUser().getId());
 
@@ -39,7 +41,7 @@ public class StoreServiceImpl implements StoreService {
         return StoreResponseDto.of(savedStore);
     }
 
-    // TODO:  테스트 필요
+    // 가게 상세 조회
     @Override
     public StoreResponseDto getStore(String storeId) {
 
@@ -48,25 +50,52 @@ public class StoreServiceImpl implements StoreService {
         return StoreResponseDto.of(store);
     }
 
+    // 가게 정보 수정
     @Override
-    public void changeStoreStatus(UserDetails userDetails, String storeId, StoreStatusRequestDto requestDto) {
+    public StoreResponseDto modifyStore(UserDetails userDetails, String storeId,
+            StoreModifyRequestDto requestDto) {
 
         Store store = findById(storeId);
 
-        checkIsStoreOwner(userDetails, store);
+        checkAuthority(userDetails, store);
 
-        store.changeStatus(StoreStatus.valueOf(requestDto.status()));
+        if (!requestDto.name().equals(store.getName())) {
+            if (storeRepository.existsByName(requestDto.name())) {
+                throw new StoreException(ExceptionMessage.STORE_NAME_ALREADY_EXIST);
+            }
+        }
+
+        StoreCategory storeCategory = storeCategoryService.findById(requestDto.storeCategoryId());
+
+        store.modifyStore(requestDto, storeCategory);
+        storeRepository.save(store);
+
+        return StoreResponseDto.of(store);
     }
 
+    // 가게 주문 가능 상태 변경
+    @Override
+    public void changeStoreStatus(UserDetails userDetails, String storeId,
+            StoreStatusRequestDto requestDto) {
+
+        Store store = findById(storeId);
+
+        checkAuthority(userDetails, store);
+
+        store.changeStatus(StoreStatus.valueOf(requestDto.status()));
+        storeRepository.save(store);
+    }
+
+    //가게 삭제
     @Override
     public void deleteStore(UserDetails userDetails, String storeId) {
 
         Store store = findById(storeId);
 
-        User user = checkIsStoreOwner(userDetails, store);
+        checkIsStoreOwner(userDetails, store);
 
-        store.deleteStore(user.getId());
-
+        store.deleteStore(store.getUser().getId());
+        storeRepository.save(store);
     }
 
     @Override
@@ -76,14 +105,31 @@ public class StoreServiceImpl implements StoreService {
                 .orElseThrow(() -> new StoreException(ExceptionMessage.STORE_NOT_FOUND));
     }
 
-    public User checkIsStoreOwner(UserDetails userDetails, Store store) {
+    public void checkAuthority(UserDetails userDetails, Store store) {
+
+        if (!checkIsAdmin(userDetails)) {
+            checkIsStoreOwner(userDetails, store);
+        }
+    }
+
+    public boolean checkIsAdmin(UserDetails userDetails) {
 
         User user = null; // userService.findById(userDetails.getUser().getId());
 
-        if(!store.getUser().equals(user)) {
+        if (user.getRole().equals("MANAGER") || user.getRole().equals("MASTER")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void checkIsStoreOwner(UserDetails userDetails, Store store) {
+
+        User user = null; // userService.findById(userDetails.getUser().getId());
+
+        if (!store.getUser().equals(user)) {
             throw new StoreException(ExceptionMessage.STORE_UNAUTHORIZED);
         }
 
-        return user;
     }
 }

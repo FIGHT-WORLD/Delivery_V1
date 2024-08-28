@@ -2,7 +2,6 @@ package com.fight_world.mono.domain.store_category.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
 import com.fight_world.mono.domain.store_category.dto.request.StoreCategoryAddRequestDto;
-import com.fight_world.mono.domain.user.model.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

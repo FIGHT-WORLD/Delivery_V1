@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.store.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
+import com.fight_world.mono.domain.store.dto.request.StoreModifyRequestDto;
 import com.fight_world.mono.domain.store.dto.request.StoreRegisterRequestDto;
 import com.fight_world.mono.domain.store.model.constant.StoreStatus;
 import com.fight_world.mono.domain.store.model.value_object.StorePhoneNumber;
@@ -18,7 +19,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -38,7 +38,7 @@ public class Store extends TimeBase {
     private String id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",  nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -67,7 +67,9 @@ public class Store extends TimeBase {
     private StorePhoneNumber phoneNumber;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public Store(String name, String address, LocalTime openAt, LocalTime closeAt, StoreStatus status, StorePhoneNumber phoneNumber, StoreCategory storeCategory, User user) {
+    public Store(String name, String address, LocalTime openAt, LocalTime closeAt,
+            StoreStatus status, StorePhoneNumber phoneNumber, StoreCategory storeCategory,
+            User user) {
         this.name = name;
         this.address = address;
         this.openAt = openAt;
@@ -78,7 +80,8 @@ public class Store extends TimeBase {
         this.user = user;
     }
 
-    public static Store of(StoreRegisterRequestDto requestDto, StoreCategory storeCategory, User user) {
+    public static Store of(StoreRegisterRequestDto requestDto, StoreCategory storeCategory,
+            User user) {
 
         return Store.builder()
                 .name(requestDto.name())
@@ -100,4 +103,13 @@ public class Store extends TimeBase {
         // TODO: deletedAt, deletedBy 필드 값 변경하기
     }
 
+    public void modifyStore(StoreModifyRequestDto requestDto, StoreCategory storeCategory) {
+        // TODO: updatedAt, updatedBy 필드 값 변경하기
+        this.name = requestDto.name();
+        this.address = requestDto.address();
+        this.openAt = requestDto.openAt();
+        this.closeAt = requestDto.closeAt();
+        this.phoneNumber = new StorePhoneNumber(requestDto.phoneNumber());
+        this.storeCategory = storeCategory;
+    }
 }

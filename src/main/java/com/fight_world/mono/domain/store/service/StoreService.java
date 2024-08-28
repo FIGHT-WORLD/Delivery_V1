@@ -1,10 +1,10 @@
 package com.fight_world.mono.domain.store.service;
 
+import com.fight_world.mono.domain.store.dto.request.StoreModifyRequestDto;
 import com.fight_world.mono.domain.store.dto.request.StoreRegisterRequestDto;
 import com.fight_world.mono.domain.store.dto.request.StoreStatusRequestDto;
 import com.fight_world.mono.domain.store.dto.response.StoreResponseDto;
 import com.fight_world.mono.domain.store.model.Store;
-import com.fight_world.mono.domain.user.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface StoreService {
@@ -18,9 +18,11 @@ public interface StoreService {
     // 가게 목록 조회
 
     // 가게 정보 수정
+    StoreResponseDto modifyStore(UserDetails userDetails, String storeId, StoreModifyRequestDto requestDto);
 
     // 가게 주문 가능 여부 상태 변경
-    void changeStoreStatus(UserDetails userDetails, String storeId, StoreStatusRequestDto requestDto);
+    void changeStoreStatus(UserDetails userDetails, String storeId,
+            StoreStatusRequestDto requestDto);
 
     // 가게 삭제
     void deleteStore(UserDetails userDetails, String storeId);
@@ -31,5 +33,5 @@ public interface StoreService {
     Store findById(String storeId);
 
     // 가게 주인인지 확인하기
-    User checkIsStoreOwner(UserDetails userDetails, Store store);
+    void checkIsStoreOwner(UserDetails userDetails, Store store);
 }
