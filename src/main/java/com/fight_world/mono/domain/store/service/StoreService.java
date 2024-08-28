@@ -1,6 +1,10 @@
 package com.fight_world.mono.domain.store.service;
 
+import com.fight_world.mono.domain.store.model.Store;
+
 public interface StoreService {
+
+    Store findById(String id);
 
     // 가게 등록
 
