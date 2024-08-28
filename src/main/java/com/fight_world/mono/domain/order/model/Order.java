@@ -2,13 +2,10 @@ package com.fight_world.mono.domain.order.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
 import com.fight_world.mono.domain.order.dto.request.OrderCreateRequestDto;
-import com.fight_world.mono.domain.order.exception.OrderException;
 import com.fight_world.mono.domain.order.model.constant.OrderDeliveryType;
 import com.fight_world.mono.domain.order.model.constant.OrderStatus;
 import com.fight_world.mono.domain.order_menu.model.OrderMenu;
 import com.fight_world.mono.domain.store.model.Store;
-import com.fight_world.mono.domain.user.exception.UserException;
-import com.fight_world.mono.domain.user.message.ExceptionMessage;
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user_address.model.UserAddress;
 import jakarta.persistence.Column;
@@ -24,8 +21,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -93,5 +90,17 @@ public class Order extends TimeBase {
     public void delete(Long userId) {
 
         super.setDeleted(userId);
+    }
+
+    public void changeStatusTo(OrderStatus orderStatus) {
+
+        this.status = orderStatus;
+    }
+
+    public BigDecimal getTotalPrice() {
+
+        return this.orderMenus.stream()
+                .map(orderMenu -> orderMenu.getMenu().getMenuPrice().getValue().multiply(new BigDecimal(orderMenu.getCnt().getValue())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
