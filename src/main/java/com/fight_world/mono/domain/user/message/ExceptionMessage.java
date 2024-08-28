@@ -16,7 +16,8 @@ public enum ExceptionMessage {
     UPDATE_DUPLICATED_USERNAME(HttpStatus.CONFLICT, "이미 존재하는 아이디입니다."),
     UPDATE_DUPLICATED_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다."),
     UPDATE_INVALID_AUTHORIZATION(HttpStatus.FORBIDDEN, "수정 권한이 없습니다."),
-    DELETE_INVALID_AUTHORIZATION(HttpStatus.NOT_FOUND, "삭제 회원이 없습니다.");
+    DELETE_INVALID_AUTHORIZATION(HttpStatus.NOT_FOUND, "삭제 회원이 없습니다."),
+    USER_FORBIDDEN(HttpStatus.FORBIDDEN, "접근 권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

@@ -2,23 +2,30 @@ package com.fight_world.mono.domain.order.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
 import com.fight_world.mono.domain.order.dto.request.OrderCreateRequestDto;
+import com.fight_world.mono.domain.order.exception.OrderException;
 import com.fight_world.mono.domain.order.model.constant.OrderDeliveryType;
 import com.fight_world.mono.domain.order.model.constant.OrderStatus;
 import com.fight_world.mono.domain.order_menu.model.OrderMenu;
 import com.fight_world.mono.domain.store.model.Store;
+import com.fight_world.mono.domain.user.exception.UserException;
+import com.fight_world.mono.domain.user.message.ExceptionMessage;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.domain.user_address.model.UserAddress;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -45,13 +52,17 @@ public class Order extends TimeBase {
     @Enumerated(EnumType.STRING)
     private OrderDeliveryType deliveryType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
     private Store store;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_address_id")
+    private UserAddress userAddress;
 
     @OneToMany(mappedBy = "order")
     private Set<OrderMenu> orderMenus = new HashSet<>();
@@ -75,6 +86,12 @@ public class Order extends TimeBase {
     }
 
     public void addOrderMenu(OrderMenu orderMenu) {
+
         this.orderMenus.add(orderMenu);
+    }
+
+    public void delete(Long userId) {
+
+        super.setDeleted(userId);
     }
 }
