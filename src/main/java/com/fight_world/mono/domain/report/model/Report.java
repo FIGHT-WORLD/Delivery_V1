@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Report<R> extends TimeBase {
+public class Report extends TimeBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,4 +54,6 @@ public class Report<R> extends TimeBase {
             LocalDateTime issueDate, String reportType) {
         return new Report(null, title, content, issueDate, reportType, null, user, store);
     }
+
+
 }

@@ -17,14 +17,16 @@ public class ReportController {
     private final ReportService reportService;
 
     public ReportController(ReportService reportService) {
+
         this.reportService = reportService;
+
     }
 
     // 신고 작성
-    @PostMapping
-    public ResponseEntity<ReportResponseDto> createReport(
-            @RequestBody ReportRequestDto requestDto) {
-        ReportResponseDto responseDto = reportService.createReport(requestDto);
-        return ResponseEntity.ok(responseDto);
-    }
+//    @PostMapping
+//    public ResponseEntity<ReportResponseDto> createReport(
+//            @RequestBody ReportRequestDto requestDto) {
+//        ReportResponseDto responseDto = reportService.createReport(requestDto);
+//        return ResponseEntity.ok(responseDto);
+//    }
 }
