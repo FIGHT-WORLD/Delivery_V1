@@ -1,7 +1,7 @@
 package com.fight_world.mono.domain.order.repository;
 
 import static com.fight_world.mono.domain.order.model.QOrder.order;
-import static com.fight_world.mono.domain.order_menu.model.QOrderMenu.*;
+import static com.fight_world.mono.domain.order_menu.model.QOrderMenu.orderMenu;
 import static com.fight_world.mono.domain.payment.model.QPayment.payment;
 import static com.fight_world.mono.domain.store.model.QStore.store;
 

@@ -9,7 +9,6 @@ import com.fight_world.mono.domain.payment.model.Payment;
 import com.fight_world.mono.domain.payment.repository.PaymentRepository;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import java.math.BigDecimal;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
