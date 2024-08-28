@@ -48,7 +48,7 @@ public class StoreCategoryController {
      * 카테고리 수정 api
      */
     @PutMapping("/{categoryId}")
-    public ResponseEntity<? extends CommonResponse> modifyCategory(
+    public ResponseEntity<? extends CommonResponse> modifyStoreCategory(
             @PathVariable(name = "categoryId") String categoryId,
             @Valid @RequestBody StoreCategoryModifyRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -62,7 +62,7 @@ public class StoreCategoryController {
      * 카테고리 삭제 api
      */
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<? extends CommonResponse> deleteCategory(
+    public ResponseEntity<? extends CommonResponse> deleteStoreCategory(
             @PathVariable(name = "categoryId") String categoryId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
