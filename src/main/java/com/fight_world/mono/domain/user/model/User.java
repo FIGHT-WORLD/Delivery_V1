@@ -105,8 +105,7 @@ public class User {
     }
 
     public void deleteUser() {
-        this.deletedAt = LocalDateTime.parse(
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        this.deletedAt = LocalDateTime.now();
     }
 }
 
