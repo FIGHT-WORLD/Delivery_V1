@@ -37,9 +37,4 @@ public class PaymentServiceImplV1 implements PaymentService {
 
         return PaymentResponseDto.from(savedPayment);
     }
-
-    @Override
-    public Optional<Payment> getOptionalPaymentByOrderId(String orderId) {
-        return Optional.empty();
-    }
 }
