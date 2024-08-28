@@ -46,9 +46,9 @@ public class UserController {
     /*
     유저 회원가입
      */
-    @PostMapping
+    @PostMapping("/sign-up")
     public ResponseEntity<? extends CommonResponse> signUpUser(
-            UserSignUpDto requestDto
+            @RequestBody UserSignUpDto requestDto
     ) {
 
         SignUpUserResponseDto responseDto = userService.signUpUser(requestDto);
