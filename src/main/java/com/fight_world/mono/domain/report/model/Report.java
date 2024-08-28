@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.report.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
+import com.fight_world.mono.domain.report.dto.CreateReportRequestDto;
 import com.fight_world.mono.domain.store.model.Store;
 import com.fight_world.mono.domain.user.model.User;
 import jakarta.persistence.Column;
@@ -14,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,8 +26,8 @@ import lombok.NoArgsConstructor;
 public class Report extends TimeBase {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -50,10 +52,29 @@ public class Report extends TimeBase {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    public static Report createReport(User user, Store store, String title, String content,
-            LocalDateTime issueDate, String reportType) {
-        return new Report(null, title, content, issueDate, reportType, null, user, store);
+    @Builder(access = AccessLevel.PRIVATE)
+    public Report(String title, String content, LocalDateTime issueDate, String reportType,
+            User user, Store store) {
+        this.title = title;
+        this.content = content;
+        this.issueDate = issueDate;
+        this.reportType = reportType;
+        this.user = user;
+        this.store = store;
     }
+
+    public static Report of(CreateReportRequestDto createReportRequestDto, User user, Store store) {
+
+        return Report.builder()
+                .title(createReportRequestDto.title())
+                .content(createReportRequestDto.content())
+                .issueDate(createReportRequestDto.issueDate())
+                .user(user)
+                .reportType(createReportRequestDto.reportType())
+                .store(store)
+                .build();
+    }
+
 
 
 }
