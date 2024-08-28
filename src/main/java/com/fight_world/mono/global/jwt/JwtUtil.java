@@ -5,11 +5,10 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Jwts.SIG;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.MacAlgorithm;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Base64;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import org.slf4j.Logger;
@@ -33,13 +32,12 @@ public class JwtUtil {
     @Value("${jwt.secret.key}")
     private String secretKey;
     private SecretKey key;
-    private final MacAlgorithm signatureAlgorithm = SIG.HS256;
     public static final Logger logger = LoggerFactory.getLogger("JWT 관련 로그");
 
     @PostConstruct
     public void init() {
 
-        byte[] bytes = Base64.getDecoder().decode(secretKey);
+        byte[] bytes = Decoders.BASE64URL.decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
     }
 
@@ -59,7 +57,7 @@ public class JwtUtil {
     public boolean validateToken(String token) {
 
         try {
-            Jwts.parser().decryptWith(key).build().parseSignedClaims(token);
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
 
             return true;
         } catch (UnsupportedJwtException e) {
@@ -76,7 +74,7 @@ public class JwtUtil {
     // JWT에서 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
 
-        return Jwts.parser().decryptWith(key).build().parseSignedClaims(token).getPayload();
+        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
     }
 
     public String createAccessToken(String username) {
@@ -86,9 +84,9 @@ public class JwtUtil {
         return BEARER_PREFIX
                 + Jwts.builder()
                 .subject(username)
-                .expiration(new Date(date.getTime() + ACTIVE_TOKEN_TIME))
                 .issuedAt(date)
-                .signWith(key, signatureAlgorithm)
+                .expiration(new Date(date.getTime() + ACTIVE_TOKEN_TIME))
+                .signWith(key, SIG.HS256)
                 .compact();
     }
 }
