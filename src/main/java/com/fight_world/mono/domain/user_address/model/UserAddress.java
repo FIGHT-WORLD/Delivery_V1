@@ -58,9 +58,9 @@ public class UserAddress extends TimeBase {
     public static UserAddress of(CreateUserAddressRequestDto requestDto, User user) {
 
         return UserAddress.builder()
-                .address(requestDto.getAddress())
-                .detailAddress(requestDto.getDetailAddress())
-                .request(requestDto.getRequest())
+                .address(requestDto.address())
+                .detailAddress(requestDto.detailAddress())
+                .request(requestDto.request())
                 .user(user)
                 .build();
     }
