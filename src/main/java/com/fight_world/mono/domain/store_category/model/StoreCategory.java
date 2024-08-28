@@ -34,7 +34,11 @@ public class StoreCategory extends TimeBase {
     public static StoreCategory of(StoreCategoryAddRequestDto requestDto) {
 
         return StoreCategory.builder()
-                .categoryName(requestDto.name())
+                .categoryName(requestDto.category_name())
                 .build();
+    }
+
+    public void updateCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

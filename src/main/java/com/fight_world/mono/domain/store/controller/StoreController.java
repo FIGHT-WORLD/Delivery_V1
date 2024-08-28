@@ -83,7 +83,7 @@ public class StoreController {
      */
     @GetMapping("")
     public ResponseEntity<? extends CommonResponse> getStores(
-            @RequestParam(value = "storeCategoryId", required = false) String storeCategoryId,
+            @RequestParam(value = "storeCategoryId") String storeCategoryId,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
@@ -130,7 +130,7 @@ public class StoreController {
     public ResponseEntity<? extends CommonResponse> searchStores(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
-            @RequestParam(value = "query", required = false) String query) {
+            @RequestParam(value = "query") String query) {
 
         return ResponseEntity.status(SUCCESS_SEARCH_STORE.getHttpStatus())
                 .body(success(SUCCESS_SEARCH_STORE.getMessage(),
