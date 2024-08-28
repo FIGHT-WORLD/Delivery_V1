@@ -3,6 +3,7 @@ package com.fight_world.mono.domain.store_category.controller;
 import static com.fight_world.mono.domain.store_category.message.SuccessMessage.SUCCESS_ADD_STORE_CATEGORY;
 import static com.fight_world.mono.domain.store_category.message.SuccessMessage.SUCCESS_CHANGE_STORE_CATEGORY;
 import static com.fight_world.mono.domain.store_category.message.SuccessMessage.SUCCESS_DELETE_STORE_CATEGORY;
+import static com.fight_world.mono.domain.store_category.message.SuccessMessage.SUCCESS_GET_STORE_CATEGORY_LIST;
 import static com.fight_world.mono.global.response.SuccessResponse.success;
 
 import com.fight_world.mono.domain.store_category.dto.request.StoreCategoryAddRequestDto;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -68,5 +70,15 @@ public class StoreCategoryController {
 
         return ResponseEntity.status(SUCCESS_DELETE_STORE_CATEGORY.getHttpStatus())
                 .body(success(SUCCESS_DELETE_STORE_CATEGORY.getMessage()));
+    }
+
+    /**
+     * 카테고리 전체 조회 api
+     */
+    @GetMapping("")
+    public ResponseEntity<? extends CommonResponse> getStoreCategories() {
+
+        return ResponseEntity.status(SUCCESS_GET_STORE_CATEGORY_LIST.getHttpStatus())
+                .body(success(SUCCESS_GET_STORE_CATEGORY_LIST.getMessage(), storeCategoryService.getStoreCategories()));
     }
 }

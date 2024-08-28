@@ -10,6 +10,7 @@ import com.fight_world.mono.domain.store_category.repository.StoreCategoryReposi
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,6 +60,17 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
         StoreCategory storeCategory = findById(categoryId);
 
         storeCategory.deleteStoreCategory(userDetails.getUser().getId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<StoreCategoryResponseDto> getStoreCategories() {
+
+        List<StoreCategory> storeCategories = storeCategoryRepository.findAll();
+
+        return storeCategories.stream()
+                .map(StoreCategoryResponseDto::of)
+                .toList();
     }
 
     @Override

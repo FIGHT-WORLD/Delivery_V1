@@ -5,6 +5,7 @@ import com.fight_world.mono.domain.store_category.dto.request.StoreCategoryModif
 import com.fight_world.mono.domain.store_category.dto.response.StoreCategoryResponseDto;
 import com.fight_world.mono.domain.store_category.model.StoreCategory;
 import com.fight_world.mono.global.security.UserDetailsImpl;
+import java.util.List;
 
 public interface StoreCategoryService {
 
@@ -13,6 +14,7 @@ public interface StoreCategoryService {
             StoreCategoryAddRequestDto requestDto);
 
     // 카테고리 조회
+    List<StoreCategoryResponseDto> getStoreCategories();
 
     // 카테고리 수정
     StoreCategoryResponseDto modifyCategory(UserDetailsImpl userDetails, String categoryId,

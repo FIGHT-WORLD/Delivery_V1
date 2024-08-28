@@ -9,14 +9,14 @@ public record StoreCategoryResponseDto(
 
         String category_id,
 
-        String name
+        String category_name
 ) {
 
     public static StoreCategoryResponseDto of(StoreCategory storeCategory) {
 
         return StoreCategoryResponseDto.builder()
                 .category_id(storeCategory.getId())
-                .name(storeCategory.getCategoryName())
+                .category_name(storeCategory.getCategoryName())
                 .build();
     }
 }
