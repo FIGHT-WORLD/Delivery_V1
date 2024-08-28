@@ -13,9 +13,9 @@ import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.GetUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
+import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.domain.user.service.UserServiceImpl;
 import com.fight_world.mono.global.response.CommonResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,11 +27,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
+
+    public UserController(UserServiceImpl userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/ex")
     public ResponseEntity<? extends CommonResponse> ex() {
@@ -48,7 +51,7 @@ public class UserController {
             UserSignUpDto requestDto
     ) {
 
-        SignUpUserResponseDto responseDto = userServiceImpl.signUpUser(requestDto);
+        SignUpUserResponseDto responseDto = userService.signUpUser(requestDto);
 
         return ResponseEntity
                 .status(SIGNUP_SUCCESS_USER.getHttpStatus())
@@ -63,7 +66,7 @@ public class UserController {
             @PathVariable("userId") Long id
     ) {
 
-        GetUserResponseDto responseDto = userServiceImpl.getUser(id);
+        GetUserResponseDto responseDto = userService.getUser(id);
 
         return ResponseEntity
                 .status(SELECT_SUCCESS_USER.getHttpStatus())
@@ -79,7 +82,7 @@ public class UserController {
             @RequestBody UpdateUserRequestDto requestDto
     ) {
 
-        UpdateUserResponseDto responseDto = userServiceImpl.updateUser(requestDto, id);
+        UpdateUserResponseDto responseDto = userService.updateUser(requestDto, id);
 
         return ResponseEntity
                 .status(UPDATE_SUCCESS_USER.getHttpStatus())
@@ -94,7 +97,7 @@ public class UserController {
             @PathVariable("userId") Long id
     ) {
 
-        DeleteUserResponseDto responseDto = userServiceImpl.deleteUser(id);
+        DeleteUserResponseDto responseDto = userService.deleteUser(id);
 
         return ResponseEntity
                 .status(DELETE_SUCCESS_USER.getHttpStatus())
