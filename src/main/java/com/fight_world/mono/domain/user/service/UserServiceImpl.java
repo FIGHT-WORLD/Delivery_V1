@@ -1,5 +1,6 @@
 package com.fight_world.mono.domain.user.service;
 
+import com.fight_world.mono.domain.auth.dto.LoginRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UpdateUserRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
@@ -9,6 +10,8 @@ import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +20,11 @@ todo: IllegalArgumentException을 따로 예외 클래스를 정의하기
 */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /*
     todo :: password encoding하기
@@ -29,7 +34,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public SignUpUserResponseDto signUpUser(UserSignUpDto req) {
 
-        User user = User.of(req, req.password());
+        User user = User.of(req, passwordEncoder.encode(req.password()));
 
         //회원중복 확인
         if (userRepository.existsByUsername(user.getUsername())) {
@@ -95,10 +100,22 @@ public class UserServiceImpl implements UserService {
         return DeleteUserResponseDto.from(deletedUser);
     }
 
-
     @Override
     public User findByUserId(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    @Override
+    public void login(LoginRequestDto requestDto) {
+
+        User user = userRepository.findByUsername(requestDto.username())
+                .orElseThrow(
+                        () -> new IllegalArgumentException("존재하지 않는 id")
+                );
+
+        if (!passwordEncoder.matches(requestDto.password(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않음");
+        }
     }
 }
