@@ -38,4 +38,8 @@ public class TimeBase {
     @Column(name = "deleted_by")
     private Long deletedBy;
 
+    protected void setDeleted(Long userId) {
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = userId;
+    }
 }
