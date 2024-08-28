@@ -1,5 +1,7 @@
 package com.fight_world.mono.domain.menu.service;
 
+import com.fight_world.mono.domain.menu.model.Menu;
+
 public interface MenuService {
 
     // 메뉴 등록
@@ -15,5 +17,5 @@ public interface MenuService {
     // 메뉴 삭제
 
     // 메뉴 검색
-
+    Menu findById(String id);
 }

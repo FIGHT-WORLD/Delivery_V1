@@ -44,6 +44,6 @@ public class Review extends TimeBase {
     private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 }
