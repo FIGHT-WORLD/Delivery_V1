@@ -7,8 +7,9 @@ import com.fight_world.mono.domain.store_category.message.ExceptionMessage;
 import com.fight_world.mono.domain.store_category.model.StoreCategory;
 import com.fight_world.mono.domain.store_category.repository.StoreCategoryRepository;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.domain.user.service.UserService;
+import com.fight_world.mono.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,16 +19,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class StoreCategoryServiceImpl implements StoreCategoryService {
 
     private final StoreCategoryRepository storeCategoryRepository;
+    private final UserService userService;
 
     @Override
-    public StoreCategoryResponseDto addStoreCategory(UserDetails userDetails,
+    public StoreCategoryResponseDto addStoreCategory(UserDetailsImpl userDetails,
             StoreCategoryAddRequestDto requestDto) {
 
         if (storeCategoryRepository.findByCategoryName(requestDto.name()).isPresent()) {
             throw new StoreCategoryException(ExceptionMessage.STORE_CATEGORY_ALREADY_EXIST);
         }
 
-        User user = null; // userService.findById(userDetails.getUser().getId());
+        User user = userService.findByUserId(userDetails.getUser().getId());
+//        User user = userService.findByUserId(1L);
 
         StoreCategory savedStoreCategory = storeCategoryRepository.save(StoreCategory.of(requestDto));
 

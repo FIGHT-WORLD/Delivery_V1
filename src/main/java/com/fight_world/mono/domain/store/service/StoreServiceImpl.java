@@ -12,14 +12,17 @@ import com.fight_world.mono.domain.store.repository.StoreRepository;
 import com.fight_world.mono.domain.store_category.model.StoreCategory;
 import com.fight_world.mono.domain.store_category.service.StoreCategoryService;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.service.UserService;
+import com.fight_world.mono.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
 
@@ -29,10 +32,12 @@ public class StoreServiceImpl implements StoreService {
 
     // 가게 등록
     @Override
-    public StoreResponseDto registerStore(UserDetails userDetails,
+    @Transactional
+    public StoreResponseDto registerStore(UserDetailsImpl userDetails,
             StoreRegisterRequestDto requestDto) {
 
-        User user = null; // userService.findById(userDetails.getUser().getId());
+//        User user = userService.findByUserId(1L);
+        User user = userService.findByUserId(userDetails.getUser().getId());
 
         StoreCategory storeCategory = storeCategoryService.findById(requestDto.storeCategoryId());
 
@@ -43,6 +48,7 @@ public class StoreServiceImpl implements StoreService {
 
     // 가게 상세 조회
     @Override
+    @Transactional(readOnly = true)
     public StoreResponseDto getStore(String storeId) {
 
         Store store = findById(storeId);
@@ -50,9 +56,40 @@ public class StoreServiceImpl implements StoreService {
         return StoreResponseDto.of(store);
     }
 
+    // 가게 목록 조회 (페이징)
+    @Override
+    @Transactional(readOnly = true)
+    public Page<StoreResponseDto> getStores(String storeCategoryId, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Store> stores = null;
+
+        if(storeCategoryId.isBlank()) {
+            stores = storeRepository.findAll(pageable);
+        } else {
+            storeCategoryService.findById(storeCategoryId);
+            stores = storeRepository.findAllByStoreCategoryId(storeCategoryId, pageable);
+
+        }
+
+        return stores.map(StoreResponseDto::of);
+    }
+
+    // 가게 검색 (페이징)
+    @Override
+    @Transactional(readOnly = true)
+    public Page<StoreResponseDto> searchStores(int page, int size, String query) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Store> stores = storeRepository.findByNameContaining(query, pageable);
+
+        return stores.map(StoreResponseDto::of);
+    }
+
     // 가게 정보 수정
     @Override
-    public StoreResponseDto modifyStore(UserDetails userDetails, String storeId,
+    @Transactional
+    public StoreResponseDto modifyStore(UserDetailsImpl userDetails, String storeId,
             StoreModifyRequestDto requestDto) {
 
         Store store = findById(storeId);
@@ -75,7 +112,8 @@ public class StoreServiceImpl implements StoreService {
 
     // 가게 주문 가능 상태 변경
     @Override
-    public void changeStoreStatus(UserDetails userDetails, String storeId,
+    @Transactional
+    public void changeStoreStatus(UserDetailsImpl userDetails, String storeId,
             StoreStatusRequestDto requestDto) {
 
         Store store = findById(storeId);
@@ -88,7 +126,8 @@ public class StoreServiceImpl implements StoreService {
 
     //가게 삭제
     @Override
-    public void deleteStore(UserDetails userDetails, String storeId) {
+    @Transactional
+    public void deleteStore(UserDetailsImpl userDetails, String storeId) {
 
         Store store = findById(storeId);
 
@@ -105,31 +144,30 @@ public class StoreServiceImpl implements StoreService {
                 .orElseThrow(() -> new StoreException(ExceptionMessage.STORE_NOT_FOUND));
     }
 
-    public void checkAuthority(UserDetails userDetails, Store store) {
+    public void checkAuthority(UserDetailsImpl userDetails, Store store) {
 
         if (!checkIsAdmin(userDetails)) {
             checkIsStoreOwner(userDetails, store);
         }
     }
 
-    public boolean checkIsAdmin(UserDetails userDetails) {
+    public boolean checkIsAdmin(UserDetailsImpl userDetails) {
 
-        User user = null; // userService.findById(userDetails.getUser().getId());
+        User user = userService.findByUserId(userDetails.getUser().getId());
 
-        if (user.getRole().equals("MANAGER") || user.getRole().equals("MASTER")) {
+        if (user.getRole().equals(UserRole.MANAGER) || user.getRole().equals(UserRole.MASTER)) {
             return true;
         }
 
         return false;
     }
 
-    public void checkIsStoreOwner(UserDetails userDetails, Store store) {
+    public void checkIsStoreOwner(UserDetailsImpl userDetails, Store store) {
 
-        User user = null; // userService.findById(userDetails.getUser().getId());
+        User user = userService.findByUserId(userDetails.getUser().getId());
 
         if (!store.getUser().equals(user)) {
             throw new StoreException(ExceptionMessage.STORE_UNAUTHORIZED);
         }
-
     }
 }
