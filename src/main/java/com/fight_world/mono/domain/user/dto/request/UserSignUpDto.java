@@ -1,16 +1,19 @@
 package com.fight_world.mono.domain.user.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+
 // TODO Valid 추가
 public record UserSignUpDto(
+        @NotBlank
         String username,
-
+        @NotBlank
         String password,
-
+        @NotBlank
         String email,
-
-        String role, // Enum 으로 변환해야 합니당
-
-        String nickname
+        @NotBlank
+        String nickname,
+        @NotBlank
+        String role
 ) {
 
 }

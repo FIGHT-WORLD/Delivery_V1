@@ -1,16 +1,23 @@
 package com.fight_world.mono.global.security;
 
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.domain.user.model.UserRole;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 
 @Getter
 public class UserDetailsImpl implements UserDetails {
 
-    private User user;
+    private final User user;
+
+    public UserDetailsImpl(User user) {
+        this.user = user;
+    }
 
     @Override
     public boolean isEnabled() {
@@ -34,16 +41,23 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return "";
+        return user.getUsername();
     }
 
     @Override
     public String getPassword() {
-        return "";
+        return user.getPassword();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+
+        UserRole role = user.getRole();
+        String authority = role.getAuthority();
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(simpleGrantedAuthority);
+
+        return authorities;
     }
 }

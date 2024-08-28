@@ -41,7 +41,7 @@ public class OrderServiceImplV1 implements OrderService {
             OrderCreateRequestDto orderCreateRequestDto
     ) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findByUserId(userDetails.getUser().getId());
         Store store = storeService.findById(orderCreateRequestDto.store_id());
 
         Order savedOrder = orderRepository.save(Order.of(orderCreateRequestDto, user, store));
