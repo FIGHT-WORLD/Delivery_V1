@@ -63,7 +63,7 @@ public class Payment extends TimeBase {
         return Payment.builder()
                 .order(order)
                 .totalPrice(new PaymentTotalPrice(totalPrice))
-                .pgPaymentId(requestDto.pgIdpgPaymentId())
+                .pgPaymentId(requestDto.pgPaymentId())
                 .paymentType(PaymentType.valueOf(requestDto.payment_type()))
                 .build();
     }
