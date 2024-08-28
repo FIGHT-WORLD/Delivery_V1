@@ -1,11 +1,8 @@
 package com.fight_world.mono.domain.order.dto.response;
 
-import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.domain.order_menu.dto.reponse.OrderMenuResponseDto;
-import com.fight_world.mono.domain.payment.model.Payment;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -27,22 +24,24 @@ public record OrderDetailResponseDto(
         String payment_type
 ) {
 
-    public static OrderDetailResponseDto of(Order order, Optional<Payment> payment) {
+    public static OrderDetailResponseDto of(OrderWithPaymentAndAddressDetailResponseDto responseDto) {
 
         return OrderDetailResponseDto.builder()
-                .order_id(order.getId())
-                .store_id(order.getStore().getId())
-                .store_name(order.getStore().getName())
-                .menu_ids(order.getOrderMenus().stream().map(OrderMenuResponseDto::from).collect(
-                        Collectors.toSet()))
-                .delivery_type(order.getDeliveryType().getType())
-                .created_at(order.getCreatedAt())
-                .order_status(order.getStatus().getStatus())
-                .address(order.getUserAddress().getAddress())
-                .detail_address(order.getUserAddress().getDetailAddress())
-                .request(order.getUserAddress().getRequest())
-                .total_price(payment.map(value -> value.getTotalPrice().getValue()).orElse(null))
-                .payment_type(payment.map(value -> value.getPaymentType().getType()).orElse(null))
-                .build();
+                                     .order_id(responseDto.order_id())
+                                     .store_id(responseDto.store_id())
+                                     .store_name(responseDto.store_name())
+                                     .menu_ids(responseDto.menu_ids()
+                                                          .stream()
+                                                          .map(OrderMenuResponseDto::from)
+                                                          .collect(Collectors.toSet()))
+                                     .delivery_type(responseDto.delivery_type().getType())
+                                     .created_at(responseDto.created_at())
+                                     .order_status(responseDto.order_status().getStatus())
+                                     .address(responseDto.address())
+                                     .detail_address(responseDto.detail_address())
+                                     .request(responseDto.request())
+                                     .total_price(responseDto.total_price())
+                                     .payment_type(responseDto.payment_type().getType())
+                                     .build();
     }
 }
