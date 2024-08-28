@@ -2,6 +2,7 @@ package com.fight_world.mono.domain.store_category.controller;
 
 import static com.fight_world.mono.domain.store_category.message.SuccessMessage.SUCCESS_ADD_STORE_CATEGORY;
 import static com.fight_world.mono.domain.store_category.message.SuccessMessage.SUCCESS_CHANGE_STORE_CATEGORY;
+import static com.fight_world.mono.domain.store_category.message.SuccessMessage.SUCCESS_DELETE_STORE_CATEGORY;
 import static com.fight_world.mono.global.response.SuccessResponse.success;
 
 import com.fight_world.mono.domain.store_category.dto.request.StoreCategoryAddRequestDto;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -52,5 +54,19 @@ public class StoreCategoryController {
         return ResponseEntity.status(SUCCESS_CHANGE_STORE_CATEGORY.getHttpStatus())
                 .body(success(SUCCESS_CHANGE_STORE_CATEGORY.getMessage(),
                         storeCategoryService.modifyCategory(userDetails, categoryId, requestDto)));
+    }
+
+    /**
+     * 카테고리 삭제 api
+     */
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<? extends CommonResponse> deleteCategory(
+            @PathVariable(name = "categoryId") String categoryId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        storeCategoryService.deleteCategory(userDetails, categoryId);
+
+        return ResponseEntity.status(SUCCESS_DELETE_STORE_CATEGORY.getHttpStatus())
+                .body(success(SUCCESS_DELETE_STORE_CATEGORY.getMessage()));
     }
 }

@@ -41,4 +41,8 @@ public class StoreCategory extends TimeBase {
     public void updateCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
+
+    public void deleteStoreCategory(Long userId) {
+        super.setDeleted(userId);
+    }
 }

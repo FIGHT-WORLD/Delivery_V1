@@ -33,8 +33,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
         User user = userService.findByUserId(userDetails.getUser().getId());
 //        User user = userService.findByUserId(1L);
 
-        StoreCategory savedStoreCategory = storeCategoryRepository.save(
-                StoreCategory.of(requestDto));
+        StoreCategory savedStoreCategory = storeCategoryRepository.save(StoreCategory.of(requestDto));
 
         return StoreCategoryResponseDto.of(savedStoreCategory);
     }
@@ -43,7 +42,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
     public StoreCategoryResponseDto modifyCategory(UserDetailsImpl userDetails, String categoryId,
             StoreCategoryModifyRequestDto requestDto) {
 
-        StoreCategory storeCategory = storeCategoryRepository.findById(categoryId).orElseThrow();
+        StoreCategory storeCategory = findById(categoryId);
 
         if (!storeCategory.getCategoryName().equals(requestDto.category_name())) {
             checkStoreCategoryNameAlreadyExist(requestDto.category_name());
@@ -56,8 +55,15 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
     }
 
     @Override
-    public StoreCategory findById(String id) {
-        return storeCategoryRepository.findById(id)
+    public void deleteCategory(UserDetailsImpl userDetails, String categoryId) {
+        StoreCategory storeCategory = findById(categoryId);
+
+        storeCategory.deleteStoreCategory(userDetails.getUser().getId());
+    }
+
+    @Override
+    public StoreCategory findById(String storeCategoryId) {
+        return storeCategoryRepository.findById(storeCategoryId)
                 .orElseThrow(() -> new StoreCategoryException(ExceptionMessage.STORE_CATEGORY_NOT_FOUND));
     }
 

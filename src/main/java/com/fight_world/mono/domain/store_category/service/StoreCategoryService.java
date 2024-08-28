@@ -19,6 +19,7 @@ public interface StoreCategoryService {
             StoreCategoryModifyRequestDto requestDto);
 
     // 카테고리 삭제
+    void deleteCategory(UserDetailsImpl userDetails, String categoryId);
 
     StoreCategory findById(String id);
 }
