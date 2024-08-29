@@ -7,4 +7,6 @@ import com.fight_world.mono.global.security.UserDetailsImpl;
 public interface PaymentService {
 
     PaymentResponseDto createPayment(UserDetailsImpl userDetails, PaymentCreateRequestDto requestDto);
+
+    PaymentResponseDto getPayment(UserDetailsImpl userDetails, String paymentId);
 }

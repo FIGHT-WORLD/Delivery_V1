@@ -58,11 +58,11 @@ public class Payment extends TimeBase {
         this.order = order;
     }
 
-    public static Payment of(Order order, BigDecimal totalPrice, PaymentCreateRequestDto requestDto) {
+    public static Payment of(Order order, PaymentCreateRequestDto requestDto) {
 
         return Payment.builder()
                 .order(order)
-                .totalPrice(new PaymentTotalPrice(totalPrice))
+                .totalPrice(new PaymentTotalPrice(requestDto.total_price()))
                 .pgPaymentId(requestDto.pg_payment_id())
                 .paymentType(PaymentType.valueOf(requestDto.payment_type()))
                 .build();
