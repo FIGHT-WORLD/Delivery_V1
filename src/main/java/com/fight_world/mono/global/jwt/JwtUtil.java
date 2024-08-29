@@ -59,7 +59,7 @@ public class JwtUtil {
     public boolean validateToken(String token) {
 
         try {
-            Jwts.parser().decryptWith(key).build().parseSignedClaims(token);
+            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
 
             return true;
         } catch (UnsupportedJwtException e) {
@@ -76,7 +76,7 @@ public class JwtUtil {
     // JWT에서 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
 
-        return Jwts.parser().decryptWith(key).build().parseSignedClaims(token).getPayload();
+        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
     }
 
     public String createAccessToken(String username) {
