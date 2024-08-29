@@ -56,7 +56,7 @@ public class ReviewServiceImplV1 implements ReviewService {
             UserDetailsImpl userDetails
     ) {
 
-        List<Review> reviews = reviewRepository.findAllByUserId(userDetails.getUser().getId());
+        List<Review> reviews = reviewRepository.findAllByUserIdAndDeletedAtIsNull(userDetails.getUser().getId());
 
         return reviews.stream().map(ReviewResponseDto::from).collect(Collectors.toList());
     }
@@ -65,7 +65,7 @@ public class ReviewServiceImplV1 implements ReviewService {
     @Transactional(readOnly = true)
     public ReviewResponseDto getReview(UserDetailsImpl userDetails, String reviewId) {
 
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
+        Review review = reviewRepository.findByIdAndDeletedAtIsNull(reviewId).orElseThrow(
                 () -> new ReviewException(NOT_FOUND_REVIEW)
         );
 
@@ -77,5 +77,20 @@ public class ReviewServiceImplV1 implements ReviewService {
         }
 
         return ReviewResponseDto.from(review);
+    }
+
+    @Override
+    @Transactional
+    public void deleteReview(UserDetailsImpl userDetails, String reviewId) {
+
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
+                () -> new ReviewException(NOT_FOUND_REVIEW)
+        );
+
+        if (!review.getUser().getId().equals(userDetails.getUser().getId())) {
+            throw new ReviewException(GUARD);
+        }
+
+        review.delete(userDetails.getUser().getId());
     }
 }

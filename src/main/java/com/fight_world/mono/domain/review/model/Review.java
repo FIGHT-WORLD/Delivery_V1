@@ -71,4 +71,9 @@ public class Review extends TimeBase {
                 .order(order)
                 .build();
     }
+
+    public void delete(Long userId) {
+
+        super.setDeleted(user.getId());
+    }
 }

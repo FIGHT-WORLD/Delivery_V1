@@ -10,6 +10,7 @@ import com.fight_world.mono.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,7 +50,19 @@ public class ReviewController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 
-        return ResponseEntity.status(GET_REVIEWS.getStatus())
-                .body(success(GET_REVIEWS.getMessage(), reviewService.getReview(userDetails, reviewId)));
+        return ResponseEntity.status(GET_REVIEW.getStatus())
+                .body(success(GET_REVIEW.getMessage(), reviewService.getReview(userDetails, reviewId)));
+    }
+
+    @DeleteMapping("/reviews/{reviewId}")
+    public ResponseEntity<? extends CommonResponse> deleteReview(
+            @PathVariable String reviewId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+
+        reviewService.deleteReview(userDetails, reviewId);
+
+        return ResponseEntity.status(DELETE_REVIEW.getStatus())
+                .body(success(DELETE_REVIEW.getMessage()));
     }
 }
