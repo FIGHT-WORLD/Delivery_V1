@@ -8,6 +8,7 @@ import com.fight_world.mono.global.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,12 +19,11 @@ public class MenuController {
 
     private final MenuService menuService;
 
-    @GetMapping("/")
-    public ResponseEntity<? extends CommonResponse> getMenus() {
-        // logic
+    @GetMapping("/{menuId}")
+    public ResponseEntity<? extends CommonResponse> getMenu(
+            @PathVariable(name = "menuId") String menuId) {
+
         return ResponseEntity.status(SUCCESS_GET_STORE_LIST.getHttpStatus())
-                .body(success(SUCCESS_GET_STORE_LIST.getMessage()));
+                             .body(success(SUCCESS_GET_STORE_LIST.getMessage(), menuService.getMenu(menuId)));
     }
-
-
 }
