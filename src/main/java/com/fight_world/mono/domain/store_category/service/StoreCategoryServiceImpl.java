@@ -31,7 +31,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
             throw new StoreCategoryException(ExceptionMessage.STORE_CATEGORY_ALREADY_EXIST);
         }
 
-        User user = userService.findByUserId(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUser().getId());
 //        User user = userService.findByUserId(1L);
 
         StoreCategory savedStoreCategory = storeCategoryRepository.save(StoreCategory.of(requestDto));
