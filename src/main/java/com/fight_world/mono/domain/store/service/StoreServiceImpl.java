@@ -36,7 +36,6 @@ public class StoreServiceImpl implements StoreService {
     public StoreResponseDto registerStore(UserDetailsImpl userDetails,
             StoreRegisterRequestDto requestDto) {
 
-//        User user = userService.findByUserId(1L);
         User user = userService.findById(userDetails.getUser().getId());
 
         StoreCategory storeCategory = storeCategoryService.findById(requestDto.storeCategoryId());
@@ -105,7 +104,6 @@ public class StoreServiceImpl implements StoreService {
         StoreCategory storeCategory = storeCategoryService.findById(requestDto.storeCategoryId());
 
         store.modifyStore(requestDto, storeCategory);
-//        storeRepository.save(store);
 
         return StoreResponseDto.of(store);
     }
@@ -121,7 +119,6 @@ public class StoreServiceImpl implements StoreService {
         checkAuthority(userDetails, store);
 
         store.changeStatus(StoreStatus.valueOf(requestDto.status()));
-//        storeRepository.save(store);
     }
 
     //가게 삭제
@@ -134,13 +131,12 @@ public class StoreServiceImpl implements StoreService {
         checkIsStoreOwner(userDetails, store);
 
         store.deleteStore(store.getUser().getId());
-//        storeRepository.save(store);
     }
 
     @Override
     public Store findById(String storeId) {
 
-        return storeRepository.findById(storeId)
+        return storeRepository.findByIdAndDeletedAtIsNull(storeId)
                 .orElseThrow(() -> new StoreException(ExceptionMessage.STORE_NOT_FOUND));
     }
 
@@ -155,11 +151,7 @@ public class StoreServiceImpl implements StoreService {
 
         User user = userService.findById(userDetails.getUser().getId());
 
-        if (user.getRole().equals(UserRole.MANAGER) || user.getRole().equals(UserRole.MASTER)) {
-            return true;
-        }
-
-        return false;
+        return user.getRole().equals(UserRole.MANAGER) || user.getRole().equals(UserRole.MASTER);
     }
 
     public void checkIsStoreOwner(UserDetailsImpl userDetails, Store store) {
