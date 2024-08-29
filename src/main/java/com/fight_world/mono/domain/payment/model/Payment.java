@@ -42,11 +42,11 @@ public class Payment extends TimeBase {
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String pgPaymentId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false, updatable = false)
     private Order order;
 
     @Builder(access = AccessLevel.PRIVATE)
