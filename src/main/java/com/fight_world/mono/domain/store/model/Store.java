@@ -104,7 +104,6 @@ public class Store extends TimeBase {
     }
 
     public void modifyStore(StoreModifyRequestDto requestDto, StoreCategory storeCategory) {
-        // TODO: updatedAt, updatedBy 필드 값 변경하기
         this.name = requestDto.name();
         this.address = requestDto.address();
         this.openAt = requestDto.openAt();

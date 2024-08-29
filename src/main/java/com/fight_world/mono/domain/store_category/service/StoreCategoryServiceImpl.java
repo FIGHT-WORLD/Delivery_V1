@@ -27,12 +27,11 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
     public StoreCategoryResponseDto addStoreCategory(UserDetailsImpl userDetails,
             StoreCategoryAddRequestDto requestDto) {
 
-        if (storeCategoryRepository.findByCategoryName(requestDto.category_name()).isPresent()) {
+        if (storeCategoryRepository.findByCategoryNameAndDeletedAtIsNull(requestDto.category_name()).isPresent()) {
             throw new StoreCategoryException(ExceptionMessage.STORE_CATEGORY_ALREADY_EXIST);
         }
 
         User user = userService.findById(userDetails.getUser().getId());
-//        User user = userService.findByUserId(1L);
 
         StoreCategory savedStoreCategory = storeCategoryRepository.save(StoreCategory.of(requestDto));
 
@@ -75,13 +74,13 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
 
     @Override
     public StoreCategory findById(String storeCategoryId) {
-        return storeCategoryRepository.findById(storeCategoryId)
+        return storeCategoryRepository.findByIdAndDeletedAtIsNull(storeCategoryId)
                 .orElseThrow(() -> new StoreCategoryException(ExceptionMessage.STORE_CATEGORY_NOT_FOUND));
     }
 
     public void checkStoreCategoryNameAlreadyExist(String categoryName) {
 
-        if (storeCategoryRepository.findByCategoryName(categoryName).isPresent()) {
+        if (storeCategoryRepository.findByCategoryNameAndDeletedAtIsNull(categoryName).isPresent()) {
             throw new StoreCategoryException(ExceptionMessage.STORE_CATEGORY_ALREADY_EXIST);
         }
     }

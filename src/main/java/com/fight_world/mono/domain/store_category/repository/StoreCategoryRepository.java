@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StoreCategoryRepository extends JpaRepository<StoreCategory, String> {
 
-    Optional<StoreCategory> findByCategoryName(String categoryName);
+    Optional<StoreCategory> findByIdAndDeletedAtIsNull(String id);
+
+    Optional<StoreCategory> findByCategoryNameAndDeletedAtIsNull(String categoryName);
 }
