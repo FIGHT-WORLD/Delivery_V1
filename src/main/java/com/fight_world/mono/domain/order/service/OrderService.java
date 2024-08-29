@@ -3,6 +3,7 @@ package com.fight_world.mono.domain.order.service;
 import com.fight_world.mono.domain.order.dto.request.OrderCreateRequestDto;
 import com.fight_world.mono.domain.order.dto.response.OrderDetailResponseDto;
 import com.fight_world.mono.domain.order.dto.response.OrderResponseDto;
+import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import java.util.List;
 
@@ -16,4 +17,5 @@ public interface OrderService {
 
     void deleteOrderFromUser(UserDetailsImpl userDetails, String orderId);
 
+    Order findById(String orderId);
 }
