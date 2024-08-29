@@ -4,6 +4,7 @@ import static com.fight_world.mono.domain.review.message.SuccessMessage.*;
 import static com.fight_world.mono.global.response.SuccessResponse.*;
 
 import com.fight_world.mono.domain.review.dto.request.ReviewCreateRequestDto;
+import com.fight_world.mono.domain.review.dto.request.ReviewModifyRequestDto;
 import com.fight_world.mono.domain.review.service.ReviewService;
 import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
@@ -73,5 +74,16 @@ public class ReviewController {
 
         return ResponseEntity.status(DELETE_REVIEW.getStatus())
                 .body(success(DELETE_REVIEW.getMessage()));
+    }
+
+    @GetMapping("/reviews/{reviewId}")
+    public ResponseEntity<? extends CommonResponse> modifyReview(
+            @RequestBody ReviewModifyRequestDto requestDto,
+            @PathVariable String reviewId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+
+        return ResponseEntity.status(GET_REVIEW.getStatus())
+                .body(success(GET_REVIEW.getMessage(), reviewService.modifyReview(userDetails, reviewId, requestDto)));
     }
 }

@@ -5,6 +5,7 @@ import static com.fight_world.mono.domain.review.message.ExceptionMessage.*;
 import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.domain.order.service.OrderService;
 import com.fight_world.mono.domain.review.dto.request.ReviewCreateRequestDto;
+import com.fight_world.mono.domain.review.dto.request.ReviewModifyRequestDto;
 import com.fight_world.mono.domain.review.dto.response.ReviewResponseDto;
 import com.fight_world.mono.domain.review.exception.ReviewException;
 import com.fight_world.mono.domain.review.model.Review;
@@ -64,9 +65,7 @@ public class ReviewServiceImplV1 implements ReviewService {
     @Transactional(readOnly = true)
     public ReviewResponseDto getReview(UserDetailsImpl userDetails, String reviewId) {
 
-        Review review = reviewRepository.findByIdAndDeletedAtIsNull(reviewId).orElseThrow(
-                () -> new ReviewException(NOT_FOUND_REVIEW)
-        );
+        Review review = findByIdAndDeletedAtIsNull(reviewId);
 
         if (review.getIsReport()) {
 
@@ -92,14 +91,35 @@ public class ReviewServiceImplV1 implements ReviewService {
     @Transactional
     public void deleteReview(UserDetailsImpl userDetails, String reviewId) {
 
-        Review review = reviewRepository.findById(reviewId).orElseThrow(
-                () -> new ReviewException(NOT_FOUND_REVIEW)
-        );
+        Review review = findByIdAndDeletedAtIsNull(reviewId);
 
         if (!review.getUser().getId().equals(userDetails.getUser().getId())) {
             throw new ReviewException(GUARD);
         }
 
         review.delete(userDetails.getUser().getId());
+    }
+
+    @Override
+    @Transactional
+    public ReviewResponseDto modifyReview(UserDetailsImpl userDetails, String reviewId, ReviewModifyRequestDto requestDto) {
+
+        Review review = findByIdAndDeletedAtIsNull(reviewId);
+
+        if (!review.getUser().getId().equals(userDetails.getUser().getId())) {
+            throw new ReviewException(GUARD);
+        }
+
+        review.modify(requestDto);
+
+        return ReviewResponseDto.from(review);
+    }
+
+    @Override
+    public Review findByIdAndDeletedAtIsNull(String id) {
+
+        return reviewRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(
+                () -> new ReviewException(NOT_FOUND_REVIEW)
+        );
     }
 }

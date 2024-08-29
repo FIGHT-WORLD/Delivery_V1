@@ -3,6 +3,7 @@ package com.fight_world.mono.domain.review.model;
 import com.fight_world.mono.domain.model.TimeBase;
 import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.domain.review.dto.request.ReviewCreateRequestDto;
+import com.fight_world.mono.domain.review.dto.request.ReviewModifyRequestDto;
 import com.fight_world.mono.domain.review.model.value_object.ReviewContent;
 import com.fight_world.mono.domain.review.model.value_object.ReviewStar;
 import com.fight_world.mono.domain.user.model.User;
@@ -75,5 +76,11 @@ public class Review extends TimeBase {
     public void delete(Long userId) {
 
         super.setDeleted(user.getId());
+    }
+
+    public void modify(ReviewModifyRequestDto requestDto) {
+
+        this.content = new ReviewContent(requestDto.content());
+        this.star = new ReviewStar(requestDto.star());
     }
 }
