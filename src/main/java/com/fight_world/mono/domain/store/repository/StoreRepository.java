@@ -14,7 +14,7 @@ public interface StoreRepository extends JpaRepository<Store, String> {
 
     boolean existsByName(String name);
 
-    Page<Store> findByNameContaining(String query, Pageable pageable);
+    Page<Store> findByNameContainingAndDeletedAtIsNull(String query, Pageable pageable);
 
-    Page<Store> findAllByStoreCategoryId(String storeCategoryId, Pageable pageable);
+    Page<Store> findAllByStoreCategoryIdAndDeletedAtIsNull(String storeCategoryId, Pageable pageable);
 }

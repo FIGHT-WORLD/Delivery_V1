@@ -67,7 +67,7 @@ public class StoreServiceImpl implements StoreService {
             stores = storeRepository.findAll(pageable);
         } else {
             storeCategoryService.findById(storeCategoryId);
-            stores = storeRepository.findAllByStoreCategoryId(storeCategoryId, pageable);
+            stores = storeRepository.findAllByStoreCategoryIdAndDeletedAtIsNull(storeCategoryId, pageable);
 
         }
 
@@ -80,7 +80,7 @@ public class StoreServiceImpl implements StoreService {
     public Page<StoreResponseDto> searchStores(int page, int size, String query) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Store> stores = storeRepository.findByNameContaining(query, pageable);
+        Page<Store> stores = storeRepository.findByNameContainingAndDeletedAtIsNull(query, pageable);
 
         return stores.map(StoreResponseDto::of);
     }
