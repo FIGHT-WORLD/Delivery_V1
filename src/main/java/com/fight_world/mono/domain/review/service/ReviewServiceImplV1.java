@@ -7,7 +7,6 @@ import com.fight_world.mono.domain.order.service.OrderService;
 import com.fight_world.mono.domain.review.dto.request.ReviewCreateRequestDto;
 import com.fight_world.mono.domain.review.dto.response.ReviewResponseDto;
 import com.fight_world.mono.domain.review.exception.ReviewException;
-import com.fight_world.mono.domain.review.message.ExceptionMessage;
 import com.fight_world.mono.domain.review.model.Review;
 import com.fight_world.mono.domain.review.repository.ReviewRepository;
 import com.fight_world.mono.domain.user.model.User;
@@ -77,6 +76,16 @@ public class ReviewServiceImplV1 implements ReviewService {
         }
 
         return ReviewResponseDto.from(review);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReviewResponseDto> getStoreReview(String storeId) {
+
+        List<Review> storeReviews = reviewRepository.findAllByStoreIdAndDeletedAtIsNullAndIsReportIsFalse(
+                storeId);
+
+        return storeReviews.stream().map(ReviewResponseDto::from).collect(Collectors.toList());
     }
 
     @Override

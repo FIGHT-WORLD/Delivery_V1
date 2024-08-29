@@ -54,6 +54,15 @@ public class ReviewController {
                 .body(success(GET_REVIEW.getMessage(), reviewService.getReview(userDetails, reviewId)));
     }
 
+    @GetMapping("/store/{storeId}/reviews")
+    public ResponseEntity<? extends CommonResponse> getStoreReviews(
+            @PathVariable String storeId
+    ) {
+
+        return ResponseEntity.status(GET_REVIEW.getStatus())
+                .body(success(GET_REVIEW.getMessage(), reviewService.getStoreReview(storeId)));
+    }
+
     @DeleteMapping("/reviews/{reviewId}")
     public ResponseEntity<? extends CommonResponse> deleteReview(
             @PathVariable String reviewId,
