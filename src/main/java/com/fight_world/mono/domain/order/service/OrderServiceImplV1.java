@@ -6,19 +6,17 @@ import static com.fight_world.mono.domain.order.message.ExceptionMessage.ORDER_U
 import com.fight_world.mono.domain.order.dto.request.OrderCreateRequestDto;
 import com.fight_world.mono.domain.order.dto.response.OrderDetailResponseDto;
 import com.fight_world.mono.domain.order.dto.response.OrderResponseDto;
+import com.fight_world.mono.domain.order.dto.response.OrderWithPaymentDetailResponseDto;
 import com.fight_world.mono.domain.order.exception.OrderException;
 import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.domain.order.repository.OrderRepository;
 import com.fight_world.mono.domain.order_menu.service.OrderMenuService;
-import com.fight_world.mono.domain.payment.model.Payment;
-import com.fight_world.mono.domain.payment.service.PaymentService;
 import com.fight_world.mono.domain.store.model.Store;
 import com.fight_world.mono.domain.store.service.StoreService;
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +30,6 @@ public class OrderServiceImplV1 implements OrderService {
     private final UserService userService;
     private final StoreService storeService;
     private final OrderMenuService orderMenuService;
-    private final PaymentService paymentService;
 
     @Override
     @Transactional
@@ -57,7 +54,7 @@ public class OrderServiceImplV1 implements OrderService {
     ) {
 
         return orderRepository.findAllByUserId(userDetails.getUser().getId())
-                              .stream().map(OrderResponseDto::from).collect(Collectors.toList());
+                .stream().map(OrderResponseDto::from).collect(Collectors.toList());
     }
 
     @Override
@@ -67,13 +64,11 @@ public class OrderServiceImplV1 implements OrderService {
             String orderId
     ) {
 
-        Optional<Payment> payment = paymentService.getOptionalPaymentByOrderId(orderId);
+        OrderWithPaymentDetailResponseDto orderWithPaymentAndAddressDetail =
+                orderRepository.findOrderWithPaymentAndAddressDetail(orderId).orElseThrow(
+                        () -> new OrderException(NOT_FOUND_ORDER));
 
-        return OrderDetailResponseDto.of(orderRepository.findById(orderId).orElseThrow(
-                () -> new OrderException(NOT_FOUND_ORDER)
-        ),
-                payment
-        );
+        return OrderDetailResponseDto.from(orderWithPaymentAndAddressDetail);
     }
 
     @Transactional
@@ -90,5 +85,12 @@ public class OrderServiceImplV1 implements OrderService {
         }
 
         order.delete(userDetails.getUser().getId());
+    }
+
+    @Override
+    public Order findById(String orderId) {
+        return orderRepository.findById(orderId).orElseThrow(
+                () -> new OrderException(NOT_FOUND_ORDER)
+        );
     }
 }
