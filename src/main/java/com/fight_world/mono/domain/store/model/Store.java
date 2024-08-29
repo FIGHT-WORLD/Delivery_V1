@@ -99,8 +99,8 @@ public class Store extends TimeBase {
         this.status = storeStatus;
     }
 
-    public void deleteStore(Long deletedByUserId) {
-        // TODO: deletedAt, deletedBy 필드 값 변경하기
+    public void deleteStore(Long userId) {
+        super.setDeleted(userId);
     }
 
     public void modifyStore(StoreModifyRequestDto requestDto, StoreCategory storeCategory) {

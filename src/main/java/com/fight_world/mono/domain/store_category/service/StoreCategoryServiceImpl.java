@@ -36,7 +36,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
 
         StoreCategory savedStoreCategory = storeCategoryRepository.save(StoreCategory.of(requestDto));
 
-        return StoreCategoryResponseDto.of(savedStoreCategory);
+        return StoreCategoryResponseDto.from(savedStoreCategory);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
         storeCategory.updateCategoryName(requestDto.category_name());
         StoreCategory savedStoreCategory = storeCategoryRepository.save(storeCategory);
 
-        return StoreCategoryResponseDto.of(savedStoreCategory);
+        return StoreCategoryResponseDto.from(savedStoreCategory);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
         List<StoreCategory> storeCategories = storeCategoryRepository.findAll();
 
         return storeCategories.stream()
-                .map(StoreCategoryResponseDto::of)
+                .map(StoreCategoryResponseDto::from)
                 .toList();
     }
 

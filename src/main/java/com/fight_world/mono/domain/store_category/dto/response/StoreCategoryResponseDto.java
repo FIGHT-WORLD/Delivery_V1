@@ -12,7 +12,7 @@ public record StoreCategoryResponseDto(
         String category_name
 ) {
 
-    public static StoreCategoryResponseDto of(StoreCategory storeCategory) {
+    public static StoreCategoryResponseDto from(StoreCategory storeCategory) {
 
         return StoreCategoryResponseDto.builder()
                 .category_id(storeCategory.getId())
