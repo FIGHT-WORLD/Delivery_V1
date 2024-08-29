@@ -5,10 +5,12 @@ import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_CH
 import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_DELETE_MENU;
 import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_GET_ONE_MENU;
 import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_GET_STORE_MENUS;
+import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_MODIFY_MENU;
 import static com.fight_world.mono.global.response.SuccessResponse.success;
 
 import com.fight_world.mono.domain.menu.dto.request.AddMenuRequestDto;
 import com.fight_world.mono.domain.menu.dto.request.ChangeMenuStatusRequestDto;
+import com.fight_world.mono.domain.menu.dto.request.ModifyMenuRequestDto;
 import com.fight_world.mono.domain.menu.service.MenuService;
 import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,8 +52,8 @@ public class MenuController {
     ) {
 
         return ResponseEntity.status(SUCCESS_GET_STORE_MENUS.getHttpStatus())
-                .body(success(SUCCESS_GET_STORE_MENUS.getMessage(),
-                        menuService.getMenus(storeId, page, size)));
+                             .body(success(SUCCESS_GET_STORE_MENUS.getMessage(),
+                                    menuService.getMenus(storeId, page, size)));
     }
 
     @PostMapping("")
@@ -61,6 +64,18 @@ public class MenuController {
         return ResponseEntity.status(SUCCESS_ADD_MENU.getHttpStatus())
                              .body(success(SUCCESS_ADD_MENU.getMessage(),
                                     menuService.addMenu(userDetails, requestDto)));
+    }
+
+    @PutMapping("/{menuId}")
+    public ResponseEntity<? extends CommonResponse> modifyMenu(
+            @PathVariable(name = "menuId") String menuId,
+            @RequestBody ModifyMenuRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        return ResponseEntity.status(SUCCESS_MODIFY_MENU.getHttpStatus())
+                             .body(success(SUCCESS_MODIFY_MENU.getMessage(),
+                                    menuService.modifyMenu(userDetails, menuId, requestDto)));
+
     }
 
     @PatchMapping("/{menuId}/status")
@@ -84,6 +99,6 @@ public class MenuController {
         menuService.deleteMenu(userDetails, menuId);
 
         return ResponseEntity.status(SUCCESS_DELETE_MENU.getHttpStatus())
-                .body(success(SUCCESS_DELETE_MENU.getMessage()));
+                             .body(success(SUCCESS_DELETE_MENU.getMessage()));
     }
 }

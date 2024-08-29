@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.menu.model;
 
 import com.fight_world.mono.domain.menu.dto.request.AddMenuRequestDto;
+import com.fight_world.mono.domain.menu.dto.request.ModifyMenuRequestDto;
 import com.fight_world.mono.domain.menu.model.constant.MenuStatus;
 import com.fight_world.mono.domain.menu.model.value_object.MenuDescription;
 import com.fight_world.mono.domain.menu.model.value_object.MenuPrice;
@@ -69,6 +70,12 @@ public class Menu extends TimeBase {
                 .menuDescription(new MenuDescription(requestDto.description()))
                 .status(MenuStatus.AVAILABLE)
                 .build();
+    }
+
+    public void modifyMenu(ModifyMenuRequestDto requestDto) {
+        this.name = requestDto.name();
+        this.menuPrice = new MenuPrice(requestDto.price());
+        this.menuDescription = new MenuDescription(requestDto.description());
     }
 
     public void changeStatus(MenuStatus menuStatus) {

@@ -2,8 +2,10 @@ package com.fight_world.mono.domain.menu.service;
 
 import com.fight_world.mono.domain.menu.dto.request.AddMenuRequestDto;
 import com.fight_world.mono.domain.menu.dto.request.ChangeMenuStatusRequestDto;
+import com.fight_world.mono.domain.menu.dto.request.ModifyMenuRequestDto;
 import com.fight_world.mono.domain.menu.dto.response.AddMenuResponseDto;
 import com.fight_world.mono.domain.menu.dto.response.MenuResponseDto;
+import com.fight_world.mono.domain.menu.dto.response.ModifyMenuResponseDto;
 import com.fight_world.mono.domain.menu.exception.MenuException;
 import com.fight_world.mono.domain.menu.message.ExceptionMessage;
 import com.fight_world.mono.domain.menu.model.Menu;
@@ -57,6 +59,18 @@ public class MenuServiceImpl implements MenuService {
         Page<Menu> menus = menuRepository.findAllByStoreIdAndDeletedAtIsNull(storeId, pageable);
 
         return menus.map(MenuResponseDto::from);
+    }
+
+    @Override
+    public ModifyMenuResponseDto modifyMenu(UserDetailsImpl userDetails, String menuId,
+            ModifyMenuRequestDto requestDto) {
+
+        Menu menu = findById(menuId);
+        checkIsStoreOwner(userDetails, menu.getStore());
+
+        menu.modifyMenu(requestDto);
+
+        return ModifyMenuResponseDto.from(menu);
     }
 
     @Override
