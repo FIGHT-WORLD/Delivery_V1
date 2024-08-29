@@ -24,7 +24,7 @@ public interface UserService {
     DeleteUserResponseDto deleteUser(Long id);
 
     // 다른 서비스용 유저 조회
-    User findByUserId(Long id);
+    User findById(Long id);
 
     // login 나중에 분리 필요
     void login(LoginRequestDto requestDto);
