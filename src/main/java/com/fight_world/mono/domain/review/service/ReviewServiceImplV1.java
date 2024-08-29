@@ -11,6 +11,8 @@ import com.fight_world.mono.domain.review.repository.ReviewRepository;
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,5 +46,16 @@ public class ReviewServiceImplV1 implements ReviewService {
         Review savedReview = reviewRepository.save(Review.of(reviewCreateRequestDto, user, order));
 
         return ReviewResponseDto.from(savedReview);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReviewResponseDto> getReview(
+            UserDetailsImpl userDetails
+    ) {
+
+        List<Review> reviews = reviewRepository.findAllByUserId(userDetails.getUser().getId());
+
+        return reviews.stream().map(ReviewResponseDto::from).collect(Collectors.toList());
     }
 }

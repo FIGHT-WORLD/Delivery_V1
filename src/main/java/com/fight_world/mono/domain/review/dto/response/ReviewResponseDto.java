@@ -8,7 +8,8 @@ import lombok.Builder;
 public record ReviewResponseDto(
         String review_id,
         Integer star,
-        String content
+        String content,
+        Boolean isReport
 ) {
 
     public static ReviewResponseDto from(Review review) {
@@ -17,6 +18,7 @@ public record ReviewResponseDto(
                                 .review_id(review.getId())
                                 .star(review.getStar().getValue())
                                 .content(review.getContent().getValue())
+                                .isReport(review.getIsReport())
                                 .build();
     }
 }
