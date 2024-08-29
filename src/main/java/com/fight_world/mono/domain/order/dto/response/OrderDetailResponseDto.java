@@ -24,7 +24,7 @@ public record OrderDetailResponseDto(
         String payment_type
 ) {
 
-    public static OrderDetailResponseDto of(OrderWithPaymentDetailResponseDto responseDto) {
+    public static OrderDetailResponseDto from(OrderWithPaymentDetailResponseDto responseDto) {
 
         return OrderDetailResponseDto.builder()
                                      .order_id(responseDto.order_id())

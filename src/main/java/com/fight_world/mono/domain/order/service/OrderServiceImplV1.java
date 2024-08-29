@@ -68,7 +68,7 @@ public class OrderServiceImplV1 implements OrderService {
                 orderRepository.findOrderWithPaymentAndAddressDetail(orderId).orElseThrow(
                         () -> new OrderException(NOT_FOUND_ORDER));
 
-        return OrderDetailResponseDto.of(orderWithPaymentAndAddressDetail);
+        return OrderDetailResponseDto.from(orderWithPaymentAndAddressDetail);
     }
 
     @Transactional
