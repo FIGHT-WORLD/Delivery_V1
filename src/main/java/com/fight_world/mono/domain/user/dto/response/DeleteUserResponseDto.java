@@ -7,11 +7,13 @@ import lombok.Builder;
 @Builder
 public record DeleteUserResponseDto(
 
+        Long deletedBy,
         LocalDateTime deletedAt
 ) {
 
     public static DeleteUserResponseDto from(User user) {
         return DeleteUserResponseDto.builder()
+                .deletedBy(user.getId())
                 .deletedAt(user.getDeletedAt())
                 .build();
     }
