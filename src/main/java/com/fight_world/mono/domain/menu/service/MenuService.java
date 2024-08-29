@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.menu.service;
 
 import com.fight_world.mono.domain.menu.dto.request.AddMenuRequestDto;
+import com.fight_world.mono.domain.menu.dto.request.ChangeMenuStatusRequestDto;
 import com.fight_world.mono.domain.menu.dto.response.AddMenuResponseDto;
 import com.fight_world.mono.domain.menu.dto.response.MenuResponseDto;
 import com.fight_world.mono.domain.menu.model.Menu;
@@ -21,13 +22,13 @@ public interface MenuService {
     // 메뉴 정보 수정
 
     // 메뉴 상태 변경
+    void changeMenuStatus(UserDetailsImpl userDetails, String menuId, ChangeMenuStatusRequestDto requestDto);
 
     // 메뉴 삭제
+    void deleteMenu(UserDetailsImpl userDetails, String menuId);
 
     // 메뉴 조회
 
     // menuId로 메뉴 조회
     Menu findById(String menuId);
-
-    void deleteMenu(UserDetailsImpl userDetails, String menuId);
 }

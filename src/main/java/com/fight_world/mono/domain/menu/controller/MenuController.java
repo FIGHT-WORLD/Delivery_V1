@@ -1,12 +1,14 @@
 package com.fight_world.mono.domain.menu.controller;
 
 import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_ADD_MENU;
+import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_CHANGE_MENU_STATUS;
 import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_DELETE_MENU;
 import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_GET_ONE_MENU;
 import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_GET_STORE_MENUS;
 import static com.fight_world.mono.global.response.SuccessResponse.success;
 
 import com.fight_world.mono.domain.menu.dto.request.AddMenuRequestDto;
+import com.fight_world.mono.domain.menu.dto.request.ChangeMenuStatusRequestDto;
 import com.fight_world.mono.domain.menu.service.MenuService;
 import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,8 +59,21 @@ public class MenuController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return ResponseEntity.status(SUCCESS_ADD_MENU.getHttpStatus())
-                .body(success(SUCCESS_ADD_MENU.getMessage(),
-                        menuService.addMenu(userDetails, requestDto)));
+                             .body(success(SUCCESS_ADD_MENU.getMessage(),
+                                    menuService.addMenu(userDetails, requestDto)));
+    }
+
+    @PatchMapping("/{menuId}/status")
+    public ResponseEntity<? extends CommonResponse> changeMenuStatus(
+            @PathVariable(name = "menuId") String menuId,
+            @RequestBody ChangeMenuStatusRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        menuService.changeMenuStatus(userDetails, menuId, requestDto);
+
+        return ResponseEntity.status(SUCCESS_CHANGE_MENU_STATUS.getHttpStatus())
+                             .body(success(SUCCESS_CHANGE_MENU_STATUS.getMessage()));
+
     }
 
     @DeleteMapping("/{menuId}")

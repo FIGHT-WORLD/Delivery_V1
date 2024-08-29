@@ -71,6 +71,10 @@ public class Menu extends TimeBase {
                 .build();
     }
 
+    public void changeStatus(MenuStatus menuStatus) {
+        this.status = menuStatus;
+    }
+
     public void deleteMenu(Long userId) {
         super.setDeleted(userId);
     }
