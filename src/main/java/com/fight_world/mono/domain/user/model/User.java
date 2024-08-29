@@ -106,9 +106,7 @@ public class User {
     }
 
     public void updateEmail(UpdateUserRequestDto requestDto) {
-        if (requestDto.email() != null) {
-            this.email = new UserEmail(requestDto.email());
-        }
+        this.email = new UserEmail(requestDto.email());
     }
 
     public void deleteUser(Long deletedBy) {
