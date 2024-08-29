@@ -1,6 +1,8 @@
 package com.fight_world.mono.domain.store.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
+import com.fight_world.mono.domain.store.dto.request.StoreModifyRequestDto;
+import com.fight_world.mono.domain.store.dto.request.StoreRegisterRequestDto;
 import com.fight_world.mono.domain.store.model.constant.StoreStatus;
 import com.fight_world.mono.domain.store.model.value_object.StorePhoneNumber;
 import com.fight_world.mono.domain.store_category.model.StoreCategory;
@@ -36,7 +38,7 @@ public class Store extends TimeBase {
     private String id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",  nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -65,12 +67,49 @@ public class Store extends TimeBase {
     private StorePhoneNumber phoneNumber;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public Store(String name, String address, LocalTime openAt, LocalTime closeAt, StoreStatus status, StorePhoneNumber phoneNumber) {
+    public Store(String name, String address, LocalTime openAt, LocalTime closeAt,
+            StoreStatus status, StorePhoneNumber phoneNumber, StoreCategory storeCategory,
+            User user) {
         this.name = name;
         this.address = address;
         this.openAt = openAt;
         this.closeAt = closeAt;
         this.status = status;
         this.phoneNumber = phoneNumber;
+        this.storeCategory = storeCategory;
+        this.user = user;
+    }
+
+    public static Store of(StoreRegisterRequestDto requestDto, StoreCategory storeCategory,
+            User user) {
+
+        return Store.builder()
+                .name(requestDto.name())
+                .address(requestDto.address())
+                .openAt(requestDto.openAt())
+                .closeAt(requestDto.closeAt())
+                .phoneNumber(new StorePhoneNumber(requestDto.phoneNumber()))
+                .status(StoreStatus.CLOSED)
+                .storeCategory(storeCategory)
+                .user(user)
+                .build();
+    }
+
+    public void changeStatus(StoreStatus storeStatus) {
+        this.status = storeStatus;
+    }
+
+    public void deleteStore(Long userId) {
+        super.setDeleted(userId);
+    }
+
+    public void modifyStore(StoreModifyRequestDto requestDto, StoreCategory storeCategory) {
+        // TODO: updatedAt, updatedBy 필드 값 변경하기
+        this.name = requestDto.name();
+        this.address = requestDto.address();
+        this.openAt = requestDto.openAt();
+        this.closeAt = requestDto.closeAt();
+        this.phoneNumber = new StorePhoneNumber(requestDto.phoneNumber());
+        this.storeCategory = storeCategory;
     }
 }
