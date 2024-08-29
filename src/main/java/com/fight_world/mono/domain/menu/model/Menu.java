@@ -54,6 +54,7 @@ public class Menu extends TimeBase {
     public Menu(Store store, String name, MenuPrice menuPrice, MenuDescription menuDescription,
             MenuStatus status) {
         this.store = store;
+        this.name = name;
         this.menuPrice = menuPrice;
         this.menuDescription = menuDescription;
         this.status = status;
@@ -65,6 +66,7 @@ public class Menu extends TimeBase {
                 .store(store)
                 .name(requestDto.name())
                 .menuPrice(new MenuPrice(requestDto.price()))
+                .menuDescription(new MenuDescription(requestDto.description()))
                 .status(MenuStatus.AVAILABLE)
                 .build();
     }

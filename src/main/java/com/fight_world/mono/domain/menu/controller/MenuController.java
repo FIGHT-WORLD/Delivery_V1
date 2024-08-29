@@ -1,6 +1,8 @@
 package com.fight_world.mono.domain.menu.controller;
 
-import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_GET_STORE_LIST;
+import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_ADD_MENU;
+import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_GET_ONE_MENU;
+import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_GET_STORE_MENUS;
 import static com.fight_world.mono.global.response.SuccessResponse.success;
 
 import com.fight_world.mono.domain.menu.dto.request.AddMenuRequestDto;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,8 +32,20 @@ public class MenuController {
     public ResponseEntity<? extends CommonResponse> getMenu(
             @PathVariable(name = "menuId") String menuId) {
 
-        return ResponseEntity.status(SUCCESS_GET_STORE_LIST.getHttpStatus())
-                .body(success(SUCCESS_GET_STORE_LIST.getMessage(), menuService.getMenu(menuId)));
+        return ResponseEntity.status(SUCCESS_GET_ONE_MENU.getHttpStatus())
+                .body(success(SUCCESS_GET_ONE_MENU.getMessage(), menuService.getMenu(menuId)));
+    }
+
+    @GetMapping("")
+    public ResponseEntity<? extends CommonResponse> getMenus(
+            @RequestParam(value = "storeId") String storeId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) {
+
+        return ResponseEntity.status(SUCCESS_GET_STORE_MENUS.getHttpStatus())
+                .body(success(SUCCESS_GET_STORE_MENUS.getMessage(),
+                        menuService.getMenus(storeId, page, size)));
     }
 
     @PostMapping("")
@@ -38,8 +53,8 @@ public class MenuController {
             @Valid @RequestBody AddMenuRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return ResponseEntity.status(SUCCESS_GET_STORE_LIST.getHttpStatus())
-                .body(success(SUCCESS_GET_STORE_LIST.getMessage(),
+        return ResponseEntity.status(SUCCESS_ADD_MENU.getHttpStatus())
+                .body(success(SUCCESS_ADD_MENU.getMessage(),
                         menuService.addMenu(userDetails, requestDto)));
     }
 }

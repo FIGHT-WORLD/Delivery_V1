@@ -13,6 +13,9 @@ import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,9 +43,21 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public MenuResponseDto getMenu(String menuId) {
 
-        Menu menu = findById(menuId);
+//        Menu menu = findById(menuId);
+
+        Menu menu = menuRepository.findByIdAndDeletedAtIsNull(menuId)
+                .orElseThrow(() -> new MenuException(ExceptionMessage.MENU_NOT_FOUND));
 
         return MenuResponseDto.from(menu);
+    }
+
+    @Override
+    public Page<MenuResponseDto> getMenus(String storeId, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Menu> menus = menuRepository.findAllByStoreIdAndDeletedAtIsNull(storeId, pageable);
+
+        return menus.map(MenuResponseDto::from);
     }
 
     @Override
