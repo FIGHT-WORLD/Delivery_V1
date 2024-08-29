@@ -105,7 +105,7 @@ public class StoreServiceImpl implements StoreService {
         StoreCategory storeCategory = storeCategoryService.findById(requestDto.storeCategoryId());
 
         store.modifyStore(requestDto, storeCategory);
-        storeRepository.save(store);
+//        storeRepository.save(store);
 
         return StoreResponseDto.of(store);
     }
@@ -121,7 +121,7 @@ public class StoreServiceImpl implements StoreService {
         checkAuthority(userDetails, store);
 
         store.changeStatus(StoreStatus.valueOf(requestDto.status()));
-        storeRepository.save(store);
+//        storeRepository.save(store);
     }
 
     //가게 삭제
@@ -134,7 +134,7 @@ public class StoreServiceImpl implements StoreService {
         checkIsStoreOwner(userDetails, store);
 
         store.deleteStore(store.getUser().getId());
-        storeRepository.save(store);
+//        storeRepository.save(store);
     }
 
     @Override
