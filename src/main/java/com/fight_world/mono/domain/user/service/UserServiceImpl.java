@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public GetUserResponseDto getUser(Long id) {
 
-        User user = findByUserId(id);
+        User user = findById(id);
 
         return GetUserResponseDto.from(user);
     }
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long id) {
 
-        User updatedUser = findByUserId(id);
+        User updatedUser = findById(id);
 
         // 각각의 필드에 올바른 값이 들어왔을 때만 업데이트
         if (!req.password().isEmpty() && !req.password().isBlank()) {
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public DeleteUserResponseDto deleteUser(Long id) {
 
-        User deletedUser = findByUserId(id);
+        User deletedUser = findById(id);
         deletedUser.deleteUser();
         userRepository.save(deletedUser);
 
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUserId(Long id) {
+    public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
     }

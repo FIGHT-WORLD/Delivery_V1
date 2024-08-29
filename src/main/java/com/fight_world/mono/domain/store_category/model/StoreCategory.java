@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.store_category.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
+import com.fight_world.mono.domain.store_category.dto.request.StoreCategoryAddRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,7 +23,7 @@ public class StoreCategory extends TimeBase {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String categoryName;
 
     @Builder(access = AccessLevel.PRIVATE)
@@ -30,4 +31,18 @@ public class StoreCategory extends TimeBase {
         this.categoryName = categoryName;
     }
 
+    public static StoreCategory of(StoreCategoryAddRequestDto requestDto) {
+
+        return StoreCategory.builder()
+                .categoryName(requestDto.category_name())
+                .build();
+    }
+
+    public void updateCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public void deleteStoreCategory(Long userId) {
+        super.setDeleted(userId);
+    }
 }
