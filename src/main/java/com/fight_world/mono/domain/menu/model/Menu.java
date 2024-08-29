@@ -71,4 +71,8 @@ public class Menu extends TimeBase {
                 .build();
     }
 
+    public void deleteMenu(Long userId) {
+        super.setDeleted(userId);
+    }
+
 }

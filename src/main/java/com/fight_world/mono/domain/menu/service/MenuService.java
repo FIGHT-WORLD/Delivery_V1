@@ -28,4 +28,6 @@ public interface MenuService {
 
     // menuId로 메뉴 조회
     Menu findById(String menuId);
+
+    void deleteMenu(UserDetailsImpl userDetails, String menuId);
 }

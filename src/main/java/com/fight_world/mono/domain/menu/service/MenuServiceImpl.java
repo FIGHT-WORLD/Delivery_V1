@@ -43,10 +43,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public MenuResponseDto getMenu(String menuId) {
 
-//        Menu menu = findById(menuId);
-
-        Menu menu = menuRepository.findByIdAndDeletedAtIsNull(menuId)
-                .orElseThrow(() -> new MenuException(ExceptionMessage.MENU_NOT_FOUND));
+        Menu menu = findById(menuId);
 
         return MenuResponseDto.from(menu);
     }
@@ -63,8 +60,17 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public Menu findById(String menuId) {
 
-        return menuRepository.findById(menuId)
+        return menuRepository.findByIdAndDeletedAtIsNull(menuId)
                 .orElseThrow(() -> new MenuException(ExceptionMessage.MENU_NOT_FOUND));
+    }
+
+    @Override
+    public void deleteMenu(UserDetailsImpl userDetails, String menuId) {
+
+        Menu menu = findById(menuId);
+        checkIsStoreOwner(userDetails, menu.getStore());
+
+        menu.deleteMenu(userDetails.getUser().getId());
     }
 
     public void checkIsStoreOwner(UserDetailsImpl userDetails, Store store) {

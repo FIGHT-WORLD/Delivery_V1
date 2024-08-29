@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.menu.controller;
 
 import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_ADD_MENU;
+import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_DELETE_MENU;
 import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_GET_ONE_MENU;
 import static com.fight_world.mono.domain.menu.message.SuccessMessage.SUCCESS_GET_STORE_MENUS;
 import static com.fight_world.mono.global.response.SuccessResponse.success;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,5 +58,16 @@ public class MenuController {
         return ResponseEntity.status(SUCCESS_ADD_MENU.getHttpStatus())
                 .body(success(SUCCESS_ADD_MENU.getMessage(),
                         menuService.addMenu(userDetails, requestDto)));
+    }
+
+    @DeleteMapping("/{menuId}")
+    public ResponseEntity<? extends CommonResponse> deleteMenu(
+            @PathVariable(name = "menuId") String menuId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        menuService.deleteMenu(userDetails, menuId);
+
+        return ResponseEntity.status(SUCCESS_DELETE_MENU.getHttpStatus())
+                .body(success(SUCCESS_DELETE_MENU.getMessage()));
     }
 }
