@@ -7,6 +7,7 @@ import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.GetUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
+import com.fight_world.mono.domain.user.exception.UserException;
 import com.fight_world.mono.domain.user.model.User;
 
 public interface UserService {
@@ -21,7 +22,7 @@ public interface UserService {
     UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long id);
 
     // 유저 삭제
-    DeleteUserResponseDto deleteUser(Long id);
+    DeleteUserResponseDto deleteUser(Long deletedId, Long deletedBy) throws UserException;
 
     // 다른 서비스용 유저 조회
     User findByUserId(Long id);

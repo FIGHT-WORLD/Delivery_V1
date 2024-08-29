@@ -7,6 +7,8 @@ import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.GetUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
+import com.fight_world.mono.domain.user.exception.UserException;
+import com.fight_world.mono.domain.user.message.ExceptionMessage;
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,6 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     /*
-    todo :: password encoding하기
     todo :: 관리자와 매니저는 회원가입할때 secretkey를 받도록 하기
      */
     @Transactional
@@ -84,17 +85,19 @@ public class UserServiceImpl implements UserService {
         if (!req.nickname().isEmpty() || !req.nickname().isBlank()) {
             updatedUser.updateNickname(req);
         }
-
         userRepository.save(updatedUser);
 
         return UpdateUserResponseDto.from(updatedUser);
     }
 
     @Override
-    public DeleteUserResponseDto deleteUser(Long id) {
+    public DeleteUserResponseDto deleteUser(Long deletedId, Long deletedBy) throws UserException {
 
-        User deletedUser = findByUserId(id);
-        deletedUser.deleteUser();
+        if (deletedId.longValue() != deletedBy.longValue()) {
+            throw new UserException(ExceptionMessage.DELETE_INVALID_AUTHORIZATION);
+        }
+        User deletedUser = findByUserId(deletedId);
+        deletedUser.deleteUser(deletedBy);
         userRepository.save(deletedUser);
 
         return DeleteUserResponseDto.from(deletedUser);
