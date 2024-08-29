@@ -7,77 +7,32 @@ import com.fight_world.mono.domain.report.dto.GetReportResponseDto;
 import com.fight_world.mono.domain.report.dto.UpdateReportRequestDto;
 import com.fight_world.mono.domain.report.dto.UpdateReportResponseDto;
 import com.fight_world.mono.domain.report.model.Report;
-import com.fight_world.mono.domain.report.repository.ReportRepository;
-import com.fight_world.mono.domain.store.model.Store;
-import com.fight_world.mono.domain.store.service.StoreService;
-import com.fight_world.mono.domain.user.model.User;
-import com.fight_world.mono.domain.user.service.UserService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.fight_world.mono.global.security.UserDetailsImpl;
+import java.util.List;
 
-@Service
-public class ReportService {
-
-    private final ReportRepository reportRepository;
-    private final UserService userService;
-    private final StoreService storeService;
-
-    public ReportService(ReportRepository reportRepository, UserService userService,
-            StoreService storeService) {
-        this.reportRepository = reportRepository;
-        this.userService = userService;
-        this.storeService = storeService;
-    }
+public interface ReportService {
 
     // 신고 작성
-    @Transactional
-    public CreateReportResponseDto createReport(CreateReportRequestDto requestDto, Long userId) {
+    CreateReportResponseDto createReport(CreateReportRequestDto requestDto,
+            UserDetailsImpl userDetails);
 
-        User user = userService.findByUserId(userId);
-        Store store = storeService.findById(requestDto.storeId());
-        Report report = Report.of(requestDto, user, store);
+    // 신고 상세 조회
+    GetReportResponseDto getReport(String reportId, UserDetailsImpl userDetails);
 
-        reportRepository.save(report);
+    // 신고 목록 조회(고객)
+    List<GetReportResponseDto> getReportListByUser(UserDetailsImpl userDetails);
 
-        return CreateReportResponseDto.from(report);
-    }
-
-
-    // 신고 조회
-    public GetReportResponseDto getReport(String reportId) {
-
-        Report report = findById(reportId);
-
-        return GetReportResponseDto.from(report);
-    }
-
+    // 신고 목록 조회(관리자)
+    List<GetReportResponseDto> getAllReportsForAdmin();
 
     // 신고 수정
-    public UpdateReportResponseDto updateReport(UpdateReportRequestDto requestDto,
-            String reportId) {
-
-        Report report = findById(reportId);
-        report.updateTitle(requestDto);
-        report.updateContent(requestDto);
-        reportRepository.save(report);
-
-        return UpdateReportResponseDto.from(report);
-    }
-
+    UpdateReportResponseDto updateReport(UpdateReportRequestDto requestDto,
+            String reportId, UserDetailsImpl userDetails);
 
     // 신고 삭제
-    public DeleteReportResponseDto deleteReport(String reportId, Long userId) {
+    DeleteReportResponseDto deleteReport(String reportId, UserDetailsImpl userDetails);
 
-        Report report = findById(reportId);
-        report.deletedAt(userId);
-        reportRepository.save(report);
+    Report findById(String reportId);
 
-        return DeleteReportResponseDto.from(report);
-    }
 
-    private Report findById(String reportId) {
-
-        return reportRepository.findById(reportId)
-                .orElseThrow(() -> new IllegalArgumentException("조회한 reportId가 없습니다."));
-    }
 }

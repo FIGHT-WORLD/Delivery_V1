@@ -5,6 +5,7 @@ import com.fight_world.mono.domain.report.dto.CreateReportRequestDto;
 import com.fight_world.mono.domain.report.dto.UpdateReportRequestDto;
 import com.fight_world.mono.domain.store.model.Store;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.global.security.UserDetailsImpl;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -64,15 +65,16 @@ public class Report extends TimeBase {
         this.store = store;
     }
 
-    public static Report of(CreateReportRequestDto createReportRequestDto, User user, Store store) {
+    public static Report of(CreateReportRequestDto createReportRequestDto,
+            User user, Store store) {
 
         return Report.builder()
+                .user(user)
                 .title(createReportRequestDto.title())
                 .content(createReportRequestDto.content())
                 .issuedAt(createReportRequestDto.issueDate())
-                .user(user)
                 .reportType(createReportRequestDto.reportType())
-                .store(store)
+                .store(store == null ? null : store)
                 .build();
     }
 
@@ -84,7 +86,7 @@ public class Report extends TimeBase {
 
     public void updateContent(UpdateReportRequestDto requestDto) {
         if (requestDto.content() != null) {
-            this.title = requestDto.content();
+            this.content = requestDto.content();
         }
     }
 

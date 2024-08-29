@@ -19,10 +19,18 @@ public record UpdateReportResponseDto(
 
     public static UpdateReportResponseDto from(Report report) {
 
+        String storeId;
+
+        if (report.getStore() == null) {
+            storeId = null;
+        } else {
+            storeId = report.getStore().getId();
+        }
+
         return UpdateReportResponseDto.builder()
                 .userId(report.getUser().getId())
                 .reportId(report.getId())
-                .storeId(report.getStore().getId())
+                .storeId(storeId)
                 .reportType(report.getReportType())
                 .title(report.getTitle())
                 .content(report.getContent())

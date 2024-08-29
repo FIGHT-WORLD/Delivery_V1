@@ -20,7 +20,7 @@ public record CreateReportResponseDto(
         return CreateReportResponseDto.builder()
                 .reportId(report.getId())
                 .userId(report.getUser().getId())
-                .storeId(report.getStore().getId())
+                .storeId(report.getStore() == null ? null : report.getStore().getId())
                 .issuedAt(report.getIssuedAt())
                 .reportType(report.getReportType())
                 .title(report.getTitle())

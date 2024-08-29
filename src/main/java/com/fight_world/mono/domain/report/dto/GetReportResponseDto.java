@@ -6,27 +6,36 @@ import lombok.Builder;
 
 @Builder
 public record GetReportResponseDto(
-
         String reportId,
         Long userId,
         String storeId,
+        LocalDateTime issueDate,
         String reportType,
+        Long counselId,
         String title,
         String content,
-        LocalDateTime issuedAt,
         LocalDateTime createdAt
 ) {
 
     public static GetReportResponseDto from(Report report) {
 
+        String storeId;
+
+        if (report.getStore() == null) {
+            storeId = null;
+        } else {
+            storeId = report.getStore().getId();
+        }
+
         return GetReportResponseDto.builder()
-                .userId(report.getUser().getId())
                 .reportId(report.getId())
-                .storeId(report.getStore().getId())
+                .userId(report.getUser().getId())
+                .storeId(storeId)
+                .issueDate(report.getIssuedAt())
                 .reportType(report.getReportType())
+                .counselId(report.getCounselorId())
                 .title(report.getTitle())
                 .content(report.getContent())
-                .issuedAt(report.getIssuedAt())
                 .createdAt(report.getCreatedAt())
                 .build();
     }
