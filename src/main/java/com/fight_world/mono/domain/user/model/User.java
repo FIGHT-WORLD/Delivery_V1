@@ -14,13 +14,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -60,8 +60,15 @@ public class User {
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
 
+    @LastModifiedBy
+    @Column(name = "modified_by")
+    private Long updatedBy;
+
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
+
+    @Column(name = "deleted_by")
+    private Long deletedBy;
 
     @Builder(access = AccessLevel.PRIVATE)
     public User(String username, String password, UserEmail email, UserRole role, String nickname) {
@@ -104,8 +111,9 @@ public class User {
         }
     }
 
-    public void deleteUser() {
+    public void deleteUser(Long deletedBy) {
         this.deletedAt = LocalDateTime.now();
+        this.deletedBy = deletedBy;
     }
 }
 
