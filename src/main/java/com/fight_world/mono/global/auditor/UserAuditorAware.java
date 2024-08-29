@@ -6,11 +6,13 @@ import java.util.Optional;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
-public class UserAuditorAware implements AuditorAware<User> {
+@Service
+public class UserAuditorAware implements AuditorAware<Long> {
 
     @Override
-    public Optional<User> getCurrentAuditor() {
+    public Optional<Long> getCurrentAuditor() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -18,6 +20,6 @@ public class UserAuditorAware implements AuditorAware<User> {
             return Optional.empty();
         }
 
-        return Optional.of(((UserDetailsImpl) authentication.getPrincipal()).getUser());
+        return Optional.of(((UserDetailsImpl) authentication.getPrincipal()).getUser().getId());
     }
 }
