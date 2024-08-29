@@ -7,8 +7,8 @@ import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.GetUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
-import com.fight_world.mono.domain.user.exception.UserException;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 
 public interface UserService {
 
@@ -22,11 +22,19 @@ public interface UserService {
     UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long id);
 
     // 유저 삭제
-    DeleteUserResponseDto deleteUser(Long deletedId, Long deletedBy) throws UserException;
+    DeleteUserResponseDto deleteUser(Long deletedId, Long deletedBy);
 
     // 다른 서비스용 유저 조회
-    User findByUserId(Long id);
+    User findById(Long id);
 
     // login 나중에 분리 필요
     void login(LoginRequestDto requestDto);
+
+    void checkDuplicatedUsername(String username);
+
+    void checkPreviousUserPassword(String rawPassword, String encodedPassword);
+
+    void checkDuplicatedEmail(UserEmail userEmail);
+
+    void checkDuplicatedNickname(String nickname);
 }
