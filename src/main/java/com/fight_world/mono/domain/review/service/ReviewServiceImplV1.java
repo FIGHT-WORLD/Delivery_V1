@@ -1,5 +1,7 @@
 package com.fight_world.mono.domain.review.service;
 
+import static com.fight_world.mono.domain.review.message.ExceptionMessage.*;
+
 import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.domain.order.service.OrderService;
 import com.fight_world.mono.domain.review.dto.request.ReviewCreateRequestDto;
@@ -36,11 +38,11 @@ public class ReviewServiceImplV1 implements ReviewService {
         Order order = orderService.findById(reviewCreateRequestDto.order_id());
 
         if (reviewRepository.existsByOrderId(order.getId())) {
-            throw new ReviewException(ExceptionMessage.ALREADY_HAS_REVIEW);
+            throw new ReviewException(ALREADY_HAS_REVIEW);
         }
 
         if (!order.getUser().getId().equals(user.getId())) {
-            throw new ReviewException(ExceptionMessage.GUARD);
+            throw new ReviewException(GUARD);
         }
 
         Review savedReview = reviewRepository.save(Review.of(reviewCreateRequestDto, user, order));
@@ -50,12 +52,30 @@ public class ReviewServiceImplV1 implements ReviewService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewResponseDto> getReview(
+    public List<ReviewResponseDto> getReviews(
             UserDetailsImpl userDetails
     ) {
 
         List<Review> reviews = reviewRepository.findAllByUserId(userDetails.getUser().getId());
 
         return reviews.stream().map(ReviewResponseDto::from).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ReviewResponseDto getReview(UserDetailsImpl userDetails, String reviewId) {
+
+        Review review = reviewRepository.findById(reviewId).orElseThrow(
+                () -> new ReviewException(NOT_FOUND_REVIEW)
+        );
+
+        if (review.getIsReport()) {
+
+            if (!review.getUser().getId().equals(userDetails.getUser().getId())) {
+                throw new ReviewException(GUARD);
+            }
+        }
+
+        return ReviewResponseDto.from(review);
     }
 }
