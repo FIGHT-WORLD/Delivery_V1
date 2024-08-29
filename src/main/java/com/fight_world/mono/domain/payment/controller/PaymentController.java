@@ -44,4 +44,13 @@ public class PaymentController {
                 .body(success(GET_PAYMENT.getMessage(), paymentService.getPayment(userDetails, paymentId)));
     }
 
+    @GetMapping("/payments")
+    public ResponseEntity<? extends CommonResponse> getPayments(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+
+        return ResponseEntity.status(GET_PAYMENTS.getStatus())
+                .body(success(GET_PAYMENTS.getMessage(), paymentService.getPayments(userDetails)));
+    }
+
 }

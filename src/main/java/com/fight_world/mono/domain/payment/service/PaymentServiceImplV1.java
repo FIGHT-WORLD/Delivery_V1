@@ -10,6 +10,8 @@ import com.fight_world.mono.domain.payment.message.ExceptionMessage;
 import com.fight_world.mono.domain.payment.model.Payment;
 import com.fight_world.mono.domain.payment.repository.PaymentRepository;
 import com.fight_world.mono.global.security.UserDetailsImpl;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,5 +52,14 @@ public class PaymentServiceImplV1 implements PaymentService {
         }
 
         return PaymentResponseDto.from(payment);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PaymentResponseDto> getPayments(UserDetailsImpl userDetails) {
+
+        List<Payment> payments = paymentRepository.findAllByUserId(userDetails.getUser().getId());
+
+        return payments.stream().map(PaymentResponseDto::from).collect(Collectors.toList());
     }
 }
