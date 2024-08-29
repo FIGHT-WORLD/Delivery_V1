@@ -26,7 +26,7 @@ public record GetReportResponseDto(
                 .reportType(report.getReportType())
                 .title(report.getTitle())
                 .content(report.getContent())
-                .issuedAt(report.getIssueDate())
+                .issuedAt(report.getIssuedAt())
                 .createdAt(report.getCreatedAt())
                 .build();
     }

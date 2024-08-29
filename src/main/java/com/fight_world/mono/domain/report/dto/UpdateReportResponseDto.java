@@ -5,28 +5,30 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
-public record CreateReportResponseDto(
+public record UpdateReportResponseDto(
         String reportId,
         Long userId,
         String storeId,
+        LocalDateTime issuedAt,
         String reportType,
         String title,
         String content,
-        LocalDateTime issuedAt,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) {
-    public static CreateReportResponseDto from(Report report) {
 
-        return CreateReportResponseDto.builder()
-                .reportId(report.getId())
+    public static UpdateReportResponseDto from(Report report) {
+
+        return UpdateReportResponseDto.builder()
                 .userId(report.getUser().getId())
+                .reportId(report.getId())
                 .storeId(report.getStore().getId())
-                .issuedAt(report.getIssuedAt())
                 .reportType(report.getReportType())
                 .title(report.getTitle())
                 .content(report.getContent())
+                .issuedAt(report.getIssuedAt())
                 .createdAt(report.getCreatedAt())
+                .updatedAt(report.getUpdatedAt())
                 .build();
     }
-
 }

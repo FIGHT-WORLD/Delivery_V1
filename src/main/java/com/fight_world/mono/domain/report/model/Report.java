@@ -2,6 +2,7 @@ package com.fight_world.mono.domain.report.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
 import com.fight_world.mono.domain.report.dto.CreateReportRequestDto;
+import com.fight_world.mono.domain.report.dto.UpdateReportRequestDto;
 import com.fight_world.mono.domain.store.model.Store;
 import com.fight_world.mono.domain.user.model.User;
 import jakarta.persistence.Column;
@@ -36,7 +37,7 @@ public class Report extends TimeBase {
     private String content;
 
     @Column(name = "issue_date", nullable = false)
-    private LocalDateTime issueDate;
+    private LocalDateTime issuedAt;
 
     @Column(name = "report_type", nullable = false)
     private String reportType;
@@ -53,11 +54,11 @@ public class Report extends TimeBase {
     private Store store;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public Report(String title, String content, LocalDateTime issueDate, String reportType,
+    public Report(String title, String content, LocalDateTime issuedAt, String reportType,
             User user, Store store) {
         this.title = title;
         this.content = content;
-        this.issueDate = issueDate;
+        this.issuedAt = issuedAt;
         this.reportType = reportType;
         this.user = user;
         this.store = store;
@@ -68,13 +69,26 @@ public class Report extends TimeBase {
         return Report.builder()
                 .title(createReportRequestDto.title())
                 .content(createReportRequestDto.content())
-                .issueDate(createReportRequestDto.issueDate())
+                .issuedAt(createReportRequestDto.issueDate())
                 .user(user)
                 .reportType(createReportRequestDto.reportType())
                 .store(store)
                 .build();
     }
 
+    public void updateTitle(UpdateReportRequestDto requestDto) {
+        if (requestDto.title() != null) {
+            this.title = requestDto.title();
+        }
+    }
 
+    public void updateContent(UpdateReportRequestDto requestDto) {
+        if (requestDto.content() != null) {
+            this.title = requestDto.content();
+        }
+    }
 
+    public void deletedAt(Long userId) {
+        super.setDeleted(userId);
+    }
 }
