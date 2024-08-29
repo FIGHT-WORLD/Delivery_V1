@@ -1,8 +1,8 @@
 package com.fight_world.mono.domain.store.service;
 
-import com.fight_world.mono.domain.store.dto.request.StoreModifyRequestDto;
-import com.fight_world.mono.domain.store.dto.request.StoreRegisterRequestDto;
-import com.fight_world.mono.domain.store.dto.request.StoreStatusRequestDto;
+import com.fight_world.mono.domain.store.dto.request.ModifyStoreRequestDto;
+import com.fight_world.mono.domain.store.dto.request.RegisterStoreRequestDto;
+import com.fight_world.mono.domain.store.dto.request.ChangeStoreStatusRequestDto;
 import com.fight_world.mono.domain.store.dto.response.StoreResponseDto;
 import com.fight_world.mono.domain.store.exception.StoreException;
 import com.fight_world.mono.domain.store.message.ExceptionMessage;
@@ -34,7 +34,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     @Transactional
     public StoreResponseDto registerStore(UserDetailsImpl userDetails,
-            StoreRegisterRequestDto requestDto) {
+            RegisterStoreRequestDto requestDto) {
 
         User user = userService.findById(userDetails.getUser().getId());
 
@@ -42,7 +42,7 @@ public class StoreServiceImpl implements StoreService {
 
         Store savedStore = storeRepository.save(Store.of(requestDto, storeCategory, user));
 
-        return StoreResponseDto.of(savedStore);
+        return StoreResponseDto.from(savedStore);
     }
 
     // 가게 상세 조회
@@ -52,7 +52,7 @@ public class StoreServiceImpl implements StoreService {
 
         Store store = findById(storeId);
 
-        return StoreResponseDto.of(store);
+        return StoreResponseDto.from(store);
     }
 
     // 가게 목록 조회 (페이징)
@@ -71,7 +71,7 @@ public class StoreServiceImpl implements StoreService {
 
         }
 
-        return stores.map(StoreResponseDto::of);
+        return stores.map(StoreResponseDto::from);
     }
 
     // 가게 검색 (페이징)
@@ -82,14 +82,14 @@ public class StoreServiceImpl implements StoreService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Store> stores = storeRepository.findByNameContainingAndDeletedAtIsNull(query, pageable);
 
-        return stores.map(StoreResponseDto::of);
+        return stores.map(StoreResponseDto::from);
     }
 
     // 가게 정보 수정
     @Override
     @Transactional
     public StoreResponseDto modifyStore(UserDetailsImpl userDetails, String storeId,
-            StoreModifyRequestDto requestDto) {
+            ModifyStoreRequestDto requestDto) {
 
         Store store = findById(storeId);
 
@@ -105,14 +105,14 @@ public class StoreServiceImpl implements StoreService {
 
         store.modifyStore(requestDto, storeCategory);
 
-        return StoreResponseDto.of(store);
+        return StoreResponseDto.from(store);
     }
 
     // 가게 주문 가능 상태 변경
     @Override
     @Transactional
     public void changeStoreStatus(UserDetailsImpl userDetails, String storeId,
-            StoreStatusRequestDto requestDto) {
+            ChangeStoreStatusRequestDto requestDto) {
 
         Store store = findById(storeId);
 

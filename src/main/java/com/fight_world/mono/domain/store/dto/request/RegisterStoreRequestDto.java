@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
-public record StoreModifyRequestDto(
+public record RegisterStoreRequestDto(
 
         @NotBlank(message = "가게 이름은 필수입니다.")
         @Size(max = 100, message = "가게 이름은 최대 100자까지 가능합니다.")

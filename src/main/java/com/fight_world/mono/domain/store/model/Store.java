@@ -1,8 +1,8 @@
 package com.fight_world.mono.domain.store.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
-import com.fight_world.mono.domain.store.dto.request.StoreModifyRequestDto;
-import com.fight_world.mono.domain.store.dto.request.StoreRegisterRequestDto;
+import com.fight_world.mono.domain.store.dto.request.ModifyStoreRequestDto;
+import com.fight_world.mono.domain.store.dto.request.RegisterStoreRequestDto;
 import com.fight_world.mono.domain.store.model.constant.StoreStatus;
 import com.fight_world.mono.domain.store.model.value_object.StorePhoneNumber;
 import com.fight_world.mono.domain.store_category.model.StoreCategory;
@@ -80,7 +80,7 @@ public class Store extends TimeBase {
         this.user = user;
     }
 
-    public static Store of(StoreRegisterRequestDto requestDto, StoreCategory storeCategory,
+    public static Store of(RegisterStoreRequestDto requestDto, StoreCategory storeCategory,
             User user) {
 
         return Store.builder()
@@ -103,7 +103,7 @@ public class Store extends TimeBase {
         super.setDeleted(userId);
     }
 
-    public void modifyStore(StoreModifyRequestDto requestDto, StoreCategory storeCategory) {
+    public void modifyStore(ModifyStoreRequestDto requestDto, StoreCategory storeCategory) {
         this.name = requestDto.name();
         this.address = requestDto.address();
         this.openAt = requestDto.openAt();
