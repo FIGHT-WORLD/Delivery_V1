@@ -8,6 +8,8 @@ import com.fight_world.mono.domain.report_comment.dto.DeleteReportCommentRespons
 import com.fight_world.mono.domain.report_comment.dto.GetReportCommentResponseDto;
 import com.fight_world.mono.domain.report_comment.dto.UpdateReportCommentRequestDto;
 import com.fight_world.mono.domain.report_comment.dto.UpdateReportCommentResponseDto;
+import com.fight_world.mono.domain.report_comment.exception.ReportCommentException;
+import com.fight_world.mono.domain.report_comment.message.ExceptionMessage;
 import com.fight_world.mono.domain.report_comment.model.ReportComment;
 import com.fight_world.mono.domain.report_comment.repository.ReportCommentRepository;
 import com.fight_world.mono.domain.user.model.User;
@@ -36,7 +38,13 @@ public class ReportCommentServiceImpV1 implements ReportCommentService {
         User user = userService.findById(userDetails.getUserId());
 
         Report report = reportService.findById(reportId);
+
         ReportComment reportComment = ReportComment.of(requestDto, user, report);
+
+        // 권한 체크
+        if (!userDetails.getUser().getRole().name().equals("MASTER")) {
+            throw new ReportCommentException(ExceptionMessage.COMMENT_CREATE);
+        }
 
         reportCommentRepository.save(reportComment);
 
@@ -51,15 +59,22 @@ public class ReportCommentServiceImpV1 implements ReportCommentService {
 
         ReportComment reportComment = findById(commentId);
         reportComment.updateComment(requestDto);
-        reportComment.updateComment(requestDto);
+
+        if (!userDetails.getUser().getRole().name().equals("MASTER")) {
+            throw new ReportCommentException(ExceptionMessage.COMMENT_UPDATE);
+        }
 
         return UpdateReportCommentResponseDto.from(reportComment);
     }
 
     // 신고 답변 조회
     @Transactional
-    public List<GetReportCommentResponseDto> getAllReportComments() {
+    public List<GetReportCommentResponseDto> getAllReportComments(UserDetailsImpl userDetails) {
         List<ReportComment> reportComments = reportCommentRepository.findAll();
+
+        if (!userDetails.getUser().getRole().name().equals("MASTER")) {
+            throw new ReportCommentException(ExceptionMessage.COMMENT_READ);
+        }
 
         return reportComments.stream().map(GetReportCommentResponseDto::from)
                 .collect(Collectors.toList());
@@ -70,6 +85,11 @@ public class ReportCommentServiceImpV1 implements ReportCommentService {
     @Transactional
     public DeleteReportCommentResponseDto deleteReportComment(String commentId,
             UserDetailsImpl userDetails) {
+
+        if (!userDetails.getUser().getRole().name().equals("MASTER")) {
+            throw new ReportCommentException(ExceptionMessage.COMMENT_DELETE);
+
+        }
 
         ReportComment reportComment = findById(commentId);
         reportComment.deleteAt(userDetails.getUserId());
@@ -82,6 +102,6 @@ public class ReportCommentServiceImpV1 implements ReportCommentService {
     public ReportComment findById(String commentId) {
 
         return reportCommentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("조회한 commentId가 없습니다."));
+                .orElseThrow(() -> new ReportCommentException(ExceptionMessage.COMMENT_NOT_FOUND));
     }
 }
