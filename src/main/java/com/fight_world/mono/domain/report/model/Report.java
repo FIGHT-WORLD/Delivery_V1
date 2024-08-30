@@ -1,8 +1,11 @@
 package com.fight_world.mono.domain.report.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
+import com.fight_world.mono.domain.report.dto.CreateReportRequestDto;
+import com.fight_world.mono.domain.report.dto.UpdateReportRequestDto;
 import com.fight_world.mono.domain.store.model.Store;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.global.security.UserDetailsImpl;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,6 +17,7 @@ import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,11 +25,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Report<R> extends TimeBase {
+public class Report extends TimeBase {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -34,7 +38,7 @@ public class Report<R> extends TimeBase {
     private String content;
 
     @Column(name = "issue_date", nullable = false)
-    private LocalDateTime issueDate;
+    private LocalDateTime issuedAt;
 
     @Column(name = "report_type", nullable = false)
     private String reportType;
@@ -50,8 +54,43 @@ public class Report<R> extends TimeBase {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    public static Report createReport(User user, Store store, String title, String content,
-            LocalDateTime issueDate, String reportType) {
-        return new Report(null, title, content, issueDate, reportType, null, user, store);
+    @Builder(access = AccessLevel.PRIVATE)
+    public Report(String title, String content, LocalDateTime issuedAt, String reportType,
+            User user, Store store) {
+        this.title = title;
+        this.content = content;
+        this.issuedAt = issuedAt;
+        this.reportType = reportType;
+        this.user = user;
+        this.store = store;
+    }
+
+    public static Report of(CreateReportRequestDto createReportRequestDto,
+            User user, Store store) {
+
+        return Report.builder()
+                .user(user)
+                .title(createReportRequestDto.title())
+                .content(createReportRequestDto.content())
+                .issuedAt(createReportRequestDto.issueDate())
+                .reportType(createReportRequestDto.reportType())
+                .store(store == null ? null : store)
+                .build();
+    }
+
+    public void updateTitle(UpdateReportRequestDto requestDto) {
+        if (requestDto.title() != null) {
+            this.title = requestDto.title();
+        }
+    }
+
+    public void updateContent(UpdateReportRequestDto requestDto) {
+        if (requestDto.content() != null) {
+            this.content = requestDto.content();
+        }
+    }
+
+    public void deletedAt(Long userId) {
+        super.setDeleted(userId);
     }
 }
