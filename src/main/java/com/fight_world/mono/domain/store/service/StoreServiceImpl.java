@@ -157,7 +157,7 @@ public class StoreServiceImpl implements StoreService {
 
     public void checkIsStoreOwner(UserDetailsImpl userDetails, Store store) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
 
         if (!store.getUser().equals(user)) {
             throw new StoreException(ExceptionMessage.STORE_UNAUTHORIZED);
