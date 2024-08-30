@@ -1,6 +1,8 @@
 package com.fight_world.mono.domain.review.service;
 
-import static com.fight_world.mono.domain.review.message.ExceptionMessage.*;
+import static com.fight_world.mono.domain.review.message.ExceptionMessage.ALREADY_HAS_REVIEW;
+import static com.fight_world.mono.domain.review.message.ExceptionMessage.GUARD;
+import static com.fight_world.mono.domain.review.message.ExceptionMessage.NOT_FOUND_REVIEW;
 
 import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.domain.order.service.OrderService;
@@ -93,7 +95,7 @@ public class ReviewServiceImplV1 implements ReviewService {
 
         Review review = findByIdAndDeletedAtIsNull(reviewId);
 
-        if (!review.getUser().getId().equals(userDetails.getUser().getId())) {
+        if (!userService.verifyCreatorOrAdmin(userDetails.getUser(), review)) {
             throw new ReviewException(GUARD);
         }
 
@@ -106,7 +108,7 @@ public class ReviewServiceImplV1 implements ReviewService {
 
         Review review = findByIdAndDeletedAtIsNull(reviewId);
 
-        if (!review.getUser().getId().equals(userDetails.getUser().getId())) {
+        if (!userService.verifyCreatorOrAdmin(userDetails.getUser(), review)) {
             throw new ReviewException(GUARD);
         }
 

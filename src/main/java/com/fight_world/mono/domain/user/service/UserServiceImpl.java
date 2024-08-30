@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.user.service;
 
 import com.fight_world.mono.domain.auth.dto.LoginRequestDto;
+import com.fight_world.mono.domain.review.model.Review;
 import com.fight_world.mono.domain.user.dto.request.UpdateUserRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
@@ -10,6 +11,7 @@ import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.exception.UserException;
 import com.fight_world.mono.domain.user.message.ExceptionMessage;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 import com.fight_world.mono.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -140,5 +142,15 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByNickname(nickname)) {
             throw new UserException(ExceptionMessage.SIGNUP_DUPLICATED_NICKNAME);
         }
+    }
+
+    @Override
+    public Boolean verifyCreatorOrAdmin(User user, Review review) {
+
+        if (user.getRole() == UserRole.MANAGER || user.getRole() == UserRole.MASTER) {
+            return true;
+        }
+
+        return review.getUser().getId().equals(user.getId());
     }
 }

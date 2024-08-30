@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.user.service;
 
 import com.fight_world.mono.domain.auth.dto.LoginRequestDto;
+import com.fight_world.mono.domain.review.model.Review;
 import com.fight_world.mono.domain.user.dto.request.UpdateUserRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
@@ -29,6 +30,9 @@ public interface UserService {
 
     // login 나중에 분리 필요
     void login(LoginRequestDto requestDto);
+
+    // Verify
+    Boolean verifyCreatorOrAdmin(User user, Review review);
 
     void checkDuplicatedUsername(String username);
 
