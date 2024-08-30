@@ -31,7 +31,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
             throw new StoreCategoryException(ExceptionMessage.STORE_CATEGORY_ALREADY_EXIST);
         }
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
 
         StoreCategory savedStoreCategory = storeCategoryRepository.save(StoreCategory.of(requestDto));
 
@@ -58,7 +58,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
     public void deleteCategory(UserDetailsImpl userDetails, String categoryId) {
         StoreCategory storeCategory = findById(categoryId);
 
-        storeCategory.deleteStoreCategory(userDetails.getUser().getId());
+        storeCategory.deleteStoreCategory(userDetails.getUserId());
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.fight_world.mono.domain.user.dto.response.GetUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 
 public interface UserService {
 
@@ -22,7 +23,7 @@ public interface UserService {
     UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long id);
 
     // 유저 삭제
-    DeleteUserResponseDto deleteUser(Long id);
+    DeleteUserResponseDto deleteUser(Long deletedId, Long deletedBy);
 
     // 다른 서비스용 유저 조회
     User findById(Long id);
@@ -32,4 +33,12 @@ public interface UserService {
 
     // Verify
     Boolean verifyCreatorOrAdmin(User user, Review review);
+
+    void checkDuplicatedUsername(String username);
+
+    void checkPreviousUserPassword(String rawPassword, String encodedPassword);
+
+    void checkDuplicatedEmail(UserEmail userEmail);
+
+    void checkDuplicatedNickname(String nickname);
 }

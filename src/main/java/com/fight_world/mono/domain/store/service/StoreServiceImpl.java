@@ -36,7 +36,8 @@ public class StoreServiceImpl implements StoreService {
     public StoreResponseDto registerStore(UserDetailsImpl userDetails,
             RegisterStoreRequestDto requestDto) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+//        User user = userService.findByUserId(1L);
+        User user = userService.findById(userDetails.getUserId());
 
         StoreCategory storeCategory = storeCategoryService.findById(requestDto.storeCategoryId());
 
@@ -149,7 +150,7 @@ public class StoreServiceImpl implements StoreService {
 
     public boolean checkIsAdmin(UserDetailsImpl userDetails) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
 
         return user.getRole().equals(UserRole.MANAGER) || user.getRole().equals(UserRole.MASTER);
     }

@@ -47,7 +47,7 @@ public class PaymentServiceImplV1 implements PaymentService {
                 () -> new PaymentException(ExceptionMessage.NOT_FOUND_PAYMENT)
         );
 
-        if (!payment.getOrder().getUser().getId().equals(userDetails.getUser().getId())) {
+        if (!payment.getOrder().getUser().getId().equals(userDetails.getUserId())) {
             throw new PaymentException(ExceptionMessage.GUARD);
         }
 
@@ -58,7 +58,7 @@ public class PaymentServiceImplV1 implements PaymentService {
     @Transactional(readOnly = true)
     public List<PaymentResponseDto> getPayments(UserDetailsImpl userDetails) {
 
-        List<Payment> payments = paymentRepository.findAllByUserId(userDetails.getUser().getId());
+        List<Payment> payments = paymentRepository.findAllByUserId(userDetails.getUserId());
 
         return payments.stream().map(PaymentResponseDto::from).collect(Collectors.toList());
     }
