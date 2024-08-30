@@ -11,6 +11,7 @@ import com.fight_world.mono.domain.order.dto.response.OrderWithPaymentDetailBefo
 import com.fight_world.mono.domain.order.dto.response.OrderWithPaymentDetailResponseDto;
 import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.domain.order_menu.model.OrderMenu;
+import com.fight_world.mono.domain.user.model.QUser;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -102,6 +103,33 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                 .where(order.user.id.eq(userId), storeNameContains(store_name), menuNameContains(menu_name));
 
         return PageableExecutionUtils.getPage(content, pageable, total::fetchOne);
+    }
+
+    @Override
+    public Page<Order> findAllByStoreIdWithOutCARTCustom(String storeId, Pageable pageable, Long userIdCond) {
+
+        List<Order> content = queryFactory.selectFrom(order)
+                .join(order.store, store)
+                .join(order.user, user)
+                .join(order.orderMenus, orderMenu)
+                .join(orderMenu.menu, menu)
+                .where(store.id.eq(storeId), userIdEq(userIdCond))
+                .orderBy(getOrderSpecifiers(pageable.getSort()).toArray(OrderSpecifier[]::new))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> total = queryFactory.select(order.count())
+                .from(order)
+                .join(order.user, user)
+                .where(store.id.eq(storeId), userIdEq(userIdCond));
+
+        return PageableExecutionUtils.getPage(content, pageable, total::fetchOne);
+    }
+
+    private BooleanExpression userIdEq(Long userIdCond) {
+
+        return userIdCond != null ? user.id.eq(userIdCond) : null;
     }
 
     private BooleanExpression storeNameContains(String storeName) {

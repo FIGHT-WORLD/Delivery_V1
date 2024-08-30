@@ -13,4 +13,6 @@ public interface OrderQueryRepository {
 
     Page<Order> findAllByUserIdCustom(Long userId, Pageable pageable, String store_name,
             String menu_name);
+
+    Page<Order> findAllByStoreIdWithOutCARTCustom(String storeId, Pageable pageable, Long userCond);
 }

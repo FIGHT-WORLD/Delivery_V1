@@ -24,5 +24,5 @@ public interface OrderService {
 
     void updateOrderToCooking(String orderId, UserDetailsImpl userDetails);
 
-    List<OrderResponseDto> getStoreOrders(String storeId, UserDetailsImpl userDetails);
+    Page<OrderResponseDto> getStoreOrders(String storeId, UserDetailsImpl userDetails, Pageable pageable, Long user_id);
 }

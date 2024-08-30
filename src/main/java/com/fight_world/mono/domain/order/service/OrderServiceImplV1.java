@@ -121,7 +121,7 @@ public class OrderServiceImplV1 implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponseDto> getStoreOrders(String storeId, UserDetailsImpl userDetails) {
+    public Page<OrderResponseDto> getStoreOrders(String storeId, UserDetailsImpl userDetails, Pageable pageable, Long userIdCond) {
 
         User user = userService.findById(userDetails.getUser().getId());
 
@@ -133,9 +133,9 @@ public class OrderServiceImplV1 implements OrderService {
             }
         }
 
-        List<Order> orders = orderRepository.findAllByStoreIdWithOutCART(storeId);
+        Page<Order> orders = orderRepository.findAllByStoreIdWithOutCARTCustom(storeId, pageable, userIdCond);
 
-        return orders.stream().map(OrderResponseDto::from).collect(Collectors.toList());
+        return orders.map(OrderResponseDto::from);
     }
 
     @Override

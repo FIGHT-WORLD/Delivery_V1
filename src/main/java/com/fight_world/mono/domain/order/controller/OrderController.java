@@ -94,10 +94,12 @@ public class OrderController {
     @GetMapping("/store/{storeId}/orders")
     public ResponseEntity<? extends CommonResponse> getStoreOrders(
             @PathVariable String storeId,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable,
+            @RequestParam(required = false) Long user_id
     ) {
 
         return ResponseEntity.status(UPDATE_ORDER_TO_COOKING.getStatus())
-                .body(success(UPDATE_ORDER_TO_COOKING.getMessage(), orderService.getStoreOrders(storeId, userDetails)));
+                .body(success(UPDATE_ORDER_TO_COOKING.getMessage(), orderService.getStoreOrders(storeId, userDetails, pageable, user_id)));
     }
 }
