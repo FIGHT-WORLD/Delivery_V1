@@ -24,6 +24,7 @@ import com.fight_world.mono.global.security.UserDetailsImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,13 +56,13 @@ public class OrderServiceImplV1 implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponseDto> getOrders(
+    public Page<OrderResponseDto> getOrders(
             UserDetailsImpl userDetails,
             Pageable pageable,
             String store_name, String menu_name) {
 
         return orderRepository.findAllByUserIdCustom(userDetails.getUser().getId(), pageable, store_name, menu_name)
-                .stream().map(OrderResponseDto::from).collect(Collectors.toList());
+                .map(OrderResponseDto::from);
     }
 
     @Override
