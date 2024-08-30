@@ -17,7 +17,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,11 +41,11 @@ public class Payment extends TimeBase {
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String pgPaymentId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false, updatable = false)
     private Order order;
 
     @Builder(access = AccessLevel.PRIVATE)
@@ -58,11 +57,11 @@ public class Payment extends TimeBase {
         this.order = order;
     }
 
-    public static Payment of(Order order, BigDecimal totalPrice, PaymentCreateRequestDto requestDto) {
+    public static Payment of(Order order, PaymentCreateRequestDto requestDto) {
 
         return Payment.builder()
                 .order(order)
-                .totalPrice(new PaymentTotalPrice(totalPrice))
+                .totalPrice(new PaymentTotalPrice(requestDto.total_price()))
                 .pgPaymentId(requestDto.pg_payment_id())
                 .paymentType(PaymentType.valueOf(requestDto.payment_type()))
                 .build();

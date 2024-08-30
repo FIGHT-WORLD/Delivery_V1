@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.user.service;
 
 import com.fight_world.mono.domain.auth.dto.LoginRequestDto;
+import com.fight_world.mono.domain.review.model.Review;
 import com.fight_world.mono.domain.user.dto.request.UpdateUserRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
@@ -8,6 +9,7 @@ import com.fight_world.mono.domain.user.dto.response.GetUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +61,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public GetUserResponseDto getUser(Long id) {
 
-        User user = findByUserId(id);
+        User user = findById(id);
 
         return GetUserResponseDto.from(user);
     }
@@ -72,7 +74,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long id) {
 
-        User updatedUser = findByUserId(id);
+        User updatedUser = findById(id);
 
         // 각각의 필드에 올바른 값이 들어왔을 때만 업데이트
         if (!req.password().isEmpty() && !req.password().isBlank()) {
@@ -93,7 +95,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public DeleteUserResponseDto deleteUser(Long id) {
 
-        User deletedUser = findByUserId(id);
+        User deletedUser = findById(id);
         deletedUser.deleteUser();
         userRepository.save(deletedUser);
 
@@ -101,7 +103,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUserId(Long id) {
+    public User findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
     }
@@ -117,5 +119,15 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(requestDto.password(), user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않음");
         }
+    }
+
+    @Override
+    public Boolean verifyCreatorOrAdmin(User user, Review review) {
+
+        if (user.getRole() == UserRole.MANAGER || user.getRole() == UserRole.MASTER) {
+            return true;
+        }
+
+        return review.getUser().getId().equals(user.getId());
     }
 }
