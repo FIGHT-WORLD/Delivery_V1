@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.user.service;
 
 import com.fight_world.mono.domain.auth.dto.LoginRequestDto;
+import com.fight_world.mono.domain.review.model.Review;
 import com.fight_world.mono.domain.user.dto.request.UpdateUserRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
@@ -8,6 +9,7 @@ import com.fight_world.mono.domain.user.dto.response.GetUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -117,5 +119,15 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(requestDto.password(), user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않음");
         }
+    }
+
+    @Override
+    public Boolean verifyCreatorOrAdmin(User user, Review review) {
+
+        if (user.getRole() == UserRole.MANAGER || user.getRole() == UserRole.MASTER) {
+            return true;
+        }
+
+        return review.getUser().getId().equals(user.getId());
     }
 }
