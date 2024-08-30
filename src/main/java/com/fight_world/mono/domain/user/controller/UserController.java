@@ -96,12 +96,11 @@ public class UserController {
      */
     @DeleteMapping("/{userId}")
     public ResponseEntity<? extends CommonResponse> deleteUser(
-            @PathVariable("userId") Long deletedId,
+            @PathVariable("userId") Long id,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 
-        Long deletedBy = userDetails.getUserId();
-        DeleteUserResponseDto responseDto = userService.deleteUser(deletedId, deletedBy);
+        DeleteUserResponseDto responseDto = userService.deleteUser(id, userDetails);
 
         return ResponseEntity
                 .status(DELETE_SUCCESS_USER.getHttpStatus())

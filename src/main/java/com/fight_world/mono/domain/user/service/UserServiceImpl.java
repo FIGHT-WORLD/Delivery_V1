@@ -14,6 +14,7 @@ import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 import com.fight_world.mono.domain.user.repository.UserRepository;
+import com.fight_world.mono.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -83,8 +84,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DeleteUserResponseDto deleteUser(Long deletedId, Long deletedBy) throws UserException {
+    public DeleteUserResponseDto deleteUser(Long deletedId, UserDetailsImpl userDetails) throws UserException {
 
+        Long deletedBy = userDetails.getUserId();
         if (deletedId.longValue() != deletedBy.longValue()) {
             throw new UserException(ExceptionMessage.DELETE_INVALID_AUTHORIZATION);
         }

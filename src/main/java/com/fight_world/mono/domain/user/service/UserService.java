@@ -10,6 +10,8 @@ import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
+import com.fight_world.mono.global.security.UserDetailsImpl;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserService {
 
@@ -23,7 +25,7 @@ public interface UserService {
     UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long id);
 
     // 유저 삭제
-    DeleteUserResponseDto deleteUser(Long deletedId, Long deletedBy);
+    DeleteUserResponseDto deleteUser(Long deletedId, UserDetailsImpl userDetails);
 
     // 다른 서비스용 유저 조회
     User findById(Long id);
