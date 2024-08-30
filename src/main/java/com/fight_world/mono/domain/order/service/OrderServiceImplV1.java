@@ -1,7 +1,12 @@
 package com.fight_world.mono.domain.order.service;
 
 import static com.fight_world.mono.domain.order.message.ExceptionMessage.NOT_FOUND_ORDER;
+import static com.fight_world.mono.domain.order.message.ExceptionMessage.ORDER_CANT_CHANGE_STATUS;
 import static com.fight_world.mono.domain.order.message.ExceptionMessage.ORDER_USER_VALID;
+import static com.fight_world.mono.domain.order.model.constant.OrderStatus.CHECKING;
+import static com.fight_world.mono.domain.order.model.constant.OrderStatus.COOKING;
+import static com.fight_world.mono.domain.user.model.UserRole.MANAGER;
+import static com.fight_world.mono.domain.user.model.UserRole.MASTER;
 
 import com.fight_world.mono.domain.order.dto.request.OrderCreateRequestDto;
 import com.fight_world.mono.domain.order.dto.response.OrderDetailResponseDto;
@@ -85,6 +90,30 @@ public class OrderServiceImplV1 implements OrderService {
         }
 
         order.delete(userDetails.getUser().getId());
+    }
+
+    @Override
+    @Transactional
+    public void updateOrderToCooking(String orderId, UserDetailsImpl userDetails) {
+
+        User user = userService.findById(userDetails.getUser().getId());
+
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new OrderException(NOT_FOUND_ORDER)
+        );
+
+        if (order.getStatus() != CHECKING) {
+            throw new OrderException(ORDER_CANT_CHANGE_STATUS);
+        }
+
+        // TODO 유섭님 머지 되면 이 부분 수정
+        if (user.getRole() != MASTER && user.getRole() != MANAGER) {
+            if (!order.getStore().getUser().getId().equals(user.getId())) {
+                throw new OrderException(ORDER_USER_VALID);
+            }
+        }
+
+        order.changeStatusTo(COOKING);
     }
 
     @Override

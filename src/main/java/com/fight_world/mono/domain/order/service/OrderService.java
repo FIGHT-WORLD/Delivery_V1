@@ -18,4 +18,6 @@ public interface OrderService {
     void deleteOrderFromUser(UserDetailsImpl userDetails, String orderId);
 
     Order findById(String orderId);
+
+    void updateOrderToCooking(String orderId, UserDetailsImpl userDetails);
 }
