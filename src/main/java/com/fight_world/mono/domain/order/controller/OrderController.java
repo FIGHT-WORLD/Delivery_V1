@@ -12,6 +12,9 @@ import com.fight_world.mono.domain.order.service.OrderService;
 import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,7 +23,9 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api/v1")
@@ -42,11 +47,14 @@ public class OrderController {
 
     @GetMapping("/orders")
     public ResponseEntity<? extends CommonResponse> getOrders(
-            @AuthenticationPrincipal UserDetailsImpl userDetails
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable,
+            @RequestParam(required = false) String store_name,
+            @RequestParam(required = false) String menu_name
     ) {
 
         return ResponseEntity.status(GET_ORDERS.getStatus())
-                             .body(success(GET_ORDERS.getMessage(), orderService.getOrders(userDetails)));
+                             .body(success(GET_ORDERS.getMessage(), orderService.getOrders(userDetails, pageable, store_name, menu_name)));
     }
 
     @GetMapping("/orders/{orderId}")

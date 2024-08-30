@@ -6,12 +6,14 @@ import com.fight_world.mono.domain.order.dto.response.OrderResponseDto;
 import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
 
     OrderResponseDto createOrder(UserDetailsImpl userDetails, OrderCreateRequestDto orderCreateRequestDto);
 
-    List<OrderResponseDto> getOrders(UserDetailsImpl userDetails);
+    List<OrderResponseDto> getOrders(UserDetailsImpl userDetails, Pageable pageable,
+            String store_name, String menu_name);
 
     OrderDetailResponseDto getOrder(UserDetailsImpl userDetails, String orderId);
 
