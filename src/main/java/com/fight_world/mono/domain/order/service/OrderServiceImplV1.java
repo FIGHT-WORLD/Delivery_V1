@@ -1,7 +1,12 @@
 package com.fight_world.mono.domain.order.service;
 
 import static com.fight_world.mono.domain.order.message.ExceptionMessage.NOT_FOUND_ORDER;
+import static com.fight_world.mono.domain.order.message.ExceptionMessage.ORDER_CANT_CHANGE_STATUS;
 import static com.fight_world.mono.domain.order.message.ExceptionMessage.ORDER_USER_VALID;
+import static com.fight_world.mono.domain.order.model.constant.OrderStatus.CHECKING;
+import static com.fight_world.mono.domain.order.model.constant.OrderStatus.COOKING;
+import static com.fight_world.mono.domain.user.model.UserRole.MANAGER;
+import static com.fight_world.mono.domain.user.model.UserRole.MASTER;
 
 import com.fight_world.mono.domain.order.dto.request.OrderCreateRequestDto;
 import com.fight_world.mono.domain.order.dto.response.OrderDetailResponseDto;
@@ -16,9 +21,9 @@ import com.fight_world.mono.domain.store.service.StoreService;
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,12 +54,13 @@ public class OrderServiceImplV1 implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponseDto> getOrders(
-            UserDetailsImpl userDetails
-    ) {
+    public Page<OrderResponseDto> getOrders(
+            UserDetailsImpl userDetails,
+            Pageable pageable,
+            String store_name, String menu_name) {
 
-        return orderRepository.findAllByUserId(userDetails.getUserId())
-                .stream().map(OrderResponseDto::from).collect(Collectors.toList());
+        return orderRepository.findAllByUserIdCustom(userDetails.getUser().getId(), pageable, store_name, menu_name)
+                .map(OrderResponseDto::from);
     }
 
     @Override
@@ -85,6 +91,48 @@ public class OrderServiceImplV1 implements OrderService {
         }
 
         order.delete(userDetails.getUserId());
+    }
+
+    @Override
+    @Transactional
+    public void updateOrderToCooking(String orderId, UserDetailsImpl userDetails) {
+
+        User user = userService.findById(userDetails.getUserId());
+
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new OrderException(NOT_FOUND_ORDER)
+        );
+
+        if (order.getStatus() != CHECKING) {
+            throw new OrderException(ORDER_CANT_CHANGE_STATUS);
+        }
+
+        if (user.getRole() != MASTER && user.getRole() != MANAGER) {
+            if (!order.getStore().getUser().getId().equals(user.getId())) {
+                throw new OrderException(ORDER_USER_VALID);
+            }
+        }
+
+        order.changeStatusTo(COOKING);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<OrderResponseDto> getStoreOrders(String storeId, UserDetailsImpl userDetails, Pageable pageable, Long userIdCond) {
+
+        User user = userService.findById(userDetails.getUserId());
+
+        Store store = storeService.findById(storeId);
+
+        if (user.getRole() != MASTER && user.getRole() != MANAGER) {
+            if (store.getUser().getId().equals(user.getId())) {
+                throw new OrderException(ORDER_USER_VALID);
+            }
+        }
+
+        Page<Order> orders = orderRepository.findAllByStoreIdWithOutCARTCustom(storeId, pageable, userIdCond);
+
+        return orders.map(OrderResponseDto::from);
     }
 
     @Override

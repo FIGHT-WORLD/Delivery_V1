@@ -2,6 +2,8 @@ package com.fight_world.mono.domain.order.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
 import com.fight_world.mono.domain.order.dto.request.OrderCreateRequestDto;
+import com.fight_world.mono.domain.order.exception.OrderException;
+import com.fight_world.mono.domain.order.message.ExceptionMessage;
 import com.fight_world.mono.domain.order.model.constant.OrderDeliveryType;
 import com.fight_world.mono.domain.order.model.constant.OrderStatus;
 import com.fight_world.mono.domain.order_menu.model.OrderMenu;
@@ -20,6 +22,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -99,6 +103,10 @@ public class Order extends TimeBase {
     }
 
     public void delete(Long userId) {
+
+        if (Duration.between(LocalDateTime.now(), getCreatedAt()).toMinutes() > 5) {
+            throw new OrderException(ExceptionMessage.CANNOT_DELETE_AFTER_TIMEOUT); // TODO 이러면 결제 안 한 주문도 같이 삭제할 수 없게 됨!
+        }
 
         super.setDeleted(userId);
     }
