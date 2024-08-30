@@ -101,7 +101,7 @@ public class MenuServiceImpl implements MenuService {
 
     public void checkIsStoreOwner(UserDetailsImpl userDetails, Store store) {
 
-        User user = userService.findByUserId(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUser().getId());
 
         if (!store.getUser().equals(user)) {
             throw new MenuException(ExceptionMessage.MENU_UNAUTHORIZED);
