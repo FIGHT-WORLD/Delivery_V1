@@ -37,7 +37,7 @@ public class StoreServiceImpl implements StoreService {
             StoreRegisterRequestDto requestDto) {
 
 //        User user = userService.findByUserId(1L);
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
 
         StoreCategory storeCategory = storeCategoryService.findById(requestDto.storeCategoryId());
 
@@ -153,7 +153,7 @@ public class StoreServiceImpl implements StoreService {
 
     public boolean checkIsAdmin(UserDetailsImpl userDetails) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
 
         if (user.getRole().equals(UserRole.MANAGER) || user.getRole().equals(UserRole.MASTER)) {
             return true;
@@ -164,7 +164,7 @@ public class StoreServiceImpl implements StoreService {
 
     public void checkIsStoreOwner(UserDetailsImpl userDetails, Store store) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
 
         if (!store.getUser().equals(user)) {
             throw new StoreException(ExceptionMessage.STORE_UNAUTHORIZED);

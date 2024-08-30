@@ -118,6 +118,6 @@ public class UserController {
     ) {
 
         return ResponseEntity
-                .ok(userDetails.getUser().getId());
+                .ok(userDetails.getUserId());
     }
 }

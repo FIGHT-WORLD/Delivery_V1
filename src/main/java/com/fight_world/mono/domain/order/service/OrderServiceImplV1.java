@@ -38,7 +38,7 @@ public class OrderServiceImplV1 implements OrderService {
             OrderCreateRequestDto orderCreateRequestDto
     ) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
         Store store = storeService.findById(orderCreateRequestDto.store_id());
 
         Order savedOrder = orderRepository.save(Order.of(orderCreateRequestDto, user, store));
@@ -53,7 +53,7 @@ public class OrderServiceImplV1 implements OrderService {
             UserDetailsImpl userDetails
     ) {
 
-        return orderRepository.findAllByUserId(userDetails.getUser().getId())
+        return orderRepository.findAllByUserId(userDetails.getUserId())
                 .stream().map(OrderResponseDto::from).collect(Collectors.toList());
     }
 
@@ -80,11 +80,11 @@ public class OrderServiceImplV1 implements OrderService {
                 () -> new OrderException(NOT_FOUND_ORDER)
         );
 
-        if (!order.getUser().getId().equals(userDetails.getUser().getId())) {
+        if (!order.getUser().getId().equals(userDetails.getUserId())) {
             throw new OrderException(ORDER_USER_VALID);
         }
 
-        order.delete(userDetails.getUser().getId());
+        order.delete(userDetails.getUserId());
     }
 
     @Override

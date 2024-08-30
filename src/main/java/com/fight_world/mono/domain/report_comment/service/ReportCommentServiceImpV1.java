@@ -33,7 +33,7 @@ public class ReportCommentServiceImpV1 implements ReportCommentService {
     public CreateReportCommentResponseDto createReportComment(String reportId,
             CreateReportCommentRequestDto requestDto, UserDetailsImpl userDetails) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
 
         Report report = reportService.findById(reportId);
         ReportComment reportComment = ReportComment.of(requestDto, user, report);
@@ -72,7 +72,7 @@ public class ReportCommentServiceImpV1 implements ReportCommentService {
             UserDetailsImpl userDetails) {
 
         ReportComment reportComment = findById(commentId);
-        reportComment.deleteAt(userDetails.getUser().getId());
+        reportComment.deleteAt(userDetails.getUserId());
 
         return DeleteReportCommentResponseDto.from(reportComment);
     }
