@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AiPromptEnum {
 
-    EMOJdDDI("에 대한 메뉴 설명을 적어줘\n"
+    EMOJI("에 대한 메뉴 설명을 적어줘\n"
             + "1. 이모티콘을 많이 넣어줘\n"
             + "2. 50글자 이내로 작성해줘\n"
             + "3. 한국어로 적어줘"),
