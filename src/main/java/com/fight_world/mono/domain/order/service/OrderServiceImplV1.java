@@ -117,6 +117,24 @@ public class OrderServiceImplV1 implements OrderService {
     }
 
     @Override
+    public List<OrderResponseDto> getStoreOrders(String storeId, UserDetailsImpl userDetails) {
+
+        User user = userService.findById(userDetails.getUser().getId());
+
+        Store store = storeService.findById(storeId);
+
+        if (user.getRole() != MASTER && user.getRole() != MANAGER) {
+            if (store.getUser().getId().equals(user.getId())) {
+                throw new OrderException(ORDER_USER_VALID);
+            }
+        }
+
+        List<Order> orders = orderRepository.findAllByStoreIdWithOutCART(storeId);
+
+        return List.of();
+    }
+
+    @Override
     public Order findById(String orderId) {
         return orderRepository.findById(orderId).orElseThrow(
                 () -> new OrderException(NOT_FOUND_ORDER)

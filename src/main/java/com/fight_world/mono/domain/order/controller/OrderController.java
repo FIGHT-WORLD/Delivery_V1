@@ -82,4 +82,14 @@ public class OrderController {
         return ResponseEntity.status(UPDATE_ORDER_TO_COOKING.getStatus())
                 .body(success(UPDATE_ORDER_TO_COOKING.getMessage()));
     }
+
+    @GetMapping("/store/{storeId}/orders")
+    public ResponseEntity<? extends CommonResponse> getStoreOrders(
+            @PathVariable String storeId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+
+        return ResponseEntity.status(UPDATE_ORDER_TO_COOKING.getStatus())
+                .body(success(UPDATE_ORDER_TO_COOKING.getMessage(), orderService.getStoreOrders(storeId, userDetails)));
+    }
 }

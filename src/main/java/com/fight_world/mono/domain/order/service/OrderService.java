@@ -20,4 +20,6 @@ public interface OrderService {
     Order findById(String orderId);
 
     void updateOrderToCooking(String orderId, UserDetailsImpl userDetails);
+
+    List<OrderResponseDto> getStoreOrders(String storeId, UserDetailsImpl userDetails);
 }
