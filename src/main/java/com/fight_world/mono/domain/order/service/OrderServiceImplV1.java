@@ -107,7 +107,6 @@ public class OrderServiceImplV1 implements OrderService {
             throw new OrderException(ORDER_CANT_CHANGE_STATUS);
         }
 
-        // TODO 유섭님 머지 되면 이 부분 수정
         if (user.getRole() != MASTER && user.getRole() != MANAGER) {
             if (!order.getStore().getUser().getId().equals(user.getId())) {
                 throw new OrderException(ORDER_USER_VALID);
