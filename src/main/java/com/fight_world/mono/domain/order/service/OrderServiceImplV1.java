@@ -131,7 +131,7 @@ public class OrderServiceImplV1 implements OrderService {
 
         List<Order> orders = orderRepository.findAllByStoreIdWithOutCART(storeId);
 
-        return List.of();
+        return orders.stream().map(OrderResponseDto::from).collect(Collectors.toList());
     }
 
     @Override
