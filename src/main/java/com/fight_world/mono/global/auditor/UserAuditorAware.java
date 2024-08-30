@@ -15,6 +15,8 @@ public class UserAuditorAware implements AuditorAware<Long> {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        // anonymousUser 는 임시방편입니다.
+
         if (authentication == null || !authentication.isAuthenticated() || authentication.getName().equals("anonymousUser")) {
             return Optional.empty();
         }
