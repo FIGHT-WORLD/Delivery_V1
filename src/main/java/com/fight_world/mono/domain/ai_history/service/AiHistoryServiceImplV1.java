@@ -43,7 +43,7 @@ public class AiHistoryServiceImplV1 implements AiHistoryService {
 
         Store store = storeService.findById(requestDto.store_id());
 
-        if (!store.getUser().getId().equals(userDetails.getUser().getId())) {
+        if (!store.getUser().getId().equals(userDetails.getUserId())) {
             throw new AiHistoryException(GUARD);
         }
 

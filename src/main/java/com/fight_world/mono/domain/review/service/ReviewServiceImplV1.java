@@ -36,7 +36,7 @@ public class ReviewServiceImplV1 implements ReviewService {
             ReviewCreateRequestDto reviewCreateRequestDto
     ) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
         Order order = orderService.findById(reviewCreateRequestDto.order_id());
 
         if (reviewRepository.existsByOrderId(order.getId())) {
@@ -58,7 +58,7 @@ public class ReviewServiceImplV1 implements ReviewService {
             UserDetailsImpl userDetails
     ) {
 
-        List<Review> reviews = reviewRepository.findAllByUserIdAndDeletedAtIsNull(userDetails.getUser().getId());
+        List<Review> reviews = reviewRepository.findAllByUserIdAndDeletedAtIsNull(userDetails.getUserId());
 
         return reviews.stream().map(ReviewResponseDto::from).collect(Collectors.toList());
     }
@@ -71,7 +71,7 @@ public class ReviewServiceImplV1 implements ReviewService {
 
         if (review.getIsReport()) {
 
-            if (!review.getUser().getId().equals(userDetails.getUser().getId())) {
+            if (!review.getUser().getId().equals(userDetails.getUserId())) {
                 throw new ReviewException(GUARD);
             }
         }
@@ -99,7 +99,7 @@ public class ReviewServiceImplV1 implements ReviewService {
             throw new ReviewException(GUARD);
         }
 
-        review.delete(userDetails.getUser().getId());
+        review.delete(userDetails.getUserId());
     }
 
     @Override

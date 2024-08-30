@@ -1,12 +1,7 @@
 package com.fight_world.mono.domain.order.service;
 
 import static com.fight_world.mono.domain.order.message.ExceptionMessage.NOT_FOUND_ORDER;
-import static com.fight_world.mono.domain.order.message.ExceptionMessage.ORDER_CANT_CHANGE_STATUS;
 import static com.fight_world.mono.domain.order.message.ExceptionMessage.ORDER_USER_VALID;
-import static com.fight_world.mono.domain.order.model.constant.OrderStatus.CHECKING;
-import static com.fight_world.mono.domain.order.model.constant.OrderStatus.COOKING;
-import static com.fight_world.mono.domain.user.model.UserRole.MANAGER;
-import static com.fight_world.mono.domain.user.model.UserRole.MASTER;
 
 import com.fight_world.mono.domain.order.dto.request.OrderCreateRequestDto;
 import com.fight_world.mono.domain.order.dto.response.OrderDetailResponseDto;
@@ -45,7 +40,7 @@ public class OrderServiceImplV1 implements OrderService {
             OrderCreateRequestDto orderCreateRequestDto
     ) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
         Store store = storeService.findById(orderCreateRequestDto.store_id());
 
         Order savedOrder = orderRepository.save(Order.of(orderCreateRequestDto, user, store));
@@ -88,11 +83,11 @@ public class OrderServiceImplV1 implements OrderService {
                 () -> new OrderException(NOT_FOUND_ORDER)
         );
 
-        if (!order.getUser().getId().equals(userDetails.getUser().getId())) {
+        if (!order.getUser().getId().equals(userDetails.getUserId())) {
             throw new OrderException(ORDER_USER_VALID);
         }
 
-        order.delete(userDetails.getUser().getId());
+        order.delete(userDetails.getUserId());
     }
 
     @Override
