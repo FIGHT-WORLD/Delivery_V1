@@ -96,12 +96,12 @@ public class MenuServiceImpl implements MenuService {
         Menu menu = findById(menuId);
         checkIsStoreOwner(userDetails, menu.getStore());
 
-        menu.deleteMenu(userDetails.getUser().getId());
+        menu.deleteMenu(userDetails.getUserId());
     }
 
     public void checkIsStoreOwner(UserDetailsImpl userDetails, Store store) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
 
         if (!store.getUser().equals(user)) {
             throw new MenuException(ExceptionMessage.MENU_UNAUTHORIZED);
