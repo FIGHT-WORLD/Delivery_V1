@@ -11,7 +11,6 @@ import static com.fight_world.mono.domain.user.model.UserRole.MASTER;
 import com.fight_world.mono.domain.order.dto.request.OrderCreateRequestDto;
 import com.fight_world.mono.domain.order.dto.response.OrderDetailResponseDto;
 import com.fight_world.mono.domain.order.dto.response.OrderResponseDto;
-import com.fight_world.mono.domain.order.dto.response.OrderWithPaymentDetailResponseDto;
 import com.fight_world.mono.domain.order.exception.OrderException;
 import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.domain.order.repository.OrderRepository;
@@ -21,6 +20,7 @@ import com.fight_world.mono.domain.store.service.StoreService;
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
+import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -70,11 +70,8 @@ public class OrderServiceImplV1 implements OrderService {
             String orderId
     ) {
 
-        OrderWithPaymentDetailResponseDto orderWithPaymentAndAddressDetail =
-                orderRepository.findOrderWithPaymentAndAddressDetail(orderId).orElseThrow(
-                        () -> new OrderException(NOT_FOUND_ORDER));
-
-        return OrderDetailResponseDto.from(orderWithPaymentAndAddressDetail);
+        return orderRepository.findOrderWithPaymentAndAddressDetail(orderId).orElseThrow(
+                () -> new OrderException(NOT_FOUND_ORDER));
     }
 
     @Transactional
@@ -82,9 +79,7 @@ public class OrderServiceImplV1 implements OrderService {
             UserDetailsImpl userDetails, String orderId
     ) {
 
-        Order order = orderRepository.findById(orderId).orElseThrow(
-                () -> new OrderException(NOT_FOUND_ORDER)
-        );
+        Order order = findById(orderId);
 
         if (!order.getUser().getId().equals(userDetails.getUserId())) {
             throw new OrderException(ORDER_USER_VALID);
@@ -93,15 +88,27 @@ public class OrderServiceImplV1 implements OrderService {
         order.delete(userDetails.getUserId());
     }
 
+//    @Override
+//    public BigDecimal getOrderTotalPrice(UserDetailsImpl userDetails, String orderId) {
+//
+//        Order order = findById(orderId);
+//
+//        if (userDetails.getUser().getRole() != MANAGER && userDetails.getUser().getRole() != MASTER) {
+//            if (!order.getUser().getId().equals(userDetails.getUserId())) {
+//                throw new OrderException(ORDER_USER_VALID);
+//            }
+//        }
+//
+//        return order.getTotalPrice();
+//    }
+
     @Override
     @Transactional
     public void updateOrderToCooking(String orderId, UserDetailsImpl userDetails) {
 
         User user = userService.findById(userDetails.getUserId());
 
-        Order order = orderRepository.findById(orderId).orElseThrow(
-                () -> new OrderException(NOT_FOUND_ORDER)
-        );
+        Order order = findById(orderId);
 
         if (order.getStatus() != CHECKING) {
             throw new OrderException(ORDER_CANT_CHANGE_STATUS);

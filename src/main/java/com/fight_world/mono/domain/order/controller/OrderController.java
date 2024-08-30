@@ -79,6 +79,16 @@ public class OrderController {
                              .body(success(DELETE_ORDER.getMessage()));
     }
 
+//    @GetMapping("/orders/{orderId}/total_price")
+//    public ResponseEntity<? extends CommonResponse> getOrderTotalPrice(
+//            @PathVariable String orderId,
+//            @AuthenticationPrincipal UserDetailsImpl userDetails
+//    ) {
+//
+//        return ResponseEntity.status(GET_ORDER.getStatus())
+//                .body(success(GET_ORDER.getMessage(), orderService.getOrderTotalPrice(userDetails, orderId)));
+//    }
+
     @PatchMapping("/orders/{orderId}/cooking")
     public ResponseEntity<? extends CommonResponse> updateOrderToCheck(
             @PathVariable String orderId,

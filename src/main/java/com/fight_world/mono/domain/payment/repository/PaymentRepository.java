@@ -15,4 +15,6 @@ public interface PaymentRepository extends JpaRepository<Payment, String> {
             + "WHERE o.user.id = :userId"
     )
     List<Payment> findAllByUserId(@Param("userId") Long userId);
+
+    boolean existsByOrderId(String orderId);
 }

@@ -3,15 +3,18 @@ package com.fight_world.mono.domain.order.repository;
 import static com.fight_world.mono.domain.menu.model.QMenu.menu;
 import static com.fight_world.mono.domain.order.model.QOrder.order;
 import static com.fight_world.mono.domain.order_menu.model.QOrderMenu.orderMenu;
+import static com.fight_world.mono.domain.order_menu_history.entity.QOrderMenuHistory.*;
 import static com.fight_world.mono.domain.payment.model.QPayment.payment;
 import static com.fight_world.mono.domain.store.model.QStore.store;
 import static com.fight_world.mono.domain.user.model.QUser.user;
 
+import com.fight_world.mono.domain.order.dto.response.OrderDetailResponseDto;
 import com.fight_world.mono.domain.order.dto.response.OrderWithPaymentDetailBeforeMixResponseDto;
-import com.fight_world.mono.domain.order.dto.response.OrderWithPaymentDetailResponseDto;
 import com.fight_world.mono.domain.order.model.Order;
+import com.fight_world.mono.domain.order.model.constant.OrderStatus;
 import com.fight_world.mono.domain.order_menu.model.OrderMenu;
-import com.fight_world.mono.domain.user.model.QUser;
+import com.fight_world.mono.domain.order_menu_history.entity.OrderMenuHistory;
+import com.fight_world.mono.domain.order_menu_history.entity.QOrderMenuHistory;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -39,7 +42,7 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
     }
 
     @Override
-    public Optional<OrderWithPaymentDetailResponseDto> findOrderWithPaymentAndAddressDetail(String orderId) {
+    public Optional<OrderDetailResponseDto> findOrderWithPaymentAndAddressDetail(String orderId) {
 
         Optional<OrderWithPaymentDetailBeforeMixResponseDto> beforeMixResponseDto = Optional.ofNullable(
                 queryFactory
@@ -59,24 +62,41 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
                         ))
                         .from(order)
                         .join(order.store, store)
-                        .leftJoin(orderMenu).on(orderMenu.order.id.eq(order.id))
                         .leftJoin(payment).on(payment.order.id.eq(order.id))
+                        .leftJoin(orderMenu).on(orderMenu.order.id.eq(order.id))
                         .where(order.id.eq(orderId))
                         .fetchOne());
 
         if (!beforeMixResponseDto.isPresent()) {
+
             return Optional.empty();
         }
 
-        Set<OrderMenu> orderMenus = getOrderMenus(orderId);
+        if (beforeMixResponseDto.get().order_status().equals(OrderStatus.CART)) {
 
-        return Optional.of(OrderWithPaymentDetailResponseDto.of(beforeMixResponseDto.get(), orderMenus));
+            Set<OrderMenu> orderMenus = getOrderMenus(orderId);
+
+            return Optional.of(OrderDetailResponseDto.ofWithOrderMenu(beforeMixResponseDto.get(), orderMenus));
+        }
+
+        Set<OrderMenuHistory> orderMenuHistorySet = getOrderMenusHistory(orderId);
+
+        return Optional.of(OrderDetailResponseDto.ofWithOrderMenuHistory(beforeMixResponseDto.get(), orderMenuHistorySet));
     }
 
     private Set<OrderMenu> getOrderMenus(String orderId) {
         return queryFactory
                 .selectFrom(orderMenu)
                 .where(orderMenu.order.id.eq(orderId))
+                .fetch()
+                .stream()
+                .collect(Collectors.toSet());
+    }
+
+    private Set<OrderMenuHistory> getOrderMenusHistory(String orderId) {
+        return queryFactory
+                .selectFrom(orderMenuHistory)
+                .where(orderMenuHistory.order.id.eq(orderId))
                 .fetch()
                 .stream()
                 .collect(Collectors.toSet());
