@@ -1,6 +1,7 @@
 package com.fight_world.mono.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.global.filter.JwtAuthorizationFilter;
 import com.fight_world.mono.global.jwt.JwtUtil;
 import com.fight_world.mono.global.security.UserDetailsServiceImpl;
@@ -65,8 +66,8 @@ public class WebSecurityConfig {
                                 .requestMatchers(
                                         PathRequest.toStaticResources().atCommonLocations())
                                 .permitAll() // resources 접근 허용 설정
-                                .requestMatchers("/**")
-                                .permitAll()
+                                .requestMatchers("/api/v1/reports/admin").hasAnyAuthority(UserRole.MASTER.getAuthority(), UserRole.MANAGER.getAuthority())
+                                .requestMatchers("/**").permitAll()
                                 .anyRequest()
                                 .authenticated() // 그 외 모든 요청 인증처리
         );
