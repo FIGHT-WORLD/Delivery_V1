@@ -34,7 +34,7 @@ public class ReportServiceImplV1 implements ReportService {
     public CreateReportResponseDto createReport(CreateReportRequestDto requestDto,
             UserDetailsImpl userDetails) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
 
         Store store = null;
         if (requestDto.storeId() != null) {
@@ -55,7 +55,7 @@ public class ReportServiceImplV1 implements ReportService {
 
         Report report = findById(reportId);
 
-        if (!report.getUser().getId().equals(userDetails.getUser().getId())) {
+        if (!report.getUser().getId().equals(userDetails.getUserId())) {
             throw new ReportException(ExceptionMessage.YOUR_NOT_REPORTER);
         }
 
@@ -67,7 +67,7 @@ public class ReportServiceImplV1 implements ReportService {
     @Transactional(readOnly = true)
     public List<GetReportResponseDto> getReportListByUser(UserDetailsImpl userDetails) {
 
-        List<Report> reports = reportRepository.findByUserId(userDetails.getUser().getId());
+        List<Report> reports = reportRepository.findByUserId(userDetails.getUserId());
 
         return reports.stream().map(GetReportResponseDto::from).collect(Collectors.toList());
     }
@@ -100,7 +100,7 @@ public class ReportServiceImplV1 implements ReportService {
     public DeleteReportResponseDto deleteReport(String reportId, UserDetailsImpl userDetails) {
 
         Report report = findById(reportId);
-        report.deletedAt(userDetails.getUser().getId());
+        report.deletedAt(userDetails.getUserId());
 
         return DeleteReportResponseDto.from(report);
     }
