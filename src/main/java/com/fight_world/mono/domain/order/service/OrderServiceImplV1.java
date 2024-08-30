@@ -117,6 +117,7 @@ public class OrderServiceImplV1 implements OrderService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<OrderResponseDto> getStoreOrders(String storeId, UserDetailsImpl userDetails) {
 
         User user = userService.findById(userDetails.getUser().getId());
