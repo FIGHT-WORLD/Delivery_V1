@@ -5,6 +5,7 @@ import com.fight_world.mono.domain.order.dto.response.OrderDetailResponseDto;
 import com.fight_world.mono.domain.order.dto.response.OrderResponseDto;
 import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.global.security.UserDetailsImpl;
+import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,4 +26,6 @@ public interface OrderService {
     void updateOrderToCooking(String orderId, UserDetailsImpl userDetails);
 
     Page<OrderResponseDto> getStoreOrders(String storeId, UserDetailsImpl userDetails, Pageable pageable, Long user_id);
+
+//    BigDecimal getOrderTotalPrice(UserDetailsImpl userDetails, String orderId);
 }
