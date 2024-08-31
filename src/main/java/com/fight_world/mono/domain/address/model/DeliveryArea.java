@@ -34,4 +34,7 @@ public class DeliveryArea extends TimeBase {
     @JoinColumn(name = "dongeupmyun_code", nullable = false)
     private AddressDongeupmyun addressDongeupmyun;
 
+    public void deleteDeliveryArea(Long userId) {
+        super.setDeleted(userId);
+    }
 }
