@@ -81,10 +81,11 @@ public class UserController {
     @PatchMapping("/{userId}")
     public ResponseEntity<? extends CommonResponse> patchUser(
             @PathVariable("userId") Long id,
-            @RequestBody UpdateUserRequestDto requestDto
+            @RequestBody UpdateUserRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 
-        UpdateUserResponseDto responseDto = userService.updateUser(requestDto, id);
+        UpdateUserResponseDto responseDto = userService.updateUser(requestDto, id, userDetails);
 
         return ResponseEntity
                 .status(UPDATE_SUCCESS_USER.getHttpStatus())

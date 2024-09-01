@@ -22,7 +22,7 @@ public interface UserService {
     GetUserResponseDto getUser(Long id);
 
     // 유저 수정
-    UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long id);
+    UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long id, UserDetailsImpl userDetails);
 
     // 유저 삭제
     DeleteUserResponseDto deleteUser(Long deletedId, UserDetailsImpl userDetails);

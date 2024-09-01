@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserService {
     public GetUserResponseDto getUser(Long id) {
 
         User user = findById(id);
+        isDeletedUser(user);
 
         return GetUserResponseDto.from(user);
     }
@@ -66,31 +67,32 @@ public class UserServiceImpl implements UserService {
      */
     @Transactional
     @Override
-    public UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long userId) {
+    public UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long userId, UserDetailsImpl userDetails) {
 
+        verifyCreatorOfAdmin(userDetails.getUser(), userId);
         User updatedUser = findById(userId);
-
+        isDeletedUser(updatedUser);
         checkPreviousUserPassword(req.password(), updatedUser.getPassword());
         checkDuplicatedEmail(new UserEmail(req.email()));
         checkDuplicatedNickname(req.nickname());
-
-        updatedUser.updateEmail(req);
-        updatedUser.updatePassword(req);
-        updatedUser.updateNickname(req);
-
+        updatedUser.updateEmail(req.email());
+        updatedUser.updatePassword(passwordEncoder.encode(req.password()));
+        updatedUser.updateNickname(req.nickname());
         userRepository.save(updatedUser);
 
         return UpdateUserResponseDto.from(updatedUser);
     }
 
     @Override
+    @Transactional
     public DeleteUserResponseDto deleteUser(Long deletedId, UserDetailsImpl userDetails) throws UserException {
 
         Long deletedBy = userDetails.getUserId();
-        if (deletedId.longValue() != deletedBy.longValue()) {
+        if (!verifyCreatorOfAdmin(userDetails.getUser(), deletedId)) {
             throw new UserException(ExceptionMessage.DELETE_INVALID_AUTHORIZATION);
         }
         User deletedUser = findById(deletedId);
+        isDeletedUser(deletedUser);
         deletedUser.deleteUser(deletedBy);
         userRepository.save(deletedUser);
 
@@ -99,6 +101,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(Long id) {
+
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserException(ExceptionMessage.SELECT_NOT_FOUND_USER));
     }
@@ -154,5 +157,21 @@ public class UserServiceImpl implements UserService {
         }
 
         return review.getUser().getId().equals(user.getId());
+    }
+
+    private static void isDeletedUser(User user) {
+
+        if(user.getDeletedAt() != null) {
+            throw new UserException(ExceptionMessage.SELECT_NOT_FOUND_USER);
+        }
+    }
+
+    private static boolean verifyCreatorOfAdmin(User user, Long userId) {
+
+        if (user.getRole() == UserRole.MANAGER || user.getRole() == UserRole.MASTER) {
+            return true;
+        }
+
+        return user.getId().equals(userId);
     }
 }
