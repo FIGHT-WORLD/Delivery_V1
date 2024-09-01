@@ -8,7 +8,6 @@ import static com.fight_world.mono.domain.user_address.message.ExceptionMessage.
 
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.model.UserRole;
-import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.domain.user_address.dto.request.CreateUserAddressRequestDto;
 import com.fight_world.mono.domain.user_address.dto.request.UpdateUserAddressRequestDto;
 import com.fight_world.mono.domain.user_address.dto.response.CreateUserAddressResponseDto;
@@ -33,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserAddressServiceImpl implements UserAddressService {
 
     private final UserAddressRepository userAddressRepository;
-    private final UserService userService;
 
     @Override
     public CreateUserAddressResponseDto createUserAddress(

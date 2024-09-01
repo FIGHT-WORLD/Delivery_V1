@@ -1,6 +1,5 @@
 package com.fight_world.mono.domain.user_address.dto.response;
 
-import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user_address.model.UserAddress;
 import lombok.Builder;
 
@@ -13,6 +12,7 @@ public record GetUserAddressListResponseDto(
         String detailAddress,
         String request
 ) {
+
     public static GetUserAddressListResponseDto of(UserAddress userAddress) {
 
         return GetUserAddressListResponseDto.builder()
