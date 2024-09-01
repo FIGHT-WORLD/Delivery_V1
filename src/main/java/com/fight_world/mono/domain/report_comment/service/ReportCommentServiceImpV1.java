@@ -1,5 +1,6 @@
 package com.fight_world.mono.domain.report_comment.service;
 
+import com.fight_world.mono.domain.report.exception.ReportException;
 import com.fight_world.mono.domain.report.model.Report;
 import com.fight_world.mono.domain.report.service.ReportService;
 import com.fight_world.mono.domain.report_comment.dto.CreateReportCommentRequestDto;
@@ -13,6 +14,7 @@ import com.fight_world.mono.domain.report_comment.message.ExceptionMessage;
 import com.fight_world.mono.domain.report_comment.model.ReportComment;
 import com.fight_world.mono.domain.report_comment.repository.ReportCommentRepository;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import java.util.List;
@@ -41,9 +43,8 @@ public class ReportCommentServiceImpV1 implements ReportCommentService {
 
         ReportComment reportComment = ReportComment.of(requestDto, user, report);
 
-        // 권한 체크
-        if (!userDetails.getUser().getRole().name().equals("MASTER")) {
-            throw new ReportCommentException(ExceptionMessage.COMMENT_CREATE);
+        if (userDetails.getUser().getRole() != UserRole.MASTER) {
+            throw new ReportException(com.fight_world.mono.domain.report.message.ExceptionMessage.REPORT_ADMIN);
         }
 
         reportCommentRepository.save(reportComment);
@@ -60,8 +61,8 @@ public class ReportCommentServiceImpV1 implements ReportCommentService {
         ReportComment reportComment = findById(commentId);
         reportComment.updateComment(requestDto);
 
-        if (!userDetails.getUser().getRole().name().equals("MASTER")) {
-            throw new ReportCommentException(ExceptionMessage.COMMENT_UPDATE);
+        if (userDetails.getUser().getRole() != UserRole.MASTER) {
+            throw new ReportException(com.fight_world.mono.domain.report.message.ExceptionMessage.REPORT_ADMIN);
         }
 
         return UpdateReportCommentResponseDto.from(reportComment);
@@ -72,8 +73,8 @@ public class ReportCommentServiceImpV1 implements ReportCommentService {
     public List<GetReportCommentResponseDto> getAllReportComments(UserDetailsImpl userDetails) {
         List<ReportComment> reportComments = reportCommentRepository.findAll();
 
-        if (!userDetails.getUser().getRole().name().equals("MASTER")) {
-            throw new ReportCommentException(ExceptionMessage.COMMENT_READ);
+        if (userDetails.getUser().getRole() != UserRole.MASTER) {
+            throw new ReportException(com.fight_world.mono.domain.report.message.ExceptionMessage.REPORT_ADMIN);
         }
 
         return reportComments.stream().map(GetReportCommentResponseDto::from)
@@ -86,9 +87,8 @@ public class ReportCommentServiceImpV1 implements ReportCommentService {
     public DeleteReportCommentResponseDto deleteReportComment(String commentId,
             UserDetailsImpl userDetails) {
 
-        if (!userDetails.getUser().getRole().name().equals("MASTER")) {
-            throw new ReportCommentException(ExceptionMessage.COMMENT_DELETE);
-
+        if (userDetails.getUser().getRole() != UserRole.MASTER) {
+            throw new ReportException(com.fight_world.mono.domain.report.message.ExceptionMessage.REPORT_ADMIN);
         }
 
         ReportComment reportComment = findById(commentId);

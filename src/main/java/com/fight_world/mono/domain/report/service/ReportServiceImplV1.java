@@ -13,6 +13,7 @@ import com.fight_world.mono.domain.report.repository.ReportRepository;
 import com.fight_world.mono.domain.store.model.Store;
 import com.fight_world.mono.domain.store.service.StoreService;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -76,7 +77,7 @@ public class ReportServiceImplV1 implements ReportService {
     @Transactional(readOnly = true)
     public Page<GetReportResponseDto> getAllReportsForAdmin(UserDetailsImpl userDetails,
             Pageable pageable) {
-        if (!userDetails.getUser().getRole().name().equals("MASTER")) {
+        if (userDetails.getUser().getRole() != UserRole.MASTER) {
             throw new ReportException(ExceptionMessage.REPORT_ADMIN);
         }
 
@@ -91,8 +92,8 @@ public class ReportServiceImplV1 implements ReportService {
     public Page<GetReportResponseDto> searchReports(String keyword, Pageable pageable,
             UserDetailsImpl userDetails) {
 
-        if (!userDetails.getUser().getRole().name().equals("MASTER")) {
-            throw new ReportException(ExceptionMessage.YOUR_NOT_REPORTER);
+        if (userDetails.getUser().getRole() != UserRole.MASTER) {
+            throw new ReportException(ExceptionMessage.REPORT_ADMIN);
         }
 
         // 키워드가 없는 경우
@@ -180,7 +181,7 @@ public class ReportServiceImplV1 implements ReportService {
     public Report findById(String reportId) {
 
         return reportRepository.findById(reportId)
-                .orElseThrow(() -> new IllegalArgumentException("조회한 reportId가 없습니다."));
+                .orElseThrow(() -> new ReportException(ExceptionMessage.REPORT_NOT_FOUND));
     }
 
 
