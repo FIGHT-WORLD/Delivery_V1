@@ -4,8 +4,8 @@ import java.util.List;
 
 public record RegisterDeliveryAreaRequestDto(
 
-        String storeId,
-        List<String> areaId
+        String store_id,
+        List<String> area_codes
 ) {
 
 }

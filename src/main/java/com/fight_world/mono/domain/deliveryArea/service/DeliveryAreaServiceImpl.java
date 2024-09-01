@@ -37,11 +37,11 @@ public class DeliveryAreaServiceImpl implements DeliveryAreaService {
             RegisterDeliveryAreaRequestDto requestDto) {
 
         List<DeliveryArea> saveDeliveryAreas = new ArrayList<>();
-        Store store = storeService.findById(requestDto.storeId());
+        Store store = storeService.findById(requestDto.store_id());
 
         checkAuthority(userDetails, store);
 
-        for (String dongCode : requestDto.areaId()) {
+        for (String dongCode : requestDto.area_codes()) {
             AddressDongeupmyun addressDongeupmyun = addressService.findByDongeupmyunCode(dongCode);
 
             DeliveryArea deliveryArea = DeliveryArea.of(store, addressDongeupmyun);
@@ -50,6 +50,16 @@ public class DeliveryAreaServiceImpl implements DeliveryAreaService {
 
         return deliveryAreaRepository.saveAll(saveDeliveryAreas)
                 .stream()
+                .map(DeliveryAreaResponseDto::from)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DeliveryAreaResponseDto> getDeliveryArea(String storeId) {
+
+        List<DeliveryArea> deliveryAreas = deliveryAreaRepository.findAllByStoreIdAndDeletedAtIsNull(storeId);
+
+        return deliveryAreas.stream()
                 .map(DeliveryAreaResponseDto::from)
                 .collect(Collectors.toList());
     }

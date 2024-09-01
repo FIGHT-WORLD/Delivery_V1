@@ -8,4 +8,6 @@ import java.util.List;
 public interface DeliveryAreaService {
 
     List<DeliveryAreaResponseDto> registerDeliveryArea(UserDetailsImpl userDetails, RegisterDeliveryAreaRequestDto requestDto);
+
+    List<DeliveryAreaResponseDto> getDeliveryArea(String storeId);
 }
