@@ -1,12 +1,19 @@
 package com.fight_world.mono.domain.user_address.controller;
 
 import static com.fight_world.mono.domain.user_address.message.SuccessMessage.CREATE_SUCCESS_USER_ADDRESS;
+import static com.fight_world.mono.domain.user_address.message.SuccessMessage.DELETE_SUCCESS_USER_ADDRESS;
+import static com.fight_world.mono.domain.user_address.message.SuccessMessage.GET_SUCCESS_USER_ADDRESS;
 import static com.fight_world.mono.domain.user_address.message.SuccessMessage.GET_SUCCESS_USER_ADDRESS_LIST;
+import static com.fight_world.mono.domain.user_address.message.SuccessMessage.UPDATE_SUCCESS_USER_ADDRESS;
 import static com.fight_world.mono.global.response.SuccessResponse.success;
 
 import com.fight_world.mono.domain.user_address.dto.request.CreateUserAddressRequestDto;
+import com.fight_world.mono.domain.user_address.dto.request.UpdateUserAddressRequestDto;
 import com.fight_world.mono.domain.user_address.dto.response.CreateUserAddressResponseDto;
+import com.fight_world.mono.domain.user_address.dto.response.DeleteUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.dto.response.GetUserAddressListResponseDto;
+import com.fight_world.mono.domain.user_address.dto.response.GetUserAddressResponseDto;
+import com.fight_world.mono.domain.user_address.dto.response.UpdateUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.service.UserAddressServiceImpl;
 import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
@@ -32,7 +39,6 @@ public class UserAddressController {
 
     /*
     주소 생성
-    접근 권한 :: CUSTOMER, OWNER, MANAGER, ADMIN
      */
     @PostMapping("/user-addresses")
     public ResponseEntity<? extends CommonResponse> createUserAddress(
@@ -50,7 +56,6 @@ public class UserAddressController {
 
     /*
     주소 전체 조회 (썸네일만)
-    접근 권한 :: CUSTOMER, OWNER, MANAGER, ADMIN
      */
     @GetMapping("/user-addresses")
     public ResponseEntity<? extends CommonResponse> getUserAddressesList(
@@ -67,35 +72,49 @@ public class UserAddressController {
 
     /*
     주소 상세 조회
-    접근 권한 :: CUSTOMER, OWNER, MANAGER, ADMIN
      */
     @GetMapping("/user-addresses/{userAddressId}")
-    public ResponseEntity<?> getUserAddress(@PathVariable("userAddressId") String id) {
+    public ResponseEntity<? extends CommonResponse> getUserAddress(
+            @PathVariable("userAddressId") String id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return null;
+        GetUserAddressResponseDto responseDto = userAddressService.getUserAddress(id, userDetails);
+
+        return ResponseEntity
+                .status(GET_SUCCESS_USER_ADDRESS.getHttpStatus())
+                .body(success(GET_SUCCESS_USER_ADDRESS.getMessage(), responseDto));
     }
 
     /*
     주소 수정
-    접근 권한 :: CUSTOMER, OWNER, MANAGER, ADMIN
      */
     @PatchMapping("/user-addresses/{userAddressId}")
-    public ResponseEntity<?> updateUserAddress(@PathVariable("userAddressId") String id) {
+    public ResponseEntity<? extends CommonResponse> updateUserAddress(
+            @PathVariable("userAddressId") String id,
+            @RequestBody UpdateUserAddressRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        return null;
+        UpdateUserAddressResponseDto responseDto = userAddressService.updateUserAddress(id,
+                requestDto, userDetails);
+
+        return ResponseEntity
+                .status(UPDATE_SUCCESS_USER_ADDRESS.getHttpStatus())
+                .body(success(UPDATE_SUCCESS_USER_ADDRESS.getMessage(), responseDto));
     }
 
     /*
     주소 삭제
-    접근 권한 :: CUSTOMER, OWNER, MANAGER, ADMIN
      */
     @DeleteMapping("/user-addresses/{userAddressId}")
-    public ResponseEntity<?> deleteUserAddress(
+    public ResponseEntity<? extends CommonResponse> deleteUserAddress(
             @PathVariable("userAddressId") String id,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        userAddressService.deleteUserAddress(id, userDetails);
+        DeleteUserAddressResponseDto responseDto =
+                userAddressService.deleteUserAddress(id, userDetails);
 
-        return null;
+        return ResponseEntity
+                .status(DELETE_SUCCESS_USER_ADDRESS.getHttpStatus())
+                .body(success(DELETE_SUCCESS_USER_ADDRESS.getMessage(), responseDto));
     }
 }

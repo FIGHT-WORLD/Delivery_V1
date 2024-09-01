@@ -5,6 +5,7 @@ import com.fight_world.mono.domain.user_address.dto.request.UpdateUserAddressReq
 import com.fight_world.mono.domain.user_address.dto.response.CreateUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.dto.response.DeleteUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.dto.response.GetUserAddressListResponseDto;
+import com.fight_world.mono.domain.user_address.dto.response.GetUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.dto.response.UpdateUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.model.UserAddress;
 import com.fight_world.mono.global.security.UserDetailsImpl;
@@ -12,23 +13,16 @@ import java.util.List;
 
 public interface UserAddressService {
 
-    CreateUserAddressResponseDto createUserAddress(CreateUserAddressRequestDto requestDto,
-            UserDetailsImpl userDetails);
-
-    UpdateUserAddressResponseDto updateUserAddress(UpdateUserAddressRequestDto requestDto);
+    // 주소 생성
+    CreateUserAddressResponseDto createUserAddress(CreateUserAddressRequestDto requestDto, UserDetailsImpl userDetails);
+    // 주소 상세 조회
+    GetUserAddressResponseDto getUserAddress(String userAddressId, UserDetailsImpl userDetails);
+    // 주소 수정
+    UpdateUserAddressResponseDto updateUserAddress(String userAddressId, UpdateUserAddressRequestDto requestDto, UserDetailsImpl userDetails);
 
     List<GetUserAddressListResponseDto> getUserAddressList(UserDetailsImpl userDetails);
 
-    DeleteUserAddressResponseDto deleteUserAddress(String userAddressId,
-            UserDetailsImpl userDetails);
-
-    boolean isOwner(UserDetailsImpl userDetails);
-
-    boolean isManager(UserDetailsImpl userDetails);
-
-    boolean isCustomer(UserDetailsImpl userDetails);
-
-    boolean isMaster(UserDetailsImpl userDetails);
+    DeleteUserAddressResponseDto deleteUserAddress(String userAddressId, UserDetailsImpl userDetails);
 
     UserAddress findUserAddressById(String userAddressId);
 
