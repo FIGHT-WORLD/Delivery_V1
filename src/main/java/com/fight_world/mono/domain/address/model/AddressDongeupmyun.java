@@ -28,7 +28,7 @@ public class AddressDongeupmyun extends TimeBase {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sido_code", nullable = false)
+    @JoinColumn(name = "sigungu_code", nullable = false)
     private AddressSigungu addressSigungu;
 
 }

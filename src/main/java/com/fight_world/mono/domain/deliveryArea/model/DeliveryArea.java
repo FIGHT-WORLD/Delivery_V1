@@ -38,4 +38,11 @@ public class DeliveryArea extends TimeBase {
     public void deleteDeliveryArea(Long userId) {
         super.setDeleted(userId);
     }
+
+    public static DeliveryArea of(Store store, AddressDongeupmyun addressDongeupmyun) {
+        return DeliveryArea.builder()
+                .store(store)
+                .addressDongeupmyun(addressDongeupmyun)
+                .build();
+    }
 }
