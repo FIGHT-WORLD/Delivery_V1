@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DeliveryAreaRepository extends JpaRepository<DeliveryArea, String> {
+public interface DeliveryAreaRepository extends JpaRepository<DeliveryArea, String>, DeliveryAreaQueryRepository {
 
     List<DeliveryArea> findAllByStoreIdAndDeletedAtIsNull(String storeId);
 }

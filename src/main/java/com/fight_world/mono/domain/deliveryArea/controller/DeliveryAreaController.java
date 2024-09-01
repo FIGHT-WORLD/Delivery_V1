@@ -2,6 +2,7 @@ package com.fight_world.mono.domain.deliveryArea.controller;
 
 import static com.fight_world.mono.domain.deliveryArea.message.SuccessMessage.SUCCESS_ADD_DELIVERY_AREA;
 import static com.fight_world.mono.domain.deliveryArea.message.SuccessMessage.SUCCESS_GET_DELIVERY_AREA;
+import static com.fight_world.mono.domain.deliveryArea.message.SuccessMessage.SUCCESS_GET_DELIVERY_AVAILABLE_STORES;
 import static com.fight_world.mono.global.response.SuccessResponse.success;
 
 import com.fight_world.mono.domain.deliveryArea.dto.request.RegisterDeliveryAreaRequestDto;
@@ -9,6 +10,9 @@ import com.fight_world.mono.domain.deliveryArea.service.DeliveryAreaService;
 import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -50,6 +54,21 @@ public class DeliveryAreaController {
         return ResponseEntity.status(SUCCESS_GET_DELIVERY_AREA.getHttpStatus())
                 .body(success(SUCCESS_GET_DELIVERY_AREA.getMessage(),
                         deliveryAreaService.getDeliveryArea(storeId)));
+    }
+
+    /**
+     * 배달 가능 지역 조회 (customer 주소기준) api
+     */
+    @GetMapping("/delivery-area")
+    public ResponseEntity<? extends CommonResponse> getDeliveryAvailableStores(
+            @RequestParam(name = "areaId") String areaId,
+            @RequestParam(name = "storeCategory", required = false) String storeCategory,
+            @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
+
+        return ResponseEntity.status(SUCCESS_GET_DELIVERY_AVAILABLE_STORES.getHttpStatus())
+                .body(success(SUCCESS_GET_DELIVERY_AVAILABLE_STORES.getMessage(),
+                        deliveryAreaService.getDeliveryAvailableStores(areaId, storeCategory,
+                                pageable)));
     }
 
 }
