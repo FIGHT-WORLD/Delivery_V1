@@ -1,7 +1,7 @@
 package com.fight_world.mono.domain.order.dto.response;
 
 import com.fight_world.mono.domain.order.model.Order;
-import com.fight_world.mono.domain.order_menu.dto.reponse.OrderMenuResponseDto;
+import com.fight_world.mono.domain.order.dto.request.OrderMenuResponseDto;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;

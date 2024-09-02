@@ -1,11 +1,11 @@
-package com.fight_world.mono.domain.order_menu.model;
+package com.fight_world.mono.domain.order.model;
 
 
 import com.fight_world.mono.domain.menu.model.Menu;
 import com.fight_world.mono.domain.model.TimeBase;
-import com.fight_world.mono.domain.order.model.Order;
-import com.fight_world.mono.domain.order_menu.dto.request.OrderMenuCreateRequestDto;
-import com.fight_world.mono.domain.order_menu.model.value_object.OrderMenuCnt;
+import com.fight_world.mono.domain.order.dto.request.OrderMenuCreateRequestDto;
+import com.fight_world.mono.domain.order.dto.request.OrderMenuUpdateRequestDto;
+import com.fight_world.mono.domain.order.model.value_object.OrderMenuCnt;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,23 +45,34 @@ public class OrderMenu extends TimeBase {
     private Menu menu;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public OrderMenu(OrderMenuCnt cnt, Order order, Menu menu) {
+    public OrderMenu(OrderMenuCnt cnt, Menu menu) {
         this.cnt = cnt;
-        this.order = order;
         this.menu = menu;
     }
 
-    public static OrderMenu of(OrderMenuCreateRequestDto requestDto, Order order, Menu menu) {
+    public static OrderMenu of(OrderMenuCreateRequestDto requestDto, Menu menu) {
 
         return OrderMenu.builder()
                         .cnt(new OrderMenuCnt(requestDto.cnt()))
-                        .order(order)
                         .menu(menu)
                         .build();
+    }
+
+    public static OrderMenu of(OrderMenuUpdateRequestDto requestDto, Menu menu) {
+
+        return OrderMenu.builder()
+                .cnt(new OrderMenuCnt(requestDto.cnt()))
+                .menu(menu)
+                .build();
     }
 
     public BigDecimal getTotalPrice() {
 
         return this.menu.getMenuPrice().getValue().multiply(BigDecimal.valueOf(this.cnt.getValue()));
+    }
+
+    public void setOrder(Order order) {
+
+        this.order = order;
     }
 }

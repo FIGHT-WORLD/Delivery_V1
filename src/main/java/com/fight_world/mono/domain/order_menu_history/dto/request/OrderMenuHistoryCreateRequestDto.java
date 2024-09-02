@@ -1,6 +1,6 @@
 package com.fight_world.mono.domain.order_menu_history.dto.request;
 
-import com.fight_world.mono.domain.order_menu.model.OrderMenu;
+import com.fight_world.mono.domain.order.model.OrderMenu;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.Builder;
