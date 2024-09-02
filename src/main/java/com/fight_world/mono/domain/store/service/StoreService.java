@@ -7,6 +7,7 @@ import com.fight_world.mono.domain.store.dto.response.StoreResponseDto;
 import com.fight_world.mono.domain.store.model.Store;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface StoreService {
 
@@ -38,4 +39,8 @@ public interface StoreService {
 
     // 가게 주인인지 확인하기
     void checkIsStoreOwner(UserDetailsImpl userDetails, Store store);
+
+    // 배달 가능 가게 조회하기 (위치(동)기준)
+    Page<StoreResponseDto> getDeliveryAvailableStores(String areaId, String storeCategory,
+            Pageable pageable);
 }
