@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/delivery-area")
 public class DeliveryAreaController {
 
     private final DeliveryAreaService deliveryAreaService;
@@ -30,7 +30,7 @@ public class DeliveryAreaController {
      * 배달 가능 지역 등록 api
      */
     @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
-    @PostMapping("/stores/delivery-area")
+    @PostMapping("")
     public ResponseEntity<? extends CommonResponse> registerDeliveryArea(
             @RequestBody RegisterDeliveryAreaRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -43,7 +43,7 @@ public class DeliveryAreaController {
     /**
      * 배달 가능 지역 조회 api
      */
-    @GetMapping("/delivery-area")
+    @GetMapping("")
     public ResponseEntity<? extends CommonResponse> getDeliveryArea(
             @RequestParam(name = "storeId") String storeId) {
 

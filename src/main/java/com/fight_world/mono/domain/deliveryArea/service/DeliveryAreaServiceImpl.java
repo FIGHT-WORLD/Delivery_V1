@@ -6,7 +6,6 @@ import com.fight_world.mono.domain.deliveryArea.dto.request.RegisterDeliveryArea
 import com.fight_world.mono.domain.deliveryArea.dto.response.DeliveryAreaResponseDto;
 import com.fight_world.mono.domain.deliveryArea.model.DeliveryArea;
 import com.fight_world.mono.domain.deliveryArea.repository.DeliveryAreaRepository;
-import com.fight_world.mono.domain.store.dto.response.StoreResponseDto;
 import com.fight_world.mono.domain.store.exception.StoreException;
 import com.fight_world.mono.domain.store.message.ExceptionMessage;
 import com.fight_world.mono.domain.store.model.Store;
@@ -15,14 +14,10 @@ import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
-import com.fight_world.mono.global.util.PageSizeSelector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
