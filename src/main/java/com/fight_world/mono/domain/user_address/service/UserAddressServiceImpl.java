@@ -39,8 +39,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 
         isDeletedUser(userDetails);
         User user = userDetails.getUser();
-        UserAddress userAddress = UserAddress.of(requestDto, user);
-        userAddressRepository.save(userAddress);
+        UserAddress userAddress = userAddressRepository.save(UserAddress.of(requestDto, user));
 
         return CreateUserAddressResponseDto.from(userAddress);
     }
@@ -114,7 +113,6 @@ public class UserAddressServiceImpl implements UserAddressService {
             checkSameUser(userDetails, userAddress);
         }
         userAddress.deleteUserAddress(userDetails.getUser().getId());
-        userAddressRepository.save(userAddress);
 
         return DeleteUserAddressResponseDto.from(userAddress);
     }
@@ -136,8 +134,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 
     private static void checkSameUser(UserDetailsImpl userDetails, UserAddress userAddress) {
 
-        if (userAddress.getUser().getId().longValue() != userDetails.getUser().getId()
-                .longValue()) {
+        if (userAddress.getUser().getId().equals(userDetails.getUser().getId())) {
             throw new UserAddressException(INVALID_USER_AUTHORIZATION);
         }
     }
