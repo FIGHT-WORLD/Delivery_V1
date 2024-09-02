@@ -85,7 +85,7 @@ public class ReportCommentController {
     }
 
     // 신고 답변 삭제
-    @DeleteMapping("{reportCommentId}")
+    @DeleteMapping("/{reportCommentId}")
     public ResponseEntity<? extends CommonResponse> deleteReportComment(
             @PathVariable("reportCommentId") String commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
