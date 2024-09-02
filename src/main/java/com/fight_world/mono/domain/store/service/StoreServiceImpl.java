@@ -60,9 +60,9 @@ public class StoreServiceImpl implements StoreService {
     // 가게 목록 조회 (페이징)
     @Override
     @Transactional(readOnly = true)
-    public Page<StoreResponseDto> getStores(String storeCategoryId, int page, int size) {
+    public Page<StoreResponseDto> getStores(String storeCategoryId, Pageable pageable) {
 
-        Pageable pageable = PageRequest.of(page, size);
+//        Pageable pageable = PageRequest.of(page, size);
         Page<Store> stores = null;
 
         if(storeCategoryId.isBlank()) {
@@ -79,9 +79,9 @@ public class StoreServiceImpl implements StoreService {
     // 가게 검색 (페이징)
     @Override
     @Transactional(readOnly = true)
-    public Page<StoreResponseDto> searchStores(int page, int size, String query) {
+    public Page<StoreResponseDto> searchStores(Pageable pageable, String query) {
 
-        Pageable pageable = PageRequest.of(page, size);
+//        Pageable pageable = PageRequest.of(page, size);
         Page<Store> stores = storeRepository.findByNameContainingAndDeletedAtIsNull(query, pageable);
 
         return stores.map(StoreResponseDto::from);
@@ -171,14 +171,11 @@ public class StoreServiceImpl implements StoreService {
     public Page<StoreResponseDto> getDeliveryAvailableStores(String areaId, String storeCategory,
             Pageable pageable) {
 
-        int validatedPageSize = PageSizeSelector.validatePageSize(pageable.getPageSize());
-        Pageable validatedPageable = PageRequest.of(pageable.getPageNumber(), validatedPageSize);
-
         if (storeCategory == null || storeCategory.trim().isEmpty()) {
             storeCategory = null;
         }
 
         return storeRepository.findStoresByDongeupmyunCodeAndCategory(areaId, storeCategory,
-                validatedPageable);
+                pageable);
     }
 }
