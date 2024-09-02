@@ -106,8 +106,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public DeleteUserResponseDto deleteUser(Long userId, UserDetailsImpl userDetails)
-            throws UserException {
+    public DeleteUserResponseDto deleteUser(
+            Long userId,
+            UserDetailsImpl userDetails
+    ){
 
         Long deletedBy = userDetails.getUserId();
         if (!verifyCreatorOfAdmin(userDetails.getUser(), userId)) {
