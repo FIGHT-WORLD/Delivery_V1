@@ -72,6 +72,18 @@ public class ReportCommentController {
                 .body(success(GET_COMMENT.getMessage(), responseDto));
     }
 
+    // 신고 개별 답변 조회
+    @GetMapping("/{reportId}/feedback")
+    public ResponseEntity<? extends CommonResponse> getCommentsByReportId(
+            @PathVariable("reportId") String reportId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<GetReportCommentResponseDto> responseDto = reportCommentService.getCommentsByReportId(
+                reportId, userDetails);
+
+        return ResponseEntity.status(GET_COMMENT.getHttpStatus())
+                .body(success(GET_COMMENT.getMessage(), responseDto));
+    }
+
     // 신고 답변 삭제
     @DeleteMapping("{reportCommentId}")
     public ResponseEntity<? extends CommonResponse> deleteReportComment(
