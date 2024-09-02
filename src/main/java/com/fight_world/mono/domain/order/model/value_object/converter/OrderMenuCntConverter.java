@@ -1,7 +1,6 @@
-package com.fight_world.mono.domain.order_menu.model.value_object.converter;
+package com.fight_world.mono.domain.order.model.value_object.converter;
 
-import com.fight_world.mono.domain.order_menu.model.OrderMenu;
-import com.fight_world.mono.domain.order_menu.model.value_object.OrderMenuCnt;
+import com.fight_world.mono.domain.order.model.value_object.OrderMenuCnt;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

@@ -2,13 +2,14 @@ package com.fight_world.mono.domain.order.model;
 
 import com.fight_world.mono.domain.model.TimeBase;
 import com.fight_world.mono.domain.order.dto.request.OrderCreateRequestDto;
+import com.fight_world.mono.domain.order.dto.request.OrderUpdateRequestDto;
 import com.fight_world.mono.domain.order.exception.OrderException;
 import com.fight_world.mono.domain.order.message.ExceptionMessage;
 import com.fight_world.mono.domain.order.model.constant.OrderDeliveryType;
 import com.fight_world.mono.domain.order.model.constant.OrderStatus;
-import com.fight_world.mono.domain.order_menu.model.OrderMenu;
 import com.fight_world.mono.domain.store.model.Store;
 import com.fight_world.mono.domain.user.model.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -68,12 +69,13 @@ public class Order extends TimeBase {
     @Column(nullable = false)
     private String request;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<OrderMenu> orderMenus = new HashSet<>();
 
     @Builder(access = AccessLevel.PRIVATE)
     public Order(OrderStatus status, OrderDeliveryType deliveryType, User user, Store store,
             String address, String detailAddress, String request, Set<OrderMenu> orderMenus) {
+
         this.status = status;
         this.deliveryType = deliveryType;
         this.user = user;
@@ -100,6 +102,7 @@ public class Order extends TimeBase {
     public void addOrderMenu(OrderMenu orderMenu) {
 
         this.orderMenus.add(orderMenu);
+        orderMenu.setOrder(this);
     }
 
     public void delete(Long userId) {
@@ -121,5 +124,19 @@ public class Order extends TimeBase {
         return this.orderMenus.stream()
                 .map(orderMenu -> orderMenu.getMenu().getMenuPrice().getValue().multiply(new BigDecimal(orderMenu.getCnt().getValue())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public void updateOrder(OrderUpdateRequestDto requestDto, Store store) {
+
+        if (this.status != OrderStatus.CART) {
+            throw new OrderException(ExceptionMessage.ORDER_CANT_UPDATE);
+        }
+
+        this.store = store;
+        this.deliveryType = OrderDeliveryType.valueOf(requestDto.delivery_type());
+        this.address = requestDto.address();
+        this.detailAddress = requestDto.detail_address();
+        this.request = requestDto.request();
+        this.orderMenus.clear();
     }
 }
