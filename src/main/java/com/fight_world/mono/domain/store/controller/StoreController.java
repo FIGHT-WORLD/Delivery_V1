@@ -2,6 +2,7 @@ package com.fight_world.mono.domain.store.controller;
 
 import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_CHANGE_STORE_STATUS;
 import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_DELETE_STORE;
+import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_GET_DELIVERY_AVAILABLE_STORES;
 import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_GET_ONE_STORE;
 import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_GET_STORE_LIST;
 import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_MODIFY_STORE;
@@ -17,6 +18,9 @@ import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,8 +52,8 @@ public class StoreController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return ResponseEntity.status(SUCCESS_REGISTER_STORE.getHttpStatus())
-                .body(success(SUCCESS_REGISTER_STORE.getMessage(),
-                        storeService.registerStore(userDetails, requestDto)));
+                             .body(success(SUCCESS_REGISTER_STORE.getMessage(),
+                                    storeService.registerStore(userDetails, requestDto)));
     }
 
     /**
@@ -63,8 +67,8 @@ public class StoreController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return ResponseEntity.status(SUCCESS_MODIFY_STORE.getHttpStatus())
-                .body(success(SUCCESS_MODIFY_STORE.getMessage(),
-                        storeService.modifyStore(userDetails, storeId, requestDto)));
+                             .body(success(SUCCESS_MODIFY_STORE.getMessage(),
+                                    storeService.modifyStore(userDetails, storeId, requestDto)));
     }
 
     /**
@@ -88,8 +92,8 @@ public class StoreController {
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
         return ResponseEntity.status(SUCCESS_GET_STORE_LIST.getHttpStatus())
-                .body(success(SUCCESS_GET_STORE_LIST.getMessage(),
-                        storeService.getStores(storeCategoryId, page, size)));
+                             .body(success(SUCCESS_GET_STORE_LIST.getMessage(),
+                                    storeService.getStores(storeCategoryId, page, size)));
     }
 
     /**
@@ -105,7 +109,7 @@ public class StoreController {
         storeService.changeStoreStatus(userDetails, storeId, requestDto);
 
         return ResponseEntity.status(SUCCESS_CHANGE_STORE_STATUS.getHttpStatus())
-                .body(success(SUCCESS_CHANGE_STORE_STATUS.getMessage()));
+                             .body(success(SUCCESS_CHANGE_STORE_STATUS.getMessage()));
     }
 
     /**
@@ -120,7 +124,7 @@ public class StoreController {
         storeService.deleteStore(userDetails, storeId);
 
         return ResponseEntity.status(SUCCESS_DELETE_STORE.getHttpStatus())
-                .body(success(SUCCESS_DELETE_STORE.getMessage()));
+                             .body(success(SUCCESS_DELETE_STORE.getMessage()));
     }
 
     /**
@@ -133,7 +137,22 @@ public class StoreController {
             @RequestParam(value = "query") String query) {
 
         return ResponseEntity.status(SUCCESS_SEARCH_STORE.getHttpStatus())
-                .body(success(SUCCESS_SEARCH_STORE.getMessage(),
-                        storeService.searchStores(page, size, query)));
+                             .body(success(SUCCESS_SEARCH_STORE.getMessage(),
+                                    storeService.searchStores(page, size, query)));
+    }
+
+    /**
+     * 배달 가능 가게 조회 (customer 동 기준) api
+     */
+    @GetMapping("/delivery-area")
+    public ResponseEntity<? extends CommonResponse> getDeliveryAvailableStores(
+            @RequestParam(name = "areaId") String areaId,
+            @RequestParam(name = "storeCategory", required = false) String storeCategory,
+            @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
+
+        return ResponseEntity.status(SUCCESS_GET_DELIVERY_AVAILABLE_STORES.getHttpStatus())
+                             .body(success(SUCCESS_GET_DELIVERY_AVAILABLE_STORES.getMessage(),
+                                     storeService.getDeliveryAvailableStores(areaId, storeCategory,
+                                            pageable)));
     }
 }
