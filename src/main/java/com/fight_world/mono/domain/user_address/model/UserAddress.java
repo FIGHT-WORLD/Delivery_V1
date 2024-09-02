@@ -3,6 +3,7 @@ package com.fight_world.mono.domain.user_address.model;
 import com.fight_world.mono.domain.model.TimeBase;
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user_address.dto.request.CreateUserAddressRequestDto;
+import com.fight_world.mono.domain.user_address.dto.request.UpdateUserAddressRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -63,5 +64,15 @@ public class UserAddress extends TimeBase {
                 .request(requestDto.request())
                 .user(user)
                 .build();
+    }
+
+    public void deleteUserAddress(Long userId) {
+        super.setDeleted(userId);
+    }
+
+    public void update(UpdateUserAddressRequestDto requestDto) {
+        if (!requestDto.address().isEmpty()) { this.address = requestDto.address(); }
+        if (!requestDto.detailAddress().isEmpty()) { this.detailAddress = requestDto.detailAddress(); }
+        if (!requestDto.request().isEmpty()) { this.request = requestDto.request(); }
     }
 }
