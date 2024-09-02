@@ -12,7 +12,7 @@ public record DeleteUserAddressResponseDto(
     public static DeleteUserAddressResponseDto from(UserAddress userAddress) {
 
         return DeleteUserAddressResponseDto.builder()
-                .deletedAt(userAddress.getDeletedAt() == null ? LocalDateTime.MIN : userAddress.getDeletedAt())
+                .deletedAt(userAddress.getDeletedAt())
                 .build();
     }
 }

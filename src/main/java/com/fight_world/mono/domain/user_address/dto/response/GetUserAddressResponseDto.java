@@ -26,13 +26,13 @@ public record GetUserAddressResponseDto(
                 .userAddressId(userAddress.getId())
                 .address(userAddress.getAddress())
                 .detailAddress(userAddress.getDetailAddress())
-                .request(userAddress.getRequest() == null ? "" : userAddress.getRequest())
+                .request(userAddress.getRequest())
                 .createdAt(userAddress.getCreatedAt())
                 .createdBy(userAddress.getCreatedBy())
                 .updatedAt(userAddress.getUpdatedAt())
                 .updatedBy(userAddress.getUpdatedBy())
-                .deletedAt(userAddress.getDeletedAt() == null ? LocalDateTime.MIN : userAddress.getDeletedAt())
-                .deletedBy(userAddress.getDeletedBy() == null ? Long.MIN_VALUE : userAddress.getDeletedBy())
+                .deletedAt(userAddress.getDeletedAt())
+                .deletedBy(userAddress.getDeletedBy())
                 .build();
     }
 

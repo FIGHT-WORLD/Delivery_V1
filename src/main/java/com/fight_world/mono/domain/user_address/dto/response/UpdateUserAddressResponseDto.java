@@ -21,7 +21,7 @@ public record UpdateUserAddressResponseDto(
                 .userAddressId(userAddress.getId())
                 .address(userAddress.getAddress())
                 .detailAddress(userAddress.getDetailAddress())
-                .request(userAddress.getRequest() == null ? "" : userAddress.getRequest())
+                .request(userAddress.getRequest())
                 .updatedAt(userAddress.getUpdatedAt())
                 .updatedBy(userAddress.getUpdatedBy())
                 .build();
