@@ -1,18 +1,42 @@
 ![header](https://capsule-render.vercel.app/api?type=venom&text=Fight%20World!%20Delivery🛵)
 
-O2O 🍔주문 배달🛵 플랫폼을 스프링 부트 기반의 모놀리식 아키텍처로 개발한 팀 프로젝트 입니다.
-<br>
+O2O 주문 배달 플랫폼을 스프링 부트 기반의 모놀리식 아키텍처로 개발한 팀 프로젝트 입니다.
+<br><br>
+
+## 🛵 프로젝트 개요
+- **주제:** 배달 및 포장 음식 주문 관리 플랫폼 개발<br>
+- **목표:** 광화문 근처에서 운영될 음식점들의 배달 및 포장 주문 관리, 결제, 그리고 주문 내역 관리 기능을 제공하는 플랫폼 개발
 
 ## 🐕 Personal Role
 <img width="810" alt="스크린샷 2024-09-02 오후 8 51 22" src="https://github.com/user-attachments/assets/90059bf5-1a41-410d-b101-29bb2f70b4d4">
 
 
-| Name                                    | Role                                                        |
-|-----------------------------------------|-------------------------------------------------------------|
-| [조원호(팀장)](https://github.com/wonowonow) | Order, Payment, OrderHistory, Review, AI Prompt, AI History |
-| [임수진](https://github.com/lsj104)     | Report, AI History, BackOffice Front                        |
-| [김소이](https://github.com/soy9)  | Store, Category, Menu, Delivery Area                        |
-| [신유섭](https://github.com/shin3766)       | User, Auth, Address                                         |
+| Name                                    | Role                          | Domain                                                      |
+|-----------------------------------------|-------------------------------|-------------------------------------------------------------|
+| [조원호(팀장)](https://github.com/wonowonow)   | 백엔드 개발, 배포        | **BE:** `Order`, `Payment`, `OrderHistory`, `Review`, `AI Prompt`, `AI History` |
+| [신유섭](https://github.com/shin3766)    | 백엔드 개발                   | **BE:** `User`, `Auth`, `Address`                                         |
+| [김소이](https://github.com/soy9)        | 백엔드 개발                   | **BE:** `Store`, `Category`, `Menu`, `Delivery Area`                        |
+| [임수진](https://github.com/lsj104)      | 백엔드, 프론트(BackOffice)개발 | **BE:** `Report`, `AI History`,  **FE:** BackOffice                      |
+
+<br>
+
+## 📚 기술 스택
+- **Backend:** Spring Boot 3.x, Java 17
+- **Frontend:** Vue.js
+- **DB:** PostgreSQL
+- **Build Tool:**  Gradle
+- **Version Control:** Git
+
+
+## ⚙️ 서비스 구성 및 실행방법
+### - 서비스 구성
+- Monolithic Application
+- **Layered Architecture:** Controller, Service, Repository 계층으로 구성된 클린 아키텍처
+- **Entity 및 DTO:** 각 기능별로 Entity와 DTO(Data Transfer Object)를 분리하여 관리
+- **API 설계:** RESTful API 원칙에 따라 설계
+- **Exception Handling:** 글로벌 예외 처리 (ExceptionHandler 사용)
+
+### - 실행방법
 
 
 ## ERD
