@@ -12,7 +12,8 @@ import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 import com.fight_world.mono.global.security.UserDetailsImpl;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
@@ -23,10 +24,11 @@ public interface UserService {
     GetUserResponseDto getUser(Long id, UserDetailsImpl userDetails);
 
     // 유저 전체 조회
-    List<GetUserResponseListDto> getUserList(UserDetailsImpl userDetails);
+    Page<GetUserResponseListDto> getUserList(UserDetailsImpl userDetails, Pageable pageable);
 
     // 유저 수정
-    UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long id, UserDetailsImpl userDetails);
+    UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long id,
+            UserDetailsImpl userDetails);
 
     // 유저 삭제
     DeleteUserResponseDto deleteUser(Long deletedId, UserDetailsImpl userDetails);

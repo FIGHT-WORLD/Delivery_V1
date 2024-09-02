@@ -28,6 +28,8 @@ import com.fight_world.mono.global.security.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,16 +73,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<GetUserResponseListDto> getUserList(UserDetailsImpl userDetails) {
+    @Transactional(readOnly = true)
+    public Page<GetUserResponseListDto> getUserList(
+            UserDetailsImpl userDetails,
+            Pageable pageable) {
 
         if (!isAdmin(userDetails.getUser())) {
             throw new UserException(SELECT_INVALID_AUTHORIZATION);
         }
 
-        return userRepository.findAllByUserId(userDetails.getUserId())
-                .stream()
-                .map(GetUserResponseListDto::from)
-                .toList();
+        return userRepository.findAll(pageable)
+                .map(GetUserResponseListDto::from);
     }
 
     @Transactional

@@ -20,6 +20,10 @@ import com.fight_world.mono.domain.user.service.UserServiceImpl;
 import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,20 +45,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/ex")
-    public ResponseEntity<? extends CommonResponse> ex() {
-
-        return ResponseEntity.status(USER_EMAIL_VALID.getHttpStatus())
-                .body(success(USER_EMAIL_VALID.getMessage()));
-    }
-
     /*
     유저 회원가입
      */
     @PostMapping("/sign-up")
     public ResponseEntity<? extends CommonResponse> signUpUser(
-            @RequestBody UserSignUpDto requestDto
-    ) {
+            @RequestBody UserSignUpDto requestDto) {
 
         SignUpUserResponseDto responseDto = userService.signUpUser(requestDto);
 
@@ -69,8 +65,7 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<? extends CommonResponse> getUser(
             @PathVariable("userId") Long id,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         GetUserResponseDto responseDto = userService.getUser(id, userDetails);
 
@@ -84,10 +79,10 @@ public class UserController {
      */
     @GetMapping
     public ResponseEntity<? extends CommonResponse> getUserList(
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
 
-        List<GetUserResponseListDto> responseDtos = userService.getUserList(userDetails);
+        Page<GetUserResponseListDto> responseDtos = userService.getUserList(userDetails, pageable);
         
         return ResponseEntity
                 .status(SELECT_SUCCESS_USER_LIST.getHttpStatus())
@@ -101,8 +96,7 @@ public class UserController {
     public ResponseEntity<? extends CommonResponse> updateUser(
             @PathVariable("userId") Long id,
             @RequestBody UpdateUserRequestDto requestDto,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         UpdateUserResponseDto responseDto = userService.updateUser(requestDto, id, userDetails);
 
@@ -117,26 +111,12 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public ResponseEntity<? extends CommonResponse> deleteUser(
             @PathVariable("userId") Long id,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         DeleteUserResponseDto responseDto = userService.deleteUser(id, userDetails);
 
         return ResponseEntity
                 .status(DELETE_SUCCESS_USER.getHttpStatus())
                 .body(success(DELETE_SUCCESS_USER.getMessage(), responseDto));
-    }
-
-    /*
-    JwtUtil 테스트
-     */
-    @GetMapping("/check/{userId}")
-    public ResponseEntity<?> checkJWT(
-            @PathVariable("userId") Long id,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-
-        return ResponseEntity
-                .ok(userDetails.getUserId());
     }
 }
