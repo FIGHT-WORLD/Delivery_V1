@@ -80,7 +80,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: "./build/libs/*.jar"
-          target: "source"
+          target: "/home/ubuntu/src"
           rm: true
           strip_components: 1
 
