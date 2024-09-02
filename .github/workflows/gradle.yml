@@ -65,14 +65,14 @@ jobs:
           name: cicdsample
 
       - name: SCP
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.14
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: "/home/runner/work/Delivery_V1/Delivery_V1/*.jar"
-          target: "/home/ubuntu/cicd"
+          target: "/home/ubuntu/src"
           rm: true
           strip_components: 1
 
