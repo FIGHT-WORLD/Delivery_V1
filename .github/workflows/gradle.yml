@@ -44,6 +44,8 @@ jobs:
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
+        with:
+          arguments: build
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
           SPRING_DATASOURCE_USERNAME: postgres
@@ -51,8 +53,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: testServer
-          path: build/libs/mono-0.0.1-SNAPSHOT.jar
+          name: cicdsample
+          path: build/libs/*.jar
 
 
   dependency-submission:
@@ -79,8 +81,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: testServer
-          path: build/libs/
+          name: cicdsample
 
       - uses: actions/checkout@v4
 
