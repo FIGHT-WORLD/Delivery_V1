@@ -10,6 +10,7 @@ import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    @PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @PostMapping("/reviews")
     public ResponseEntity<? extends CommonResponse> createReview(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -37,6 +39,7 @@ public class ReviewController {
                 .body(success(CREATED_REVIEW.getMessage(), reviewService.createReview(userDetails, requestDto)));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @GetMapping("/reviews")
     public ResponseEntity<? extends CommonResponse> getReviews(
             @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -65,6 +68,7 @@ public class ReviewController {
                 .body(success(GET_REVIEW.getMessage(), reviewService.getStoreReview(storeId)));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @DeleteMapping("/reviews/{reviewId}")
     public ResponseEntity<? extends CommonResponse> deleteReview(
             @PathVariable String reviewId,
@@ -77,6 +81,7 @@ public class ReviewController {
                 .body(success(DELETE_REVIEW.getMessage()));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @PatchMapping("/reviews/{reviewId}")
     public ResponseEntity<? extends CommonResponse> modifyReview(
             @RequestBody ReviewModifyRequestDto requestDto,

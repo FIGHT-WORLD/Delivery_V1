@@ -39,9 +39,6 @@ public interface UserService {
     // login 나중에 분리 필요
     void login(LoginRequestDto requestDto);
 
-    // Verify
-    Boolean verifyCreatorOrAdmin(User user, Review review);
-
     void checkDuplicatedUsername(String username);
 
     void checkPreviousUserPassword(String rawPassword, String encodedPassword);

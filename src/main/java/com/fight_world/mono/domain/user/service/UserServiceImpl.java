@@ -172,16 +172,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public Boolean verifyCreatorOrAdmin(User user, Review review) {
-
-        if (isAdmin(user)) {
-            return true;
-        }
-
-        return review.getUser().getId().equals(user.getId());
-    }
-
     private static void isDeletedUser(User user) {
 
         if (user.getDeletedAt() != null) {
