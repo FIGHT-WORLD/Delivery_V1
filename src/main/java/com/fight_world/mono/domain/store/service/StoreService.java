@@ -18,7 +18,7 @@ public interface StoreService {
     StoreResponseDto getStore(String storeId);
 
     // 가게 목록 조회
-    Page<StoreResponseDto> getStores(String storeCategoryId, int page, int size);
+    Page<StoreResponseDto> getStores(String storeCategoryId, Pageable pageable);
 
     // 가게 정보 수정
     StoreResponseDto modifyStore(UserDetailsImpl userDetails, String storeId,
@@ -32,7 +32,7 @@ public interface StoreService {
     void deleteStore(UserDetailsImpl userDetails, String storeId);
 
     // 가게 검색
-    Page<StoreResponseDto> searchStores(int page, int size, String query);
+    Page<StoreResponseDto> searchStores(Pageable pageable, String query);
 
     // id로 가게 검색하기
     Store findById(String storeId);
