@@ -1,6 +1,5 @@
 package com.fight_world.mono.domain.user_address.service;
 
-import static com.fight_world.mono.domain.user_address.message.ExceptionMessage.FORBIDDEN_USER_AUTHORITY;
 import static com.fight_world.mono.domain.user_address.message.ExceptionMessage.INTERNAL_SERVER_ERROR_USER_ADDRESS;
 import static com.fight_world.mono.domain.user_address.message.ExceptionMessage.INVALID_USER_AUTHORIZATION;
 import static com.fight_world.mono.domain.user_address.message.ExceptionMessage.NOT_FOUND_DELETED_USER;
@@ -26,12 +25,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserAddressServiceImpl implements UserAddressService {
 
     private final UserAddressRepository userAddressRepository;
 
+    @Transactional
     @Override
     public CreateUserAddressResponseDto createUserAddress(
             CreateUserAddressRequestDto requestDto,
@@ -39,10 +39,10 @@ public class UserAddressServiceImpl implements UserAddressService {
 
         isDeletedUser(userDetails);
         User user = userDetails.getUser();
-        UserAddress savedUserAddress = UserAddress.of(requestDto, user);
-        userAddressRepository.save(savedUserAddress);
+        UserAddress userAddress = UserAddress.of(requestDto, user);
+        userAddressRepository.save(userAddress);
 
-        return CreateUserAddressResponseDto.from(savedUserAddress);
+        return CreateUserAddressResponseDto.from(userAddress);
     }
 
     @Override
@@ -50,95 +50,81 @@ public class UserAddressServiceImpl implements UserAddressService {
             String userAddressId,
             UserDetailsImpl userDetails) {
 
-        isDeletedUser(userDetails);
+        UserAddress userAddress;
 
-        if (isOwner(userDetails) || isCustomer(userDetails)) {
-            UserAddress gottenUserAddress = findUserAddressById(userAddressId);
-            isDeletedAddress(gottenUserAddress);
-            checkSameUser(userDetails, gottenUserAddress);
-
-            return GetUserAddressResponseDto.from(gottenUserAddress);
-
-        } else if (isManager(userDetails) || isMaster(userDetails)) {
-            UserAddress gottenUserAddress = findUserAddressById(userAddressId);
-
-            return GetUserAddressResponseDto.from(gottenUserAddress);
+        if (verifyUserIsAdminAndNotDeleted(userDetails)) {
+            userAddress = findUserAddressById(userAddressId);
+        } else {
+            userAddress = checkUserAddressIsDeleted(userAddressId);
+            checkSameUser(userDetails, userAddress);
         }
 
-        throw new UserAddressException(INTERNAL_SERVER_ERROR_USER_ADDRESS);
+        return GetUserAddressResponseDto.from(userAddress);
     }
 
+    @Transactional
     @Override
     public UpdateUserAddressResponseDto updateUserAddress(
             String userAddressId,
             UpdateUserAddressRequestDto requestDto,
             UserDetailsImpl userDetails) {
 
-        isDeletedUser(userDetails);
+        UserAddress userAddress;
 
-        if (isOwner(userDetails) || isCustomer(userDetails)) {
-            UserAddress updatedUserAddress = findUserAddressById(userAddressId);
-            isDeletedAddress(updatedUserAddress);
-            checkSameUser(userDetails, updatedUserAddress);
-            updatedUserAddress.update(requestDto);
-
-            return UpdateUserAddressResponseDto.from(updatedUserAddress);
-        } else if (isManager(userDetails) || isMaster(userDetails)) {
-            UserAddress updatedUserAddress = findUserAddressById(userAddressId);
-            updatedUserAddress.update(requestDto);
-
-            return UpdateUserAddressResponseDto.from(updatedUserAddress);
+        if (verifyUserIsAdminAndNotDeleted(userDetails)) {
+            userAddress = findUserAddressById(userAddressId);
+        } else {
+            userAddress = checkUserAddressIsDeleted(userAddressId);
+            checkSameUser(userDetails, userAddress);
         }
+        userAddress.update(requestDto);
 
-        throw new UserAddressException(INTERNAL_SERVER_ERROR_USER_ADDRESS);
+        return UpdateUserAddressResponseDto.from(userAddress);
     }
 
     @Override
     public Page<GetUserAddressListResponseDto> getUserAddressList(UserDetailsImpl userDetails,
             Pageable pageable) {
 
-        if (isMaster(userDetails) || isManager(userDetails)) {
+        if (verifyUserIsAdminAndNotDeleted(userDetails)) {
 
             return userAddressRepository
                     .findAllByUserId(userDetails.getUser().getId(), pageable)
                     .map(GetUserAddressListResponseDto::from);
-        } else if (isCustomer(userDetails) || isOwner(userDetails)) {
+        } else {
 
             return userAddressRepository
                     .findAllByUserIdAndDeletedAtIsNotNull(userDetails.getUser().getId(), pageable)
                     .map(GetUserAddressListResponseDto::from);
         }
-
-        throw new UserAddressException(FORBIDDEN_USER_AUTHORITY);
-
     }
 
+    @Transactional
     @Override
     public DeleteUserAddressResponseDto deleteUserAddress(
             String userAddressId,
             UserDetailsImpl userDetails) {
 
-        isDeletedUser(userDetails);
+        UserAddress userAddress;
 
-        if (isOwner(userDetails) || isCustomer(userDetails)) {
-            UserAddress deletedAddress = findUserAddressById(userAddressId);
-            isDeletedAddress(deletedAddress);
-            checkSameUser(userDetails, deletedAddress);
-            deletedAddress.deleteUserAddress(userDetails.getUser().getId());
-            userAddressRepository.save(deletedAddress);
-
-            return DeleteUserAddressResponseDto.from(deletedAddress);
-
-        } else if (isManager(userDetails) || isMaster(userDetails)) {
-            UserAddress deletedAddress = findUserAddressById(userAddressId);
-            isDeletedAddress(deletedAddress);
-            deletedAddress.deleteUserAddress(userDetails.getUser().getId());
-            userAddressRepository.save(deletedAddress);
-
-            return DeleteUserAddressResponseDto.from(deletedAddress);
+        if (verifyUserIsAdminAndNotDeleted(userDetails)) {
+            userAddress = checkUserAddressIsDeleted(userAddressId);
+        } else {
+            userAddress = checkUserAddressIsDeleted(userAddressId);
+            checkSameUser(userDetails, userAddress);
         }
+        userAddress.deleteUserAddress(userDetails.getUser().getId());
+        userAddressRepository.save(userAddress);
 
-        throw new UserAddressException(INTERNAL_SERVER_ERROR_USER_ADDRESS);
+        return DeleteUserAddressResponseDto.from(userAddress);
+    }
+
+    private UserAddress checkUserAddressIsDeleted(String userAddressId) {
+
+        UserAddress userAddress = findUserAddressById(userAddressId);
+        isDeletedAddress(userAddress);
+
+        return userAddress;
     }
 
     private static void isDeletedUser(UserDetailsImpl userDetails) {
@@ -200,5 +186,19 @@ public class UserAddressServiceImpl implements UserAddressService {
 
         return userAddressRepository.findById(userAddressId)
                 .orElseThrow(() -> new UserAddressException(NOT_FOUND_USER_ADDRESS));
+    }
+
+    private static boolean verifyUserIsAdminAndNotDeleted(UserDetailsImpl userDetails) {
+
+        isDeletedUser(userDetails);
+        if (isMaster(userDetails) || isManager(userDetails)) {
+
+            return true;
+        } else if (isCustomer(userDetails) || isOwner(userDetails)) {
+
+            return false;
+        } else {
+            throw new UserAddressException(INTERNAL_SERVER_ERROR_USER_ADDRESS);
+        }
     }
 }
