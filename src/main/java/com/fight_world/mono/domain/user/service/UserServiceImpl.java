@@ -1,11 +1,21 @@
 package com.fight_world.mono.domain.user.service;
 
+import static com.fight_world.mono.domain.user.message.ExceptionMessage.DELETE_INVALID_AUTHORIZATION;
+import static com.fight_world.mono.domain.user.message.ExceptionMessage.LOGIN_NOT_FOUND_USER;
+import static com.fight_world.mono.domain.user.message.ExceptionMessage.SELECT_INVALID_AUTHORIZATION;
+import static com.fight_world.mono.domain.user.message.ExceptionMessage.SELECT_NOT_FOUND_USER;
+import static com.fight_world.mono.domain.user.message.ExceptionMessage.SIGNUP_DUPLICATED_EMAIL;
+import static com.fight_world.mono.domain.user.message.ExceptionMessage.SIGNUP_DUPLICATED_NICKNAME;
+import static com.fight_world.mono.domain.user.message.ExceptionMessage.SIGNUP_DUPLICATED_USERNAME;
+import static com.fight_world.mono.domain.user.message.ExceptionMessage.UPDATE_DUPLICATED_PASSWROD;
+
 import com.fight_world.mono.domain.auth.dto.LoginRequestDto;
 import com.fight_world.mono.domain.review.model.Review;
 import com.fight_world.mono.domain.user.dto.request.UpdateUserRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.GetUserResponseDto;
+import com.fight_world.mono.domain.user.dto.response.GetUserResponseListDto;
 import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.exception.UserException;
@@ -15,6 +25,7 @@ import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 import com.fight_world.mono.domain.user.repository.UserRepository;
 import com.fight_world.mono.global.security.UserDetailsImpl;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,22 +60,29 @@ public class UserServiceImpl implements UserService {
         return SignUpUserResponseDto.from(user);
     }
 
-    /*
-    todo :: 조회시 deletedAt에 값이 있으면 조회 안되게 하기
-     */
     @Override
-    public GetUserResponseDto getUser(Long id) {
+    public GetUserResponseDto getUser(Long userId, UserDetailsImpl userDetails) {
 
-        User user = findById(id);
+        verifyCreatorOfAdmin(userDetails.getUser(), userId);
+        User user = findById(userId);
         isDeletedUser(user);
 
         return GetUserResponseDto.from(user);
     }
 
-    /*
-    todo :: 업데이트 시도시 이전 값과 변경하려는 값이 같을 경우 에러 만들어주기
-    todo :: password encoding 하기
-     */
+    @Override
+    public List<GetUserResponseListDto> getUserList(UserDetailsImpl userDetails) {
+
+        if (!isAdmin(userDetails.getUser())) {
+            throw new UserException(SELECT_INVALID_AUTHORIZATION);
+        }
+
+        return userRepository.findAllByUserId(userDetails.getUserId())
+                .stream()
+                .map(GetUserResponseListDto::from)
+                .toList();
+    }
+
     @Transactional
     @Override
     public UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long userId, UserDetailsImpl userDetails) {
@@ -89,7 +107,7 @@ public class UserServiceImpl implements UserService {
 
         Long deletedBy = userDetails.getUserId();
         if (!verifyCreatorOfAdmin(userDetails.getUser(), deletedId)) {
-            throw new UserException(ExceptionMessage.DELETE_INVALID_AUTHORIZATION);
+            throw new UserException(DELETE_INVALID_AUTHORIZATION);
         }
         User deletedUser = findById(deletedId);
         isDeletedUser(deletedUser);
@@ -103,14 +121,14 @@ public class UserServiceImpl implements UserService {
     public User findById(Long id) {
 
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserException(ExceptionMessage.SELECT_NOT_FOUND_USER));
+                .orElseThrow(() -> new UserException(SELECT_NOT_FOUND_USER));
     }
 
     @Override
     public void login(LoginRequestDto requestDto) {
 
         User user = userRepository.findByUsername(requestDto.username())
-                .orElseThrow(() -> new UserException(ExceptionMessage.LOGIN_NOT_FOUND_USER));
+                .orElseThrow(() -> new UserException(LOGIN_NOT_FOUND_USER));
 
         if (!passwordEncoder.matches(requestDto.password(), user.getPassword())) {
             throw new UserException(ExceptionMessage.LOGIN_NOT_MATCH_PASSWORD);
@@ -121,7 +139,7 @@ public class UserServiceImpl implements UserService {
     public void checkDuplicatedUsername(String username) {
 
         if (userRepository.existsByUsername(username)) {
-            throw new UserException(ExceptionMessage.SIGNUP_DUPLICATED_USERNAME);
+            throw new UserException(SIGNUP_DUPLICATED_USERNAME);
         }
     }
 
@@ -129,7 +147,7 @@ public class UserServiceImpl implements UserService {
     public void checkPreviousUserPassword(String rawPassword, String encodedPassword) {
 
         if (passwordEncoder.matches(rawPassword, encodedPassword)) {
-            throw new UserException(ExceptionMessage.UPDATE_DUPLICATED_PASSWROD);
+            throw new UserException(UPDATE_DUPLICATED_PASSWROD);
         }
     }
 
@@ -137,7 +155,7 @@ public class UserServiceImpl implements UserService {
     public void checkDuplicatedEmail(UserEmail userEmail) {
 
         if (userRepository.existsByEmail(userEmail)) {
-            throw new UserException(ExceptionMessage.SIGNUP_DUPLICATED_EMAIL);
+            throw new UserException(SIGNUP_DUPLICATED_EMAIL);
         }
     }
 
@@ -145,14 +163,14 @@ public class UserServiceImpl implements UserService {
     public void checkDuplicatedNickname(String nickname) {
 
         if (userRepository.existsByNickname(nickname)) {
-            throw new UserException(ExceptionMessage.SIGNUP_DUPLICATED_NICKNAME);
+            throw new UserException(SIGNUP_DUPLICATED_NICKNAME);
         }
     }
 
     @Override
     public Boolean verifyCreatorOrAdmin(User user, Review review) {
 
-        if (user.getRole() == UserRole.MANAGER || user.getRole() == UserRole.MASTER) {
+        if (isAdmin(user)) {
             return true;
         }
 
@@ -162,16 +180,23 @@ public class UserServiceImpl implements UserService {
     private static void isDeletedUser(User user) {
 
         if(user.getDeletedAt() != null) {
-            throw new UserException(ExceptionMessage.SELECT_NOT_FOUND_USER);
+            throw new UserException(SELECT_NOT_FOUND_USER);
         }
     }
 
     private static boolean verifyCreatorOfAdmin(User user, Long userId) {
 
-        if (user.getRole() == UserRole.MANAGER || user.getRole() == UserRole.MASTER) {
+        if (isAdmin(user)) {
             return true;
         }
 
         return user.getId().equals(userId);
     }
+
+    private static boolean isAdmin(User user) {
+
+        return user.getRole() == UserRole.MANAGER || user.getRole() == UserRole.MASTER;
+    }
+
+
 }

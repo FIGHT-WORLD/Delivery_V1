@@ -6,12 +6,13 @@ import com.fight_world.mono.domain.user.dto.request.UpdateUserRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.GetUserResponseDto;
+import com.fight_world.mono.domain.user.dto.response.GetUserResponseListDto;
 import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 import com.fight_world.mono.global.security.UserDetailsImpl;
-import org.springframework.security.core.userdetails.UserDetails;
+import java.util.List;
 
 public interface UserService {
 
@@ -19,7 +20,10 @@ public interface UserService {
     SignUpUserResponseDto signUpUser(UserSignUpDto req);
 
     // 유저조회
-    GetUserResponseDto getUser(Long id);
+    GetUserResponseDto getUser(Long id, UserDetailsImpl userDetails);
+
+    // 유저 전체 조회
+    List<GetUserResponseListDto> getUserList(UserDetailsImpl userDetails);
 
     // 유저 수정
     UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long id, UserDetailsImpl userDetails);

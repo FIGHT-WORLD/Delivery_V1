@@ -3,6 +3,7 @@ package com.fight_world.mono.domain.user.controller;
 import static com.fight_world.mono.domain.user.message.ExceptionMessage.USER_EMAIL_VALID;
 import static com.fight_world.mono.domain.user.message.SuccessMessage.DELETE_SUCCESS_USER;
 import static com.fight_world.mono.domain.user.message.SuccessMessage.SELECT_SUCCESS_USER;
+import static com.fight_world.mono.domain.user.message.SuccessMessage.SELECT_SUCCESS_USER_LIST;
 import static com.fight_world.mono.domain.user.message.SuccessMessage.SIGNUP_SUCCESS_USER;
 import static com.fight_world.mono.domain.user.message.SuccessMessage.UPDATE_SUCCESS_USER;
 import static com.fight_world.mono.global.response.SuccessResponse.success;
@@ -11,12 +12,14 @@ import com.fight_world.mono.domain.user.dto.request.UpdateUserRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.GetUserResponseDto;
+import com.fight_world.mono.domain.user.dto.response.GetUserResponseListDto;
 import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.domain.user.service.UserServiceImpl;
 import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -65,21 +68,37 @@ public class UserController {
      */
     @GetMapping("/{userId}")
     public ResponseEntity<? extends CommonResponse> getUser(
-            @PathVariable("userId") Long id
+            @PathVariable("userId") Long id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 
-        GetUserResponseDto responseDto = userService.getUser(id);
+        GetUserResponseDto responseDto = userService.getUser(id, userDetails);
 
         return ResponseEntity
                 .status(SELECT_SUCCESS_USER.getHttpStatus())
                 .body(success(SELECT_SUCCESS_USER.getMessage(), responseDto));
+    }
+    
+    /*
+    유저 전체 조회 (admin만)
+     */
+    @GetMapping
+    public ResponseEntity<? extends CommonResponse> getUserList(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+
+        List<GetUserResponseListDto> responseDtos = userService.getUserList(userDetails);
+        
+        return ResponseEntity
+                .status(SELECT_SUCCESS_USER_LIST.getHttpStatus())
+                .body(success(SELECT_SUCCESS_USER_LIST.getMessage(), responseDtos));
     }
 
     /*
     유저 수정
      */
     @PatchMapping("/{userId}")
-    public ResponseEntity<? extends CommonResponse> patchUser(
+    public ResponseEntity<? extends CommonResponse> updateUser(
             @PathVariable("userId") Long id,
             @RequestBody UpdateUserRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
