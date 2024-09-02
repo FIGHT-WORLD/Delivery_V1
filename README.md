@@ -1,6 +1,6 @@
 ![header](https://capsule-render.vercel.app/api?type=venom&text=Fight%20World!%20Delivery)
 
-O2O 배달 플랫폼을 스프링 부트 기반의 모놀리식 아키텍처로개발한 팀 프로젝트 입니다.
+O2O 배달 플랫폼을 스프링 부트 기반의 모놀리식 아키텍처로 개발한 팀 프로젝트 입니다.
 <br>
 
 ## 🐕 Personal Role
@@ -22,18 +22,28 @@ O2O 배달 플랫폼을 스프링 부트 기반의 모놀리식 아키텍처로�
 ## Infra
 <img width="1193" alt="스크린샷 2024-09-02 오후 8 30 47" src="https://github.com/user-attachments/assets/bd612a26-7fd4-41ca-a99e-23d3c35286eb">
 
+
+# 사용 기술 및 개념
 ## DDD
 <img width="855" alt="스크린샷 2024-09-02 오후 9 22 16" src="https://github.com/user-attachments/assets/e7b9b970-c1fe-49c6-ab5a-f8a2fba8ed03">
 
 ## AOP
 <img width="509" alt="스크린샷 2024-09-02 오후 9 19 05" src="https://github.com/user-attachments/assets/9dd248b9-79ab-4679-93bc-a6ab2864af47">
 
-## PREAUTHORIZE
-<img width="599" alt="스크린샷 2024-09-02 오후 9 20 02" src="https://github.com/user-attachments/assets/54d2e48e-00d0-45a7-bce4-b0cc9eeeaf25">
+기능 요구사항에 따라서 page의 size는 10, 30, 50 중 하나로 설정해야 하고, 이는 paging 처리하는 로직에서 page의 size 검증이 동일하게 진행됩니다. 따라서 모든 도메인에 중복되는 관심사가 발생하고, 이는 코드의 중복으로 이어집니다. 
+이를 해결하기 위해 page size 검증 로직을 인터페이스 기반의 AOP를 통해 통합하여 관리하였습니다.
+
+## 메소드 레벨의 권한 검사 @PreAuthorize
+SecurityFilterChain에서 전역적인 보안 정책을 적용하여 공통적인 접근 제어 및 보안 정책을 설정하였습니다. 하지만 공통된 루트라도 권한이 다르게 부여되는 경우 SecurityFilterChain에서 설정이 복잡해집니다. 
+
+따라서 `@PreAuthorize` 어노테이션을 사용하여 메소드 레벨의 권한 검사를 추가적으로 진행하여, 특정 비즈니스 로직에 맞추어 세밀한 권한 제어가 가능하도록 구현했습니다.
 
 ## 주요 기능
 #### 🏢 배달 가능 가게
 <img width="740" alt="스크린샷 2024-09-02 오후 9 26 52" src="https://github.com/user-attachments/assets/080a9415-48b8-421b-99f3-e191cf2ae6ed">
+
+- 가게 주인은 배달 가능한 지역을 등록할 수 있습니다. 
+- 고객은 법정동 위치 기반으로 배달 가능한 가게 목록을 조회할 수 있습니다.
 
 #### ✅ 문의 게시판
 <img width="1884" alt="스크린샷 2024-09-02 오후 9 40 14" src="https://github.com/user-attachments/assets/20d43f14-a1df-4e47-8d5f-89f3c57c6836">
@@ -44,6 +54,7 @@ O2O 배달 플랫폼을 스프링 부트 기반의 모놀리식 아키텍처로�
 
 #### 🤖 상품 설명 자동 생성 AI
 <img width="740" alt="스크린샷 2024-09-02 오후 9 26 52" src="https://github.com/user-attachments/assets/2224eae4-1348-4eda-94ba-6cc56fc08620">
+
 AI API를 연동하여 가게 사장님이 상품 설명을 쉽게 작성할 수 있도록 지원합니다.
 
 #### 🏠 스토어
