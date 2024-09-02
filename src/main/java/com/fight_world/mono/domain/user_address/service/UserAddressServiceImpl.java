@@ -125,21 +125,21 @@ public class UserAddressServiceImpl implements UserAddressService {
         return userAddress;
     }
 
-    private static void isDeletedUser(UserDetailsImpl userDetails) {
+    private void isDeletedUser(UserDetailsImpl userDetails) {
 
         if (!userDetails.isAccountNonExpired()) {
             throw new UserAddressException(NOT_FOUND_DELETED_USER);
         }
     }
 
-    private static void checkSameUser(UserDetailsImpl userDetails, UserAddress userAddress) {
+    private void checkSameUser(UserDetailsImpl userDetails, UserAddress userAddress) {
 
         if (userAddress.getUser().getId().equals(userDetails.getUser().getId())) {
             throw new UserAddressException(INVALID_USER_AUTHORIZATION);
         }
     }
 
-    private static boolean isOwner(UserDetailsImpl userDetails) {
+    private boolean isOwner(UserDetailsImpl userDetails) {
 
         return userDetails.getAuthorities()
                 .stream()
@@ -147,7 +147,7 @@ public class UserAddressServiceImpl implements UserAddressService {
                         grantedAuthority.getAuthority().equals(UserRole.OWNER.getAuthority()));
     }
 
-    private static boolean isManager(UserDetailsImpl userDetails) {
+    private boolean isManager(UserDetailsImpl userDetails) {
 
         return userDetails.getAuthorities()
                 .stream()
@@ -155,7 +155,7 @@ public class UserAddressServiceImpl implements UserAddressService {
                         grantedAuthority.getAuthority().equals(UserRole.MANAGER.getAuthority()));
     }
 
-    private static boolean isCustomer(UserDetailsImpl userDetails) {
+    private boolean isCustomer(UserDetailsImpl userDetails) {
 
         return userDetails.getAuthorities()
                 .stream()
@@ -163,7 +163,7 @@ public class UserAddressServiceImpl implements UserAddressService {
                         grantedAuthority.getAuthority().equals(UserRole.CUSTOMER.getAuthority()));
     }
 
-    private static boolean isMaster(UserDetailsImpl userDetails) {
+    private boolean isMaster(UserDetailsImpl userDetails) {
 
         return userDetails.getAuthorities()
                 .stream()
@@ -171,7 +171,7 @@ public class UserAddressServiceImpl implements UserAddressService {
                         grantedAuthority.getAuthority().equals(UserRole.MASTER.getAuthority()));
     }
 
-    private static void isDeletedAddress(UserAddress userAddress) {
+    private void isDeletedAddress(UserAddress userAddress) {
 
         if (userAddress.getDeletedAt() != null) {
             throw new UserAddressException(NOT_FOUND_USER_ADDRESS);
@@ -185,7 +185,7 @@ public class UserAddressServiceImpl implements UserAddressService {
                 .orElseThrow(() -> new UserAddressException(NOT_FOUND_USER_ADDRESS));
     }
 
-    private static boolean verifyUserIsAdminAndNotDeleted(UserDetailsImpl userDetails) {
+    private boolean verifyUserIsAdminAndNotDeleted(UserDetailsImpl userDetails) {
 
         isDeletedUser(userDetails);
         if (isMaster(userDetails) || isManager(userDetails)) {
