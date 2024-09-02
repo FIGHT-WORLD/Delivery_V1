@@ -88,5 +88,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /home/ubuntu/src/workspace
+            cd /home/ubuntu/src
             sh deploy.sh
