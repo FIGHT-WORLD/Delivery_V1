@@ -15,6 +15,7 @@ import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
+import com.fight_world.mono.global.util.PageSizeSelector;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -162,5 +163,22 @@ public class StoreServiceImpl implements StoreService {
         if (!store.getUser().equals(user)) {
             throw new StoreException(ExceptionMessage.STORE_UNAUTHORIZED);
         }
+    }
+
+    // 배달 가능 가게 조회하기 (위치(동)기준)
+    @Override
+    @Transactional(readOnly = true)
+    public Page<StoreResponseDto> getDeliveryAvailableStores(String areaId, String storeCategory,
+            Pageable pageable) {
+
+        int validatedPageSize = PageSizeSelector.validatePageSize(pageable.getPageSize());
+        Pageable validatedPageable = PageRequest.of(pageable.getPageNumber(), validatedPageSize);
+
+        if (storeCategory == null || storeCategory.trim().isEmpty()) {
+            storeCategory = null;
+        }
+
+        return storeRepository.findStoresByDongeupmyunCodeAndCategory(areaId, storeCategory,
+                validatedPageable);
     }
 }

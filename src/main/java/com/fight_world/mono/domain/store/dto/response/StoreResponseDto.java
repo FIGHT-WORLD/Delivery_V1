@@ -38,4 +38,18 @@ public record StoreResponseDto (
                 .status(store.getStatus().getStatus())
                 .build();
     }
+
+    public static StoreResponseDto from(DeliveryAvailableStoresResponseDto store) {
+
+        return StoreResponseDto.builder()
+                .store_id(store.storeId())
+                .name(store.name())
+                .address(store.address())
+                .open_at(store.openAt())
+                .close_at(store.closeAt())
+                .phone_number(store.phoneNumber().getValue())
+                .store_category(store.storeCategory())
+                .status(store.status().getStatus())
+                .build();
+    }
 }

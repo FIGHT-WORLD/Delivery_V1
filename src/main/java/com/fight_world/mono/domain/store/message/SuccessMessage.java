@@ -14,7 +14,8 @@ public enum SuccessMessage {
     SUCCESS_GET_ONE_STORE(HttpStatus.OK, "가게 조회가 완료되었습니다."),
     SUCCESS_GET_STORE_LIST(HttpStatus.OK, "가게 목록 조회가 완료되었습니다."),
     SUCCESS_SEARCH_STORE(HttpStatus.OK, "가게 검색이 완료되었습니다."),
-    SUCCESS_CHANGE_STORE_STATUS(HttpStatus.OK, "가게 주문 가능 여부 상태 변경이 완료되었습니다.");
+    SUCCESS_CHANGE_STORE_STATUS(HttpStatus.OK, "가게 주문 가능 여부 상태 변경이 완료되었습니다."),
+    SUCCESS_GET_DELIVERY_AVAILABLE_STORES(HttpStatus.OK, "배달 가능 가게 조회가 완료되었습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
