@@ -19,12 +19,9 @@ import com.fight_world.mono.domain.user_address.exception.UserAddressException;
 import com.fight_world.mono.domain.user_address.model.UserAddress;
 import com.fight_world.mono.domain.user_address.repository.UserAddressRepository;
 import com.fight_world.mono.global.security.UserDetailsImpl;
-import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,7 +94,8 @@ public class UserAddressServiceImpl implements UserAddressService {
     }
 
     @Override
-    public Page<GetUserAddressListResponseDto> getUserAddressList(UserDetailsImpl userDetails, Pageable pageable) {
+    public Page<GetUserAddressListResponseDto> getUserAddressList(UserDetailsImpl userDetails,
+            Pageable pageable) {
 
         if (isMaster(userDetails) || isManager(userDetails)) {
 
@@ -152,7 +150,8 @@ public class UserAddressServiceImpl implements UserAddressService {
 
     private static void checkSameUser(UserDetailsImpl userDetails, UserAddress userAddress) {
 
-        if (userAddress.getUser().getId().longValue() != userDetails.getUser().getId().longValue()) {
+        if (userAddress.getUser().getId().longValue() != userDetails.getUser().getId()
+                .longValue()) {
             throw new UserAddressException(INVALID_USER_AUTHORIZATION);
         }
     }
@@ -198,6 +197,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 
     @Override
     public UserAddress findUserAddressById(String userAddressId) {
+
         return userAddressRepository.findById(userAddressId)
                 .orElseThrow(() -> new UserAddressException(NOT_FOUND_USER_ADDRESS));
     }

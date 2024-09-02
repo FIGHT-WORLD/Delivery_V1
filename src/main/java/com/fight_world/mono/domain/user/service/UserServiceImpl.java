@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
     public DeleteUserResponseDto deleteUser(
             Long userId,
             UserDetailsImpl userDetails
-    ){
+    ) {
 
         Long deletedBy = userDetails.getUserId();
         if (!verifyCreatorOfAdmin(userDetails.getUser(), userId)) {
