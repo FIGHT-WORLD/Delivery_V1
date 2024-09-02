@@ -23,11 +23,11 @@ O2O 배달 플랫폼을 스프링 부트 기반의 모놀리식 아키텍처로 
 <img width="1193" alt="스크린샷 2024-09-02 오후 8 30 47" src="https://github.com/user-attachments/assets/bd612a26-7fd4-41ca-a99e-23d3c35286eb">
 
 
-# 사용 기술 및 개념
-## DDD
+## 사용 기술 및 개념
+### DDD
 <img width="855" alt="스크린샷 2024-09-02 오후 9 22 16" src="https://github.com/user-attachments/assets/e7b9b970-c1fe-49c6-ab5a-f8a2fba8ed03">
 
-## AOP
+### AOP
 <img width="509" alt="스크린샷 2024-09-02 오후 9 19 05" src="https://github.com/user-attachments/assets/9dd248b9-79ab-4679-93bc-a6ab2864af47">
 
 기능 요구사항에 따라서 page의 size는 10, 30, 50 중 하나로 설정해야 하고, 이는 paging 처리하는 로직에서 page의 size 검증이 동일하게 진행됩니다. 따라서 모든 도메인에 중복되는 관심사가 발생하고, 이는 코드의 중복으로 이어집니다. 
@@ -50,20 +50,21 @@ SecurityFilterChain에서 전역적인 보안 정책을 적용하여 공통적�
 <img width="1679" alt="스크린샷 2024-09-02 오후 9 45 08" src="https://github.com/user-attachments/assets/5612549c-3736-4b3f-ae2d-cc297b4606f7">
 
 고객이 작성한 신고 내용을 확인하고 답변을 작성할 수 있는 문의 게시판입니다.
-고객은 자신이 신고한 내역만 볼 수 있고 관리자는 모든 신고 내역을 확인할 수 있습니다.
+고객은 자신이 작성한 신고만 볼 수 있고 관리자는 모든 신고 내역을 확인할 수 있습니다.
 
 #### 🤖 상품 설명 자동 생성 AI
 <img width="740" alt="스크린샷 2024-09-02 오후 9 26 52" src="https://github.com/user-attachments/assets/2224eae4-1348-4eda-94ba-6cc56fc08620">
+<img width="1635" alt="스크린샷 2024-09-03 오전 12 46 52" src="https://github.com/user-attachments/assets/e8d163cf-8d45-442b-b2a0-167e073c96c3">
 
 AI API를 연동하여 가게 사장님이 상품 설명을 쉽게 작성할 수 있도록 지원합니다.
 
 #### 🏠 스토어
 <img width="1603" alt="스크린샷 2024-09-02 오후 10 03 43" src="https://github.com/user-attachments/assets/a4c98cea-b35a-4602-bee0-9fdb91df69b0">
-<img width="1374" alt="스크린샷 2024-09-02 오후 10 04 37" src="https://github.com/user-attachments/assets/8f6f5c1c-0bf1-426c-a676-734cd7cb3eae">
+<img width="1286" alt="스크린샷 2024-09-03 오전 12 12 02" src="https://github.com/user-attachments/assets/eaad0f74-f1ac-4898-b5e6-6bee7dd31aed">
 카테고리로 분류하여 스토어를 추가하고 스토어 주인은 주문내역, 스토어 정보, 주문 처리 및 메뉴 수정이 가능합니다.
 
 #### 👥 유저
-<img width="1613" alt="스크린샷 2024-09-02 오후 10 13 28" src="https://github.com/user-attachments/assets/f05de06a-fc64-46bf-9e42-734566e6d524">
+<img width="1611" alt="스크린샷 2024-09-03 오전 12 14 27" src="https://github.com/user-attachments/assets/9a26109f-9626-4317-84c2-ff4c29b9720e">
 <img width="1286" alt="스크린샷 2024-09-02 오후 10 14 18" src="https://github.com/user-attachments/assets/f541ec4f-4c57-4f8f-9276-ed62d87bd626">
 사용자 권한을 CUSTOMER, OWNER, MANAGER, MASTER로 분류하고 Spring Security와 JWT를 이용해 권한 관리가 가능하도록 했습니다.
 
