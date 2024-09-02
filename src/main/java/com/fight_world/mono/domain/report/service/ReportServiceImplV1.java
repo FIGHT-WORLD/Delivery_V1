@@ -1,5 +1,8 @@
 package com.fight_world.mono.domain.report.service;
 
+import static com.fight_world.mono.domain.ai_history.message.ExceptionMessage.OWNER;
+
+import com.fight_world.mono.domain.ai_history.exception.AiHistoryException;
 import com.fight_world.mono.domain.report.dto.CreateReportRequestDto;
 import com.fight_world.mono.domain.report.dto.CreateReportResponseDto;
 import com.fight_world.mono.domain.report.dto.DeleteReportResponseDto;
@@ -58,6 +61,17 @@ public class ReportServiceImplV1 implements ReportService {
 
         if (!report.getUser().getId().equals(userDetails.getUserId())) {
             throw new ReportException(ExceptionMessage.YOUR_NOT_REPORTER);
+        }
+
+        return GetReportResponseDto.from(report);
+    }
+
+    @Transactional
+    public GetReportResponseDto getReportAdmin(String id, UserDetailsImpl userDetails) {
+        Report report = findById(id);
+
+        if (userDetails.getUser().getRole() != UserRole.MASTER) {
+            throw new ReportException(ExceptionMessage.REPORT_ADMIN);
         }
 
         return GetReportResponseDto.from(report);
@@ -154,6 +168,8 @@ public class ReportServiceImplV1 implements ReportService {
 
         return reportsPage.map(GetReportResponseDto::from);
     }
+
+
 
     // 신고 수정
     @Transactional
