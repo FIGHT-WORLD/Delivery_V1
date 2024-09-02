@@ -133,6 +133,6 @@ public class Order extends TimeBase {
         this.address = requestDto.address();
         this.detailAddress = requestDto.detail_address();
         this.request = requestDto.request();
-        this.orderMenus = new HashSet<>();
+        this.orderMenus.clear();
     }
 }
