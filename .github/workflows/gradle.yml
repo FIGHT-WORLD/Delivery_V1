@@ -71,7 +71,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "./build/libs/*.jar"
+          source: "./cicdsample/mono-0.0.1-SNAPSHOT.jar"
           target: "/home/ubuntu/src"
           rm: true
           strip_components: 1
