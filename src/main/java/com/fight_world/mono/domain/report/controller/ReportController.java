@@ -63,6 +63,16 @@ public class ReportController {
                 .body(success(GET_REPORT_DETAIL.getMessage(), responseDto));
     }
 
+    @GetMapping("/admin/{reportId}")
+    public ResponseEntity<? extends CommonResponse> getReportAdmin(@PathVariable("reportId") String id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        GetReportResponseDto responseDto = reportService.getReportAdmin(id, userDetails);
+
+        return ResponseEntity.status(GET_REPORT_DETAIL.getHttpStatus())
+                .body(success(GET_REPORT_DETAIL.getMessage(), responseDto));
+    }
+
     // 신고 목록 조회(고객)
     @GetMapping
     public ResponseEntity<? extends CommonResponse> getReportsByUser(

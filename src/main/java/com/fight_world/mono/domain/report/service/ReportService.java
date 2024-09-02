@@ -46,4 +46,5 @@ public interface ReportService {
             UserDetailsImpl userDetails);
 
 
+    GetReportResponseDto getReportAdmin(String id, UserDetailsImpl userDetails);
 }
