@@ -16,6 +16,7 @@ import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.GetUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.GetUserResponseListDto;
+import com.fight_world.mono.domain.user.dto.response.SearchUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.exception.UserException;
@@ -26,7 +27,6 @@ import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 import com.fight_world.mono.domain.user.repository.UserRepository;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,7 +38,7 @@ todo: IllegalArgumentException을 따로 예외 클래스를 정의하기
 */
 @Service
 @RequiredArgsConstructor
-@Slf4j
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -72,7 +72,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<GetUserResponseListDto> getUserList(
             UserDetailsImpl userDetails,
             Pageable pageable) {
@@ -173,6 +172,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Page<SearchUserResponseDto> searchUsers(Pageable pageable, String query) {
+
+        Page<User> users = userRepository.findByUsernameContainingAndDeletedAtIsNull(pageable,
+                query);
+
+        return users.map(SearchUserResponseDto::from);
+    }
+
+    @Override
     public Boolean verifyCreatorOrAdmin(User user, Review review) {
 
         if (isAdmin(user)) {
@@ -182,14 +190,14 @@ public class UserServiceImpl implements UserService {
         return review.getUser().getId().equals(user.getId());
     }
 
-    private static void isDeletedUser(User user) {
+    private void isDeletedUser(User user) {
 
         if (user.getDeletedAt() != null) {
             throw new UserException(SELECT_NOT_FOUND_USER);
         }
     }
 
-    private static boolean verifyCreatorOfAdmin(User user, Long userId) {
+    private boolean verifyCreatorOfAdmin(User user, Long userId) {
 
         if (isAdmin(user)) {
             return true;
@@ -198,10 +206,8 @@ public class UserServiceImpl implements UserService {
         return user.getId().equals(userId);
     }
 
-    private static boolean isAdmin(User user) {
+    private boolean isAdmin(User user) {
 
         return user.getRole() == UserRole.MANAGER || user.getRole() == UserRole.MASTER;
     }
-
-
 }

@@ -1,9 +1,7 @@
 package com.fight_world.mono.domain.user.repository;
 
-import com.fight_world.mono.domain.user.dto.response.GetUserResponseListDto;
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,4 +16,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(UserEmail email);
 
     boolean existsByNickname(String nickname);
+
+    Page<User> findByUsernameContainingAndDeletedAtIsNull(Pageable pageable, String query);
 }

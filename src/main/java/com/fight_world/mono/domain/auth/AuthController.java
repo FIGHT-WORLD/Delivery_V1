@@ -28,7 +28,6 @@ public class AuthController {
 
     /*
     todo :: dto valid 필요
-    테스트를 위해 정교하게 작업하지 않음
      */
     @PostMapping("/users/login")
     public ResponseEntity<String> login(

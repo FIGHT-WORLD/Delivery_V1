@@ -1,6 +1,5 @@
 package com.fight_world.mono.domain.user.model;
 
-import com.fight_world.mono.domain.user.dto.request.UpdateUserRequestDto;
 import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 import jakarta.persistence.Column;
@@ -62,7 +61,7 @@ public class User {
 
     @LastModifiedBy
     @Column(name = "modified_by")
-    private Long updatedBy;
+    private Long modifiedBy;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;

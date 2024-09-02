@@ -13,6 +13,7 @@ import com.fight_world.mono.domain.user_address.dto.response.CreateUserAddressRe
 import com.fight_world.mono.domain.user_address.dto.response.DeleteUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.dto.response.GetUserAddressListResponseDto;
 import com.fight_world.mono.domain.user_address.dto.response.GetUserAddressResponseDto;
+import com.fight_world.mono.domain.user_address.dto.response.SearchUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.dto.response.UpdateUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.exception.UserAddressException;
 import com.fight_world.mono.domain.user_address.model.UserAddress;
@@ -197,5 +198,21 @@ public class UserAddressServiceImpl implements UserAddressService {
         } else {
             throw new UserAddressException(INTERNAL_SERVER_ERROR_USER_ADDRESS);
         }
+    }
+
+    @Override
+    public Page<SearchUserAddressResponseDto> searchUserAddress(Pageable pageable, String query, UserDetailsImpl userDetails) {
+
+        Page<UserAddress> userAddresses;
+
+        if (verifyUserIsAdminAndNotDeleted(userDetails)) {
+            userAddresses = userAddressRepository.findByAddressContainingAndDeletedAtIsNull(query, pageable);
+
+        } else {
+            userAddresses = userAddressRepository.findByUserIdAndAddressContainingAndDeletedAtIsNull(
+                    userDetails.getUser().getId(), query, pageable);
+        }
+
+        return userAddresses.map(SearchUserAddressResponseDto::from);
     }
 }

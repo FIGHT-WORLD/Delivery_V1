@@ -7,6 +7,7 @@ import com.fight_world.mono.domain.user.dto.request.UserSignUpDto;
 import com.fight_world.mono.domain.user.dto.response.DeleteUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.GetUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.GetUserResponseListDto;
+import com.fight_world.mono.domain.user.dto.response.SearchUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.SignUpUserResponseDto;
 import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.model.User;
@@ -49,4 +50,6 @@ public interface UserService {
     void checkDuplicatedEmail(UserEmail userEmail);
 
     void checkDuplicatedNickname(String nickname);
+
+    Page<SearchUserResponseDto> searchUsers(Pageable pageable, String query);
 }

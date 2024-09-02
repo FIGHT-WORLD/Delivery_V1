@@ -6,6 +6,7 @@ import com.fight_world.mono.domain.user_address.dto.response.CreateUserAddressRe
 import com.fight_world.mono.domain.user_address.dto.response.DeleteUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.dto.response.GetUserAddressListResponseDto;
 import com.fight_world.mono.domain.user_address.dto.response.GetUserAddressResponseDto;
+import com.fight_world.mono.domain.user_address.dto.response.SearchUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.dto.response.UpdateUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.model.UserAddress;
 import com.fight_world.mono.global.security.UserDetailsImpl;
@@ -32,5 +33,7 @@ public interface UserAddressService {
             UserDetailsImpl userDetails);
 
     UserAddress findUserAddressById(String userAddressId);
+
+    Page<SearchUserAddressResponseDto> searchUserAddress(Pageable pageable, String keyword, UserDetailsImpl userDetails);
 
 }

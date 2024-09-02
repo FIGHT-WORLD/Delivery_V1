@@ -12,7 +12,8 @@ public enum SuccessMessage {
     UPDATE_SUCCESS_USER(HttpStatus.OK, "회원 수정 성공"),
     SELECT_SUCCESS_USER(HttpStatus.OK, "회원 조회 성공"),
     SELECT_SUCCESS_USER_LIST(HttpStatus.OK, "회원 전체 조회 성공"),
-    DELETE_SUCCESS_USER(HttpStatus.OK, "회원 삭제 성공");
+    DELETE_SUCCESS_USER(HttpStatus.OK, "회원 삭제 성공"),
+    SEARCH_SUCCESS_USER(HttpStatus.OK, "회원 검색 성공");
 
     private final HttpStatus httpStatus;
     private final String message;
