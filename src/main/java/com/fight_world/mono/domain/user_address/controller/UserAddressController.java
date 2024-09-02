@@ -15,9 +15,9 @@ import com.fight_world.mono.domain.user_address.dto.response.GetUserAddressListR
 import com.fight_world.mono.domain.user_address.dto.response.GetUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.dto.response.UpdateUserAddressResponseDto;
 import com.fight_world.mono.domain.user_address.service.UserAddressServiceImpl;
+import com.fight_world.mono.global.aop.page.PageSizeLimit;
 import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -60,8 +60,9 @@ public class UserAddressController {
     /*
     주소 전체 조회 (썸네일만)
      */
+    @PageSizeLimit
     @GetMapping("/user-addresses")
-    public ResponseEntity<? extends CommonResponse> getUserAddressesList(
+    public ResponseEntity<? extends CommonResponse> getAllUserAddresses(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
 
