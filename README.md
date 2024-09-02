@@ -3,9 +3,6 @@
 O2O 배달 플랫폼을 스프링 부트 기반의 모놀리식 아키텍처로개발한 팀 프로젝트 입니다.
 <br>
 
-<img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=flat-square&logo=SpringBoot&logoColor=white">
-<img src="https://img.shields.io/badge/postgresql-4169E1?style=flat-square&logo=postgresql&logoColor=white">
-
 ## 🐕 Personal Role
 <img width="810" alt="스크린샷 2024-09-02 오후 8 51 22" src="https://github.com/user-attachments/assets/90059bf5-1a41-410d-b101-29bb2f70b4d4">
 
