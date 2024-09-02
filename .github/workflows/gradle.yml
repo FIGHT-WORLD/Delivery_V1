@@ -64,7 +64,7 @@ jobs:
         uses: gradle/actions/dependency-submission@af1da67850ed9a4cedd57bfd976089dd991e2582
 
   scp-deploy:
-    runs-on: ununtu-latest
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - uses: actions/checkout@v4
