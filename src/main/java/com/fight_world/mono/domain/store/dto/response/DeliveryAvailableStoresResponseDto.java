@@ -1,4 +1,4 @@
-package com.fight_world.mono.domain.deliveryArea.dto.response;
+package com.fight_world.mono.domain.store.dto.response;
 
 import com.fight_world.mono.domain.store.model.constant.StoreStatus;
 import com.fight_world.mono.domain.store.model.value_object.StorePhoneNumber;

@@ -14,7 +14,4 @@ public interface DeliveryAreaService {
             RegisterDeliveryAreaRequestDto requestDto);
 
     List<DeliveryAreaResponseDto> getDeliveryArea(String storeId);
-
-    Page<StoreResponseDto> getDeliveryAvailableStores(String areaId, String storeCategory,
-            Pageable pageable);
 }

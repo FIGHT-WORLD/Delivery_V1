@@ -1,10 +1,10 @@
-package com.fight_world.mono.domain.deliveryArea.repository;
+package com.fight_world.mono.domain.store.repository;
 
 import static com.fight_world.mono.domain.deliveryArea.model.QDeliveryArea.deliveryArea;
 import static com.fight_world.mono.domain.store.model.QStore.store;
 import static com.fight_world.mono.domain.store_category.model.QStoreCategory.storeCategory;
 
-import com.fight_world.mono.domain.deliveryArea.dto.response.DeliveryAvailableStoresResponseDto;
+import com.fight_world.mono.domain.store.dto.response.DeliveryAvailableStoresResponseDto;
 import com.fight_world.mono.domain.store.dto.response.StoreResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,11 +14,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-public class DeliveryAreaQueryRepositoryImpl implements DeliveryAreaQueryRepository {
+public class StoreQueryRepositoryImpl implements StoreQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public DeliveryAreaQueryRepositoryImpl(EntityManager em) {
+    public StoreQueryRepositoryImpl(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
@@ -59,4 +59,5 @@ public class DeliveryAreaQueryRepositoryImpl implements DeliveryAreaQueryReposit
         // 페이징된 결과를 Page 객체로 반환
         return new PageImpl<>(resultDtos, pageable, total);
     }
+
 }

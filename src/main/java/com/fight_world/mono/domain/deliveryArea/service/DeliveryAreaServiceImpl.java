@@ -71,21 +71,6 @@ public class DeliveryAreaServiceImpl implements DeliveryAreaService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public Page<StoreResponseDto> getDeliveryAvailableStores(String areaId, String storeCategory,
-            Pageable pageable) {
-
-        int validatedPageSize = PageSizeSelector.validatePageSize(pageable.getPageSize());
-        Pageable validatedPageable = PageRequest.of(pageable.getPageNumber(), validatedPageSize);
-
-        if (storeCategory == null || storeCategory.trim().isEmpty()) {
-            storeCategory = null;
-        }
-
-        return deliveryAreaRepository.findStoresByDongeupmyunCodeAndCategory(areaId, storeCategory,
-                validatedPageable);
-    }
-
     public void checkAuthority(UserDetailsImpl userDetails, Store store) {
 
         if (!checkIsAdmin(userDetails)) {

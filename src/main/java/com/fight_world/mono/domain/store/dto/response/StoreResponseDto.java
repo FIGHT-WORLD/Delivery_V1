@@ -1,6 +1,5 @@
 package com.fight_world.mono.domain.store.dto.response;
 
-import com.fight_world.mono.domain.deliveryArea.dto.response.DeliveryAvailableStoresResponseDto;
 import com.fight_world.mono.domain.store.model.Store;
 import java.time.LocalTime;
 import lombok.AccessLevel;
