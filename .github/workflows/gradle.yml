@@ -73,8 +73,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           source: "/home/runner/work/Delivery_V1/Delivery_V1/*.jar"
           target: "/home/ubuntu/src"
-          rm: true
-          strip_components: 1
+          rm: false
+          strip_components: 0
 
   ssh-run-project:
     runs-on: ubuntu-latest
