@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Java CI/CD with Gradle
 
 on:
   push:
@@ -76,12 +76,17 @@ jobs:
           rm: true
           strip_components: 1
 
-  # ssh-run-project:
-  #   - name: Deploy
-  #     uses: appleboy/ssh-action@master
-  #     with:
-  #       host: ${{ secrets.SSH_HOST }}
-  #       username: ${{ secrets.SSH_USERNAME }}
-  #       key: ${{ secrets.SSH_KEY }}
-  #       port: ${{ secrets.SSH_PORT }}
-  #       script:
+  ssh-run-project:
+    runs-on: ubuntu-latest
+    needs: scp-deploy
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd /home/ubuntu/src/workspace
+            sh deploy.sh
