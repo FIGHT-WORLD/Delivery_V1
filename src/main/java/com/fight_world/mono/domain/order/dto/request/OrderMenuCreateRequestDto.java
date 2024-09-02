@@ -1,4 +1,4 @@
-package com.fight_world.mono.domain.order_menu.dto.request;
+package com.fight_world.mono.domain.order.dto.request;
 
 public record OrderMenuCreateRequestDto(
         String menu_id,
