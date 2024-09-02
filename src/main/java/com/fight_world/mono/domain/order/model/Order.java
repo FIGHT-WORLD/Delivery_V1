@@ -128,6 +128,10 @@ public class Order extends TimeBase {
 
     public void updateOrder(OrderUpdateRequestDto requestDto, Store store) {
 
+        if (this.status != OrderStatus.CART) {
+            throw new OrderException(ExceptionMessage.ORDER_CANT_UPDATE);
+        }
+
         this.store = store;
         this.deliveryType = OrderDeliveryType.valueOf(requestDto.delivery_type());
         this.address = requestDto.address();

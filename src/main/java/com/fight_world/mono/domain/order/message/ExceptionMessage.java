@@ -13,6 +13,7 @@ public enum ExceptionMessage {
     ORDER_CANT_CHANGE_STATUS(HttpStatus.FORBIDDEN, "해당 상태로 변경 할 수 없는 상태입니다."),
     CANNOT_DELETE_AFTER_TIMEOUT(HttpStatus.BAD_REQUEST, "5분이 지난 주문은 삭제할 수 없습니다."),
     ORDER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "주문은 자신의 주문 상태만 변경할 수 있습니다."),
+    ORDER_CANT_UPDATE(HttpStatus.FORBIDDEN, "이미 주문되어 수정할 수 없습니다."),
 
     ORDER_MENU_CNT_MIN(HttpStatus.BAD_REQUEST, "메뉴 주문은 최소 1개 이상만 등록할 수 있습니다.");
 
