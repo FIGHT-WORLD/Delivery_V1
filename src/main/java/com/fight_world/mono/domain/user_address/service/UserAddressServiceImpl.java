@@ -22,6 +22,8 @@ import com.fight_world.mono.global.security.UserDetailsImpl;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,23 +97,18 @@ public class UserAddressServiceImpl implements UserAddressService {
     }
 
     @Override
-    public List<GetUserAddressListResponseDto> getUserAddressList(UserDetailsImpl userDetails) {
+    public Page<GetUserAddressListResponseDto> getUserAddressList(UserDetailsImpl userDetails, Pageable pageable) {
 
         if (isMaster(userDetails) || isManager(userDetails)) {
 
             return userAddressRepository
-                    .findAll(Sort.by(Sort.DEFAULT_DIRECTION))
-                    .stream()
-                    .map(GetUserAddressListResponseDto::of)
-                    .toList();
+                    .findAllByUserId(userDetails.getUser().getId(), pageable)
+                    .map(GetUserAddressListResponseDto::from);
         } else if (isCustomer(userDetails) || isOwner(userDetails)) {
 
             return userAddressRepository
-                    .findAllByUserId(userDetails.getUser().getId())
-                    .stream()
-                    .filter(userAddress -> userAddress.getDeletedAt() != null)
-                    .map(GetUserAddressListResponseDto::of)
-                    .toList();
+                    .findAllByUserIdAndDeletedAtIsNotNull(userDetails.getUser().getId(), pageable)
+                    .map(GetUserAddressListResponseDto::from);
         }
 
         throw new UserAddressException(FORBIDDEN_USER_AUTHORITY);
@@ -155,8 +152,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 
     private static void checkSameUser(UserDetailsImpl userDetails, UserAddress userAddress) {
 
-        if (!Objects.equals(userAddress
-                .getUser().getId(), userDetails.getUser().getId())) {
+        if (userAddress.getUser().getId().longValue() != userDetails.getUser().getId().longValue()) {
             throw new UserAddressException(INVALID_USER_AUTHORIZATION);
         }
     }

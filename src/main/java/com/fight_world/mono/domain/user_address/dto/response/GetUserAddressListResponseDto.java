@@ -13,7 +13,7 @@ public record GetUserAddressListResponseDto(
         String request
 ) {
 
-    public static GetUserAddressListResponseDto of(UserAddress userAddress) {
+    public static GetUserAddressListResponseDto from(UserAddress userAddress) {
 
         return GetUserAddressListResponseDto.builder()
                 .userId(userAddress.getUser().getId())

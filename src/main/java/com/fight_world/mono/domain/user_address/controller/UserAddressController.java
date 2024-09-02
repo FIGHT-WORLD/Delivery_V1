@@ -19,6 +19,10 @@ import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,8 +47,7 @@ public class UserAddressController {
     @PostMapping("/user-addresses")
     public ResponseEntity<? extends CommonResponse> createUserAddress(
             @RequestBody CreateUserAddressRequestDto requestDto,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         CreateUserAddressResponseDto responseDto = userAddressService.createUserAddress(requestDto,
                 userDetails);
@@ -59,11 +62,11 @@ public class UserAddressController {
      */
     @GetMapping("/user-addresses")
     public ResponseEntity<? extends CommonResponse> getUserAddressesList(
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
 
-        List<GetUserAddressListResponseDto> responseDto =
-                userAddressService.getUserAddressList(userDetails);
+        Page<GetUserAddressListResponseDto> responseDto =
+                userAddressService.getUserAddressList(userDetails, pageable);
 
         return ResponseEntity
                 .status(GET_SUCCESS_USER_ADDRESS_LIST.getHttpStatus())
