@@ -1,8 +1,8 @@
 package com.fight_world.mono.domain.store.service;
 
-import com.fight_world.mono.domain.store.dto.request.StoreModifyRequestDto;
-import com.fight_world.mono.domain.store.dto.request.StoreRegisterRequestDto;
-import com.fight_world.mono.domain.store.dto.request.StoreStatusRequestDto;
+import com.fight_world.mono.domain.store.dto.request.ModifyStoreRequestDto;
+import com.fight_world.mono.domain.store.dto.request.RegisterStoreRequestDto;
+import com.fight_world.mono.domain.store.dto.request.ChangeStoreStatusRequestDto;
 import com.fight_world.mono.domain.store.dto.response.StoreResponseDto;
 import com.fight_world.mono.domain.store.model.Store;
 import com.fight_world.mono.global.security.UserDetailsImpl;
@@ -11,7 +11,7 @@ import org.springframework.data.domain.Page;
 public interface StoreService {
 
     // 가게 등록
-    StoreResponseDto registerStore(UserDetailsImpl userDetails, StoreRegisterRequestDto requestDto);
+    StoreResponseDto registerStore(UserDetailsImpl userDetails, RegisterStoreRequestDto requestDto);
 
     // 가게 상세 조회
     StoreResponseDto getStore(String storeId);
@@ -21,11 +21,11 @@ public interface StoreService {
 
     // 가게 정보 수정
     StoreResponseDto modifyStore(UserDetailsImpl userDetails, String storeId,
-            StoreModifyRequestDto requestDto);
+            ModifyStoreRequestDto requestDto);
 
     // 가게 주문 가능 여부 상태 변경
     void changeStoreStatus(UserDetailsImpl userDetails, String storeId,
-            StoreStatusRequestDto requestDto);
+            ChangeStoreStatusRequestDto requestDto);
 
     // 가게 삭제
     void deleteStore(UserDetailsImpl userDetails, String storeId);

@@ -1,8 +1,8 @@
 package com.fight_world.mono.domain.store.service;
 
-import com.fight_world.mono.domain.store.dto.request.StoreModifyRequestDto;
-import com.fight_world.mono.domain.store.dto.request.StoreRegisterRequestDto;
-import com.fight_world.mono.domain.store.dto.request.StoreStatusRequestDto;
+import com.fight_world.mono.domain.store.dto.request.ModifyStoreRequestDto;
+import com.fight_world.mono.domain.store.dto.request.RegisterStoreRequestDto;
+import com.fight_world.mono.domain.store.dto.request.ChangeStoreStatusRequestDto;
 import com.fight_world.mono.domain.store.dto.response.StoreResponseDto;
 import com.fight_world.mono.domain.store.exception.StoreException;
 import com.fight_world.mono.domain.store.message.ExceptionMessage;
@@ -34,16 +34,16 @@ public class StoreServiceImpl implements StoreService {
     @Override
     @Transactional
     public StoreResponseDto registerStore(UserDetailsImpl userDetails,
-            StoreRegisterRequestDto requestDto) {
+            RegisterStoreRequestDto requestDto) {
 
 //        User user = userService.findByUserId(1L);
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
 
         StoreCategory storeCategory = storeCategoryService.findById(requestDto.storeCategoryId());
 
         Store savedStore = storeRepository.save(Store.of(requestDto, storeCategory, user));
 
-        return StoreResponseDto.of(savedStore);
+        return StoreResponseDto.from(savedStore);
     }
 
     // 가게 상세 조회
@@ -53,7 +53,7 @@ public class StoreServiceImpl implements StoreService {
 
         Store store = findById(storeId);
 
-        return StoreResponseDto.of(store);
+        return StoreResponseDto.from(store);
     }
 
     // 가게 목록 조회 (페이징)
@@ -68,11 +68,11 @@ public class StoreServiceImpl implements StoreService {
             stores = storeRepository.findAll(pageable);
         } else {
             storeCategoryService.findById(storeCategoryId);
-            stores = storeRepository.findAllByStoreCategoryId(storeCategoryId, pageable);
+            stores = storeRepository.findAllByStoreCategoryIdAndDeletedAtIsNull(storeCategoryId, pageable);
 
         }
 
-        return stores.map(StoreResponseDto::of);
+        return stores.map(StoreResponseDto::from);
     }
 
     // 가게 검색 (페이징)
@@ -81,16 +81,16 @@ public class StoreServiceImpl implements StoreService {
     public Page<StoreResponseDto> searchStores(int page, int size, String query) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Store> stores = storeRepository.findByNameContaining(query, pageable);
+        Page<Store> stores = storeRepository.findByNameContainingAndDeletedAtIsNull(query, pageable);
 
-        return stores.map(StoreResponseDto::of);
+        return stores.map(StoreResponseDto::from);
     }
 
     // 가게 정보 수정
     @Override
     @Transactional
     public StoreResponseDto modifyStore(UserDetailsImpl userDetails, String storeId,
-            StoreModifyRequestDto requestDto) {
+            ModifyStoreRequestDto requestDto) {
 
         Store store = findById(storeId);
 
@@ -105,23 +105,21 @@ public class StoreServiceImpl implements StoreService {
         StoreCategory storeCategory = storeCategoryService.findById(requestDto.storeCategoryId());
 
         store.modifyStore(requestDto, storeCategory);
-//        storeRepository.save(store);
 
-        return StoreResponseDto.of(store);
+        return StoreResponseDto.from(store);
     }
 
     // 가게 주문 가능 상태 변경
     @Override
     @Transactional
     public void changeStoreStatus(UserDetailsImpl userDetails, String storeId,
-            StoreStatusRequestDto requestDto) {
+            ChangeStoreStatusRequestDto requestDto) {
 
         Store store = findById(storeId);
 
         checkAuthority(userDetails, store);
 
         store.changeStatus(StoreStatus.valueOf(requestDto.status()));
-//        storeRepository.save(store);
     }
 
     //가게 삭제
@@ -134,13 +132,12 @@ public class StoreServiceImpl implements StoreService {
         checkIsStoreOwner(userDetails, store);
 
         store.deleteStore(store.getUser().getId());
-//        storeRepository.save(store);
     }
 
     @Override
     public Store findById(String storeId) {
 
-        return storeRepository.findById(storeId)
+        return storeRepository.findByIdAndDeletedAtIsNull(storeId)
                 .orElseThrow(() -> new StoreException(ExceptionMessage.STORE_NOT_FOUND));
     }
 
@@ -153,18 +150,14 @@ public class StoreServiceImpl implements StoreService {
 
     public boolean checkIsAdmin(UserDetailsImpl userDetails) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
 
-        if (user.getRole().equals(UserRole.MANAGER) || user.getRole().equals(UserRole.MASTER)) {
-            return true;
-        }
-
-        return false;
+        return user.getRole().equals(UserRole.MANAGER) || user.getRole().equals(UserRole.MASTER);
     }
 
     public void checkIsStoreOwner(UserDetailsImpl userDetails, Store store) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
 
         if (!store.getUser().equals(user)) {
             throw new StoreException(ExceptionMessage.STORE_UNAUTHORIZED);

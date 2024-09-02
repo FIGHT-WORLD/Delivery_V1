@@ -32,7 +32,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
         this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.objectMapper = objectMapper;
-
     }
 
     @Override

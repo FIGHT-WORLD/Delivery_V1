@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,5 +58,10 @@ public class OrderMenu extends TimeBase {
                         .order(order)
                         .menu(menu)
                         .build();
+    }
+
+    public BigDecimal getTotalPrice() {
+
+        return this.menu.getMenuPrice().getValue().multiply(BigDecimal.valueOf(this.cnt.getValue()));
     }
 }

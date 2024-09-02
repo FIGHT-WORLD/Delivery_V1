@@ -39,6 +39,8 @@ public class UserDetailsImpl implements UserDetails {
         return user.getDeletedAt() == null;
     }
 
+    public Long getUserId() { return user.getId(); }
+
     @Override
     public String getUsername() {
         return user.getUsername();

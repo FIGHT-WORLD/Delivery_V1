@@ -16,7 +16,9 @@ import com.fight_world.mono.domain.user.dto.response.UpdateUserResponseDto;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.domain.user.service.UserServiceImpl;
 import com.fight_world.mono.global.response.CommonResponse;
+import com.fight_world.mono.global.security.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -94,13 +96,28 @@ public class UserController {
      */
     @DeleteMapping("/{userId}")
     public ResponseEntity<? extends CommonResponse> deleteUser(
-            @PathVariable("userId") Long id
+            @PathVariable("userId") Long deletedId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
 
-        DeleteUserResponseDto responseDto = userService.deleteUser(id);
+        Long deletedBy = userDetails.getUserId();
+        DeleteUserResponseDto responseDto = userService.deleteUser(deletedId, deletedBy);
 
         return ResponseEntity
                 .status(DELETE_SUCCESS_USER.getHttpStatus())
                 .body(success(DELETE_SUCCESS_USER.getMessage(), responseDto));
+    }
+
+    /*
+    JwtUtil 테스트
+     */
+    @GetMapping("/check/{userId}")
+    public ResponseEntity<?> checkJWT(
+            @PathVariable("userId") Long id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+
+        return ResponseEntity
+                .ok(userDetails.getUserId());
     }
 }

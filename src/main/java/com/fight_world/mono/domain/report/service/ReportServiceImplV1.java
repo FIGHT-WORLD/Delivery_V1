@@ -13,11 +13,12 @@ import com.fight_world.mono.domain.report.repository.ReportRepository;
 import com.fight_world.mono.domain.store.model.Store;
 import com.fight_world.mono.domain.store.service.StoreService;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,7 @@ public class ReportServiceImplV1 implements ReportService {
     public CreateReportResponseDto createReport(CreateReportRequestDto requestDto,
             UserDetailsImpl userDetails) {
 
-        User user = userService.findById(userDetails.getUser().getId());
+        User user = userService.findById(userDetails.getUserId());
 
         Store store = null;
         if (requestDto.storeId() != null) {
@@ -55,7 +56,7 @@ public class ReportServiceImplV1 implements ReportService {
 
         Report report = findById(reportId);
 
-        if (!report.getUser().getId().equals(userDetails.getUser().getId())) {
+        if (!report.getUser().getId().equals(userDetails.getUserId())) {
             throw new ReportException(ExceptionMessage.YOUR_NOT_REPORTER);
         }
 
@@ -65,22 +66,94 @@ public class ReportServiceImplV1 implements ReportService {
 
     // 신고 목록 조회(고객)
     @Transactional(readOnly = true)
-    public List<GetReportResponseDto> getReportListByUser(UserDetailsImpl userDetails) {
-
-        List<Report> reports = reportRepository.findByUserId(userDetails.getUser().getId());
-
-        return reports.stream().map(GetReportResponseDto::from).collect(Collectors.toList());
+    public Page<GetReportResponseDto> getReportListByUser(UserDetailsImpl userDetails,
+            Pageable pageable) {
+        Long userId = userDetails.getUser().getId();
+        Page<Report> reportsPage = reportRepository.findByUserId(userId, pageable);
+        return reportsPage.map(GetReportResponseDto::from);
     }
 
     // 신고 목록 조회 (관리자)
     @Transactional(readOnly = true)
-    public List<GetReportResponseDto> getAllReportsForAdmin() {
+    public Page<GetReportResponseDto> getAllReportsForAdmin(UserDetailsImpl userDetails,
+            Pageable pageable) {
+        if (userDetails.getUser().getRole() != UserRole.MASTER) {
+            throw new ReportException(ExceptionMessage.REPORT_ADMIN);
+        }
 
-        List<Report> reports = reportRepository.findAll();
+        Page<Report> reports = reportRepository.findAll(pageable);
 
-        return reports.stream().map(GetReportResponseDto::from).collect(Collectors.toList());
+        return reports.map(GetReportResponseDto::from);
     }
 
+
+    // 신고 목록 검색(관리자)
+    @Transactional(readOnly = true)
+    public Page<GetReportResponseDto> searchReports(String keyword, Pageable pageable,
+            UserDetailsImpl userDetails) {
+
+        if (userDetails.getUser().getRole() != UserRole.MASTER) {
+            throw new ReportException(ExceptionMessage.REPORT_ADMIN);
+        }
+
+        // 키워드가 없는 경우
+        if (keyword == null || keyword.isEmpty()) {
+            throw new ReportException(ExceptionMessage.KEYWORD_EMPTY);
+        }
+
+        Page<Report> reportsPage = Page.empty();
+
+        if (keyword.startsWith("title:")) {
+            // 제목 검색
+            String titleKeyword = keyword.replaceFirst("title:", "").trim();
+            reportsPage = reportRepository.findByTitleContaining(titleKeyword, pageable);
+        } else if (keyword.startsWith("content:")) {
+            // 내용 검색
+            String contentKeyword = keyword.replaceFirst("content:", "").trim();
+            reportsPage = reportRepository.findByContentContaining(contentKeyword, pageable);
+        }
+
+        if (reportsPage.isEmpty()) {
+            throw new ReportException(ExceptionMessage.KEYWORD_NOT_PROVIDED);
+        }
+
+        return reportsPage.map(GetReportResponseDto::from);
+    }
+
+
+    // 신고 목록 검색(고객)
+    @Transactional(readOnly = true)
+    public Page<GetReportResponseDto> searchReportsByUser(String keyword, Pageable pageable,
+            UserDetailsImpl userDetails) {
+
+        Long userId = userDetails.getUser().getId();
+
+        // 키워드가 없는 경우
+        if (keyword == null || keyword.isEmpty()) {
+            throw new ReportException(ExceptionMessage.KEYWORD_EMPTY);
+        }
+
+        Page<Report> reportsPage = Page.empty();
+
+        if (keyword.startsWith("title:")) {
+            // 제목 검색
+            String titleKeyword = keyword.replaceFirst("title:", "").trim();
+            reportsPage = reportRepository.findByUserIdAndTitleContaining(userId, titleKeyword,
+                    pageable);
+        } else if (keyword.startsWith("content:")) {
+            // 내용 검색
+            String contentKeyword = keyword.replaceFirst("content:", "").trim();
+            reportsPage = reportRepository.findByUserIdAndContentContaining(userId, contentKeyword,
+                    pageable);
+        }
+
+        // 검색 결과가 없는 경우 예외 처리
+        if (reportsPage.isEmpty()) {
+            throw new ReportException(ExceptionMessage.KEYWORD_NOT_PROVIDED);
+        }
+
+        return reportsPage.map(GetReportResponseDto::from);
+    }
 
     // 신고 수정
     @Transactional
@@ -88,8 +161,7 @@ public class ReportServiceImplV1 implements ReportService {
             String reportId, UserDetailsImpl userDetails) {
 
         Report report = findById(reportId);
-        report.updateTitle(requestDto);
-        report.updateContent(requestDto);
+        report.update(requestDto);
 
         return UpdateReportResponseDto.from(report);
     }
@@ -100,7 +172,7 @@ public class ReportServiceImplV1 implements ReportService {
     public DeleteReportResponseDto deleteReport(String reportId, UserDetailsImpl userDetails) {
 
         Report report = findById(reportId);
-        report.deletedAt(userDetails.getUser().getId());
+        report.deletedAt(userDetails.getUserId());
 
         return DeleteReportResponseDto.from(report);
     }
@@ -109,7 +181,8 @@ public class ReportServiceImplV1 implements ReportService {
     public Report findById(String reportId) {
 
         return reportRepository.findById(reportId)
-                .orElseThrow(() -> new IllegalArgumentException("조회한 reportId가 없습니다."));
+                .orElseThrow(() -> new ReportException(ExceptionMessage.REPORT_NOT_FOUND));
     }
+
 
 }

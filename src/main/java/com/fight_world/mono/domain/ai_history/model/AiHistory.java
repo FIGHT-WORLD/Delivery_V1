@@ -1,6 +1,7 @@
 package com.fight_world.mono.domain.ai_history.model;
 
 import com.fight_world.mono.domain.ai_history.dto.request.AiProductDescriptionHistoryCreateRequestDto;
+import com.fight_world.mono.domain.ai_prompt.model.AiPrompt;
 import com.fight_world.mono.domain.menu.model.Menu;
 import com.fight_world.mono.domain.model.TimeBase;
 import com.fight_world.mono.domain.store.model.Store;
@@ -42,22 +43,32 @@ public class AiHistory extends TimeBase {
     @Column(name = "answer", nullable = false, columnDefinition = "TEXT")
     private String answer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "prompt_id")
+    private AiPrompt prompt;
+
     @Builder(access = AccessLevel.PRIVATE)
-    public AiHistory(Store store, Menu menu, String asking, String answer) {
+    public AiHistory(Store store, Menu menu, String asking, String answer, AiPrompt prompt) {
         this.store = store;
         this.menu = menu;
         this.asking = asking;
         this.answer = answer;
+        this.prompt = prompt;
     }
 
     public static AiHistory of(Store store, AiProductDescriptionHistoryCreateRequestDto requestDto,
-            Menu menu, String answer) {
+            Menu menu, String answer, AiPrompt prompt) {
 
         return AiHistory.builder()
                 .store(store)
                 .menu(menu)
                 .asking(requestDto.asking())
                 .answer(answer)
+                .prompt(prompt)
                 .build();
+    }
+
+    public void deletedAt(Long userId) {
+        super.setDeleted(userId);
     }
 }

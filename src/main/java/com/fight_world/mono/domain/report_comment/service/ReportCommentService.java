@@ -17,7 +17,7 @@ public interface ReportCommentService {
     UpdateReportCommentResponseDto updateComment(UpdateReportCommentRequestDto requestDto,
             String reportCommentId, UserDetailsImpl userDetails);
 
-    List<GetReportCommentResponseDto> getAllReportComments();
+    List<GetReportCommentResponseDto> getAllReportComments(UserDetailsImpl userDetails);
 
     DeleteReportCommentResponseDto deleteReportComment(String commentId,
             UserDetailsImpl userDetails);
