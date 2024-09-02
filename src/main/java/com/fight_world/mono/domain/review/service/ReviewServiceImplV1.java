@@ -4,20 +4,25 @@ import static com.fight_world.mono.domain.review.message.ExceptionMessage.ALREAD
 import static com.fight_world.mono.domain.review.message.ExceptionMessage.GUARD;
 import static com.fight_world.mono.domain.review.message.ExceptionMessage.NOT_FOUND_REVIEW;
 
+import com.fight_world.mono.domain.order.exception.OrderException;
 import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.domain.order.service.OrderService;
 import com.fight_world.mono.domain.review.dto.request.ReviewCreateRequestDto;
 import com.fight_world.mono.domain.review.dto.request.ReviewModifyRequestDto;
 import com.fight_world.mono.domain.review.dto.response.ReviewResponseDto;
 import com.fight_world.mono.domain.review.exception.ReviewException;
+import com.fight_world.mono.domain.review.message.ExceptionMessage;
 import com.fight_world.mono.domain.review.model.Review;
 import com.fight_world.mono.domain.review.repository.ReviewRepository;
 import com.fight_world.mono.domain.user.model.User;
+import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,18 +59,21 @@ public class ReviewServiceImplV1 implements ReviewService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewResponseDto> getReviews(
-            UserDetailsImpl userDetails
+    public Page<ReviewResponseDto> getReviews(
+            UserDetailsImpl userDetails,
+            Pageable pageable
     ) {
 
-        List<Review> reviews = reviewRepository.findAllByUserIdAndDeletedAtIsNull(userDetails.getUserId());
+        Page<Review> reviews = reviewRepository.findAllByUserIdAndDeletedAtIsNull(userDetails.getUserId(), pageable);
 
-        return reviews.stream().map(ReviewResponseDto::from).collect(Collectors.toList());
+        return reviews.map(ReviewResponseDto::from);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ReviewResponseDto getReview(UserDetailsImpl userDetails, String reviewId) {
+    public ReviewResponseDto getReview(
+            UserDetailsImpl userDetails, String reviewId
+    ) {
 
         Review review = findByIdAndDeletedAtIsNull(reviewId);
 
@@ -81,40 +89,69 @@ public class ReviewServiceImplV1 implements ReviewService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewResponseDto> getStoreReview(String storeId) {
+    public Page<ReviewResponseDto> getStoreReviews(
+            String storeId,
+            Pageable pageable
+    ) {
 
-        List<Review> storeReviews = reviewRepository.findAllByStoreIdAndDeletedAtIsNullAndIsReportIsFalse(
-                storeId);
+        Page<Review> storeReviews = reviewRepository.findAllByStoreIdAndDeletedAtIsNullAndIsReportIsFalse(
+                storeId, pageable);
 
-        return storeReviews.stream().map(ReviewResponseDto::from).collect(Collectors.toList());
+        return storeReviews.map(ReviewResponseDto::from);
     }
 
     @Override
     @Transactional
-    public void deleteReview(UserDetailsImpl userDetails, String reviewId) {
+    public void deleteReview(
+            UserDetailsImpl userDetails,
+            String reviewId
+    ) {
 
         Review review = findByIdAndDeletedAtIsNull(reviewId);
 
-        if (!userService.verifyCreatorOrAdmin(userDetails.getUser(), review)) {
-            throw new ReviewException(GUARD);
-        }
+        checkAuthority(userDetails, review);
 
         review.delete(userDetails.getUserId());
     }
 
     @Override
     @Transactional
-    public ReviewResponseDto modifyReview(UserDetailsImpl userDetails, String reviewId, ReviewModifyRequestDto requestDto) {
+    public ReviewResponseDto modifyReview(
+            UserDetailsImpl userDetails,
+            String reviewId,
+            ReviewModifyRequestDto requestDto
+    ) {
 
         Review review = findByIdAndDeletedAtIsNull(reviewId);
 
-        if (!userService.verifyCreatorOrAdmin(userDetails.getUser(), review)) {
-            throw new ReviewException(GUARD);
-        }
+        checkAuthority(userDetails, review);
 
         review.modify(requestDto);
 
         return ReviewResponseDto.from(review);
+    }
+
+    public void checkAuthority(UserDetailsImpl userDetails, Review review) {
+
+        if (!checkIsAdmin(userDetails)) {
+            checkIsReviewWriter(userDetails, review);
+        }
+    }
+
+    public boolean checkIsAdmin(UserDetailsImpl userDetails) {
+
+        User user = userService.findById(userDetails.getUserId());
+
+        return user.getRole().equals(UserRole.MANAGER) || user.getRole().equals(UserRole.MASTER);
+    }
+
+    public void checkIsReviewWriter(UserDetailsImpl userDetails, Review review) {
+
+        User user = userService.findById(userDetails.getUserId());
+
+        if (!review.getUser().equals(user)) {
+            throw new ReviewException(GUARD);
+        }
     }
 
     @Override
@@ -124,4 +161,6 @@ public class ReviewServiceImplV1 implements ReviewService {
                 () -> new ReviewException(NOT_FOUND_REVIEW)
         );
     }
+
+
 }

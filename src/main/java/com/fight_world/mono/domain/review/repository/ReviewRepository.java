@@ -1,8 +1,9 @@
 package com.fight_world.mono.domain.review.repository;
 
 import com.fight_world.mono.domain.review.model.Review;
-import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -10,7 +11,7 @@ public interface ReviewRepository extends JpaRepository<Review, String> {
 
     boolean existsByOrderId(String orderId);
 
-    List<Review> findAllByUserIdAndDeletedAtIsNull(Long userId);
+    Page<Review> findAllByUserIdAndDeletedAtIsNull(Long userId, Pageable pageable);
 
     Optional<Review> findByIdAndDeletedAtIsNull(String reviewId);
 
@@ -19,5 +20,6 @@ public interface ReviewRepository extends JpaRepository<Review, String> {
             + "JOIN FETCH Order o ON r.order.id = o.id "
             + "JOIN FETCH p_store s ON o.store.id = s.id "
             + "WHERE s.id = :storeId AND r.deletedAt = null AND r.isReport = false")
-    List<Review> findAllByStoreIdAndDeletedAtIsNullAndIsReportIsFalse(String storeId);
+    Page<Review> findAllByStoreIdAndDeletedAtIsNullAndIsReportIsFalse(String storeId,
+            Pageable pageable);
 }

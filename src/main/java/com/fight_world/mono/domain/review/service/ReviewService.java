@@ -6,18 +6,20 @@ import com.fight_world.mono.domain.review.dto.response.ReviewResponseDto;
 import com.fight_world.mono.domain.review.model.Review;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ReviewService {
 
     ReviewResponseDto createReview(UserDetailsImpl userDetails, ReviewCreateRequestDto reviewCreateRequestDto);
 
-    List<ReviewResponseDto> getReviews(UserDetailsImpl userDetails);
+    Page<ReviewResponseDto> getReviews(UserDetailsImpl userDetails, Pageable pageable);
 
     ReviewResponseDto getReview(UserDetailsImpl userDetails, String reviewId);
 
     void deleteReview(UserDetailsImpl userDetails, String reviewId);
 
-    List<ReviewResponseDto> getStoreReview(String storeId);
+    Page<ReviewResponseDto> getStoreReviews(String storeId, Pageable pageable);
 
     ReviewResponseDto modifyReview(UserDetailsImpl userDetails, String reviewId, ReviewModifyRequestDto reviewModifyRequestDto);
 
