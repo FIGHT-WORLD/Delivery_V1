@@ -93,20 +93,20 @@ public class User {
                 .build();
     }
 
-    public void updatePassword(UpdateUserRequestDto requestDto) {
-        if (requestDto.password() != null) {
-            this.password = requestDto.nickname();
+    public void updatePassword(String encodedPassword) {
+        if (encodedPassword != null) {
+            this.password = encodedPassword;
         }
     }
 
-    public void updateNickname(UpdateUserRequestDto requestDto) {
-        if (requestDto.nickname() != null) {
-            this.nickname = requestDto.nickname();
+    public void updateNickname(String nickname) {
+        if (nickname != null) {
+            this.nickname = nickname;
         }
     }
 
-    public void updateEmail(UpdateUserRequestDto requestDto) {
-        this.email = new UserEmail(requestDto.email());
+    public void updateEmail(String email) {
+        this.email = new UserEmail(email);
     }
 
     public void deleteUser(Long deletedBy) {

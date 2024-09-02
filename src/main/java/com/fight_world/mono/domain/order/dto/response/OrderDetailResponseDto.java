@@ -1,7 +1,7 @@
 package com.fight_world.mono.domain.order.dto.response;
 
-import com.fight_world.mono.domain.order_menu.dto.reponse.OrderMenuResponseDto;
-import com.fight_world.mono.domain.order_menu.model.OrderMenu;
+import com.fight_world.mono.domain.order.dto.request.OrderMenuResponseDto;
+import com.fight_world.mono.domain.order.model.OrderMenu;
 import com.fight_world.mono.domain.order_menu_history.entity.OrderMenuHistory;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
