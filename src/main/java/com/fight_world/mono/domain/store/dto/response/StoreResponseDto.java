@@ -25,7 +25,7 @@ public record StoreResponseDto (
         String status
 ) {
 
-    public static StoreResponseDto of(Store store) {
+    public static StoreResponseDto from(Store store) {
 
         return StoreResponseDto.builder()
                 .store_id(store.getId())

@@ -20,5 +20,9 @@ jwt:
   secret:
     key: ${JWT_SECRET_KEY}
 
-gemini.baseurl: ${GEMINI_BASE_URL}
-googleai.api.key: ${GEMINI_API_KEY}
+gemini:
+  base-url: ${GEMINI_BASE_URL}
+
+googleai:
+  api:
+    key: ${GEMINI_API_KEY}

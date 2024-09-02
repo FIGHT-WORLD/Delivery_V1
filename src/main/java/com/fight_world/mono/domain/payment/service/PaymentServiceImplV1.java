@@ -3,6 +3,8 @@ package com.fight_world.mono.domain.payment.service;
 import com.fight_world.mono.domain.order.model.Order;
 import com.fight_world.mono.domain.order.model.constant.OrderStatus;
 import com.fight_world.mono.domain.order.service.OrderService;
+import com.fight_world.mono.domain.order_menu_history.dto.request.OrderMenuHistoryCreateRequestDto;
+import com.fight_world.mono.domain.order_menu_history.service.OrderMenuHistoryService;
 import com.fight_world.mono.domain.payment.dto.request.PaymentCreateRequestDto;
 import com.fight_world.mono.domain.payment.dto.response.PaymentResponseDto;
 import com.fight_world.mono.domain.payment.exception.PaymentException;
@@ -22,6 +24,7 @@ public class PaymentServiceImplV1 implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final OrderService orderService;
+    private final OrderMenuHistoryService orderMenuHistoryService;
 
     @Override
     @Transactional
@@ -32,9 +35,23 @@ public class PaymentServiceImplV1 implements PaymentService {
 
         Order order = orderService.findById(requestDto.order_id());
 
+        if (paymentRepository.existsByOrderId(order.getId())) {
+            throw new PaymentException(ExceptionMessage.ALREADY_PAY_IT);
+        }
+
+        if (!order.getTotalPrice().equals(requestDto.total_price())) {
+            throw new PaymentException(ExceptionMessage.NOT_MATCH_TOTAL_PRICE);
+        }
+
         Payment savedPayment = paymentRepository.save(Payment.of(order, requestDto));
 
         order.changeStatusTo(OrderStatus.CHECKING);
+
+        List<OrderMenuHistoryCreateRequestDto> orderMenuHistoryCreateRequestDtoList = order.getOrderMenus()
+                .stream()
+                .map(OrderMenuHistoryCreateRequestDto::from)
+                .toList();
+        orderMenuHistoryService.createOrderMenuHistorys(orderMenuHistoryCreateRequestDtoList, order);
 
         return PaymentResponseDto.from(savedPayment);
     }

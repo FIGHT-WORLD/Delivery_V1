@@ -19,13 +19,7 @@ public record GetReportResponseDto(
 
     public static GetReportResponseDto from(Report report) {
 
-        String storeId;
-
-        if (report.getStore() == null) {
-            storeId = null;
-        } else {
-            storeId = report.getStore().getId();
-        }
+        String storeId = report.getStore() != null ? report.getStore().getId() : null;
 
         return GetReportResponseDto.builder()
                 .reportId(report.getId())

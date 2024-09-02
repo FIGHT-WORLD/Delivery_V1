@@ -65,7 +65,8 @@ public class ReportCommentController {
     @GetMapping()
     public ResponseEntity<? extends CommonResponse> getAllReportComment(
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<GetReportCommentResponseDto> responseDto = reportCommentService.getAllReportComments();
+        List<GetReportCommentResponseDto> responseDto = reportCommentService.getAllReportComments(
+                userDetails);
 
         return ResponseEntity.status(GET_COMMENT.getHttpStatus())
                 .body(success(GET_COMMENT.getMessage(), responseDto));

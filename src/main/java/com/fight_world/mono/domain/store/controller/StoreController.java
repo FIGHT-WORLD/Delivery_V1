@@ -9,9 +9,9 @@ import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_R
 import static com.fight_world.mono.domain.store.message.SuccessMessage.SUCCESS_SEARCH_STORE;
 import static com.fight_world.mono.global.response.SuccessResponse.success;
 
-import com.fight_world.mono.domain.store.dto.request.StoreModifyRequestDto;
-import com.fight_world.mono.domain.store.dto.request.StoreRegisterRequestDto;
-import com.fight_world.mono.domain.store.dto.request.StoreStatusRequestDto;
+import com.fight_world.mono.domain.store.dto.request.ModifyStoreRequestDto;
+import com.fight_world.mono.domain.store.dto.request.RegisterStoreRequestDto;
+import com.fight_world.mono.domain.store.dto.request.ChangeStoreStatusRequestDto;
 import com.fight_world.mono.domain.store.service.StoreService;
 import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
@@ -44,7 +44,7 @@ public class StoreController {
     @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @PostMapping("")
     public ResponseEntity<? extends CommonResponse> registerStore(
-            @Valid @RequestBody StoreRegisterRequestDto requestDto,
+            @Valid @RequestBody RegisterStoreRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return ResponseEntity.status(SUCCESS_REGISTER_STORE.getHttpStatus())
@@ -59,7 +59,7 @@ public class StoreController {
     @PutMapping("/{storeId}")
     public ResponseEntity<? extends CommonResponse> modifyStore(
             @PathVariable(name = "storeId") String storeId,
-            @Valid @RequestBody StoreModifyRequestDto requestDto,
+            @Valid @RequestBody ModifyStoreRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return ResponseEntity.status(SUCCESS_MODIFY_STORE.getHttpStatus())
@@ -99,7 +99,7 @@ public class StoreController {
     @PatchMapping("/{storeId}/status")
     public ResponseEntity<? extends CommonResponse> changeStoreStatus(
             @PathVariable(name = "storeId") String storeId,
-            @RequestBody StoreStatusRequestDto requestDto,
+            @RequestBody ChangeStoreStatusRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         storeService.changeStoreStatus(userDetails, storeId, requestDto);

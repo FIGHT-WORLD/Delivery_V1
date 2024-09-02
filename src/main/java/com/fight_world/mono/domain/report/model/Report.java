@@ -78,17 +78,12 @@ public class Report extends TimeBase {
                 .build();
     }
 
-    public void updateTitle(UpdateReportRequestDto requestDto) {
-        if (requestDto.title() != null) {
-            this.title = requestDto.title();
-        }
+
+    public void update(UpdateReportRequestDto requestDto) {
+        this.title = requestDto.title() != null ? requestDto.title() : this.title;
+        this.content = requestDto.content() != null ? requestDto.content() : this.content;
     }
 
-    public void updateContent(UpdateReportRequestDto requestDto) {
-        if (requestDto.content() != null) {
-            this.content = requestDto.content();
-        }
-    }
 
     public void deletedAt(Long userId) {
         super.setDeleted(userId);
