@@ -78,6 +78,7 @@ jobs:
           source: "./build/libs/*.jar"
           target: "source"
           rm: true
+          strip_components: 1
 
   # ssh-run-project:
   #   - name: Deploy
