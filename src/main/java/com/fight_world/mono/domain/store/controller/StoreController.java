@@ -14,6 +14,7 @@ import com.fight_world.mono.domain.store.dto.request.ModifyStoreRequestDto;
 import com.fight_world.mono.domain.store.dto.request.RegisterStoreRequestDto;
 import com.fight_world.mono.domain.store.dto.request.ChangeStoreStatusRequestDto;
 import com.fight_world.mono.domain.store.service.StoreService;
+import com.fight_world.mono.global.aop.page.PageSizeLimit;
 import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
@@ -86,14 +87,14 @@ public class StoreController {
      * 가게 목록 조회 api
      */
     @GetMapping("")
+    @PageSizeLimit
     public ResponseEntity<? extends CommonResponse> getStores(
             @RequestParam(value = "storeCategoryId") String storeCategoryId,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
 
         return ResponseEntity.status(SUCCESS_GET_STORE_LIST.getHttpStatus())
                              .body(success(SUCCESS_GET_STORE_LIST.getMessage(),
-                                    storeService.getStores(storeCategoryId, page, size)));
+                                    storeService.getStores(storeCategoryId, pageable)));
     }
 
     /**
@@ -131,20 +132,21 @@ public class StoreController {
      * 가게 검색 api
      */
     @GetMapping("/search")
+    @PageSizeLimit
     public ResponseEntity<? extends CommonResponse> searchStores(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
+            @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable,
             @RequestParam(value = "query") String query) {
 
         return ResponseEntity.status(SUCCESS_SEARCH_STORE.getHttpStatus())
                              .body(success(SUCCESS_SEARCH_STORE.getMessage(),
-                                    storeService.searchStores(page, size, query)));
+                                    storeService.searchStores(pageable, query)));
     }
 
     /**
      * 배달 가능 가게 조회 (customer 동 기준) api
      */
     @GetMapping("/delivery-area")
+    @PageSizeLimit
     public ResponseEntity<? extends CommonResponse> getDeliveryAvailableStores(
             @RequestParam(name = "areaId") String areaId,
             @RequestParam(name = "storeCategory", required = false) String storeCategory,
