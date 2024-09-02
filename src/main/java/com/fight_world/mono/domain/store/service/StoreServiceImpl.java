@@ -1,8 +1,8 @@
 package com.fight_world.mono.domain.store.service;
 
+import com.fight_world.mono.domain.store.dto.request.ChangeStoreStatusRequestDto;
 import com.fight_world.mono.domain.store.dto.request.ModifyStoreRequestDto;
 import com.fight_world.mono.domain.store.dto.request.RegisterStoreRequestDto;
-import com.fight_world.mono.domain.store.dto.request.ChangeStoreStatusRequestDto;
 import com.fight_world.mono.domain.store.dto.response.StoreResponseDto;
 import com.fight_world.mono.domain.store.exception.StoreException;
 import com.fight_world.mono.domain.store.message.ExceptionMessage;
@@ -15,10 +15,8 @@ import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
-import com.fight_world.mono.global.util.PageSizeSelector;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
