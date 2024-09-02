@@ -11,6 +11,7 @@ import static com.fight_world.mono.global.response.SuccessResponse.success;
 import com.fight_world.mono.domain.order.dto.request.OrderCreateRequestDto;
 import com.fight_world.mono.domain.order.dto.request.OrderUpdateRequestDto;
 import com.fight_world.mono.domain.order.service.OrderService;
+import com.fight_world.mono.global.aop.page.PageSizeLimit;
 import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +62,7 @@ public class OrderController {
                 .body(success(UPDATED_ORDER.getMessage(), orderService.updateOrder(userDetails, orderId, requestDto)));
     }
 
+    @PageSizeLimit
     @PreAuthorize("hasAnyRole('ROLE_CUSTOMER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @GetMapping("/orders")
     public ResponseEntity<? extends CommonResponse> getOrders(
@@ -121,6 +123,7 @@ public class OrderController {
                 .body(success(UPDATE_ORDER_TO_COOKING.getMessage()));
     }
 
+    @PageSizeLimit
     @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @GetMapping("/store/{storeId}/orders")
     public ResponseEntity<? extends CommonResponse> getStoreOrders(
