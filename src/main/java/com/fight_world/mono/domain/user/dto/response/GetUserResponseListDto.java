@@ -2,7 +2,6 @@ package com.fight_world.mono.domain.user.dto.response;
 
 import com.fight_world.mono.domain.user.model.User;
 import com.fight_world.mono.domain.user.model.UserRole;
-import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 import java.time.LocalDateTime;
 import lombok.Builder;
 
@@ -19,6 +18,7 @@ public record GetUserResponseListDto(
         LocalDateTime deletedAt,
         Long deletedBy
 ) {
+
     public static GetUserResponseListDto from(User user) {
 
         return GetUserResponseListDto.builder()
@@ -28,10 +28,10 @@ public record GetUserResponseListDto(
                 .nickname(user.getNickname())
                 .role(user.getRole())
                 .createdAt(user.getCreatedAt())
-                .modifiedAt(user.getModifiedAt() == null ? LocalDateTime.MIN : user.getModifiedAt())
-                .modifiedBy(user.getUpdatedBy() == null ? Long.MIN_VALUE : user.getUpdatedBy())
-                .deletedAt(user.getDeletedAt() == null ? LocalDateTime.MIN : user.getDeletedAt())
-                .deletedBy(user.getDeletedBy() == null ? Long.MIN_VALUE : user.getDeletedBy())
+                .modifiedAt(user.getModifiedAt())
+                .modifiedBy(user.getUpdatedBy())
+                .deletedAt(user.getDeletedAt())
+                .deletedBy(user.getDeletedBy())
                 .build();
     }
 }

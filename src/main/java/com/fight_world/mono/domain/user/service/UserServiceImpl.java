@@ -25,7 +25,6 @@ import com.fight_world.mono.domain.user.model.UserRole;
 import com.fight_world.mono.domain.user.model.value_object.UserEmail;
 import com.fight_world.mono.domain.user.repository.UserRepository;
 import com.fight_world.mono.global.security.UserDetailsImpl;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -88,7 +87,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long userId, UserDetailsImpl userDetails) {
+    public UpdateUserResponseDto updateUser(UpdateUserRequestDto req, Long userId,
+            UserDetailsImpl userDetails) {
 
         verifyCreatorOfAdmin(userDetails.getUser(), userId);
         User updatedUser = findById(userId);
@@ -106,18 +106,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public DeleteUserResponseDto deleteUser(Long deletedId, UserDetailsImpl userDetails) throws UserException {
+    public DeleteUserResponseDto deleteUser(Long userId, UserDetailsImpl userDetails)
+            throws UserException {
 
         Long deletedBy = userDetails.getUserId();
-        if (!verifyCreatorOfAdmin(userDetails.getUser(), deletedId)) {
+        if (!verifyCreatorOfAdmin(userDetails.getUser(), userId)) {
             throw new UserException(DELETE_INVALID_AUTHORIZATION);
         }
-        User deletedUser = findById(deletedId);
-        isDeletedUser(deletedUser);
-        deletedUser.deleteUser(deletedBy);
-        userRepository.save(deletedUser);
+        User user = findById(userId);
+        isDeletedUser(user);
+        user.deleteUser(deletedBy);
 
-        return DeleteUserResponseDto.from(deletedUser);
+        return DeleteUserResponseDto.from(user);
     }
 
     @Override
@@ -182,7 +182,7 @@ public class UserServiceImpl implements UserService {
 
     private static void isDeletedUser(User user) {
 
-        if(user.getDeletedAt() != null) {
+        if (user.getDeletedAt() != null) {
             throw new UserException(SELECT_NOT_FOUND_USER);
         }
     }
