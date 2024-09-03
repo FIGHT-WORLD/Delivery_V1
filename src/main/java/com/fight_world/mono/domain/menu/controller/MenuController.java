@@ -17,6 +17,7 @@ import com.fight_world.mono.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +57,7 @@ public class MenuController {
                                     menuService.getMenus(storeId, page, size)));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @PostMapping("")
     public ResponseEntity<? extends CommonResponse> addMenu(
             @Valid @RequestBody AddMenuRequestDto requestDto,
@@ -66,6 +68,7 @@ public class MenuController {
                                     menuService.addMenu(userDetails, requestDto)));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @PutMapping("/{menuId}")
     public ResponseEntity<? extends CommonResponse> modifyMenu(
             @PathVariable(name = "menuId") String menuId,
@@ -78,6 +81,7 @@ public class MenuController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @PatchMapping("/{menuId}/status")
     public ResponseEntity<? extends CommonResponse> changeMenuStatus(
             @PathVariable(name = "menuId") String menuId,
@@ -91,6 +95,7 @@ public class MenuController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @DeleteMapping("/{menuId}")
     public ResponseEntity<? extends CommonResponse> deleteMenu(
             @PathVariable(name = "menuId") String menuId,
