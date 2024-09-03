@@ -43,7 +43,7 @@ O2O 주문 배달 플랫폼을 스프링 부트 기반의 모놀리식 아키텍
 <img width="2217" alt="스크린샷 2024-09-02 오후 8 28 07" src="https://github.com/user-attachments/assets/02d8c56d-c32a-4e0d-a8eb-2df96be9e663">
 
 ## Infra
-<img width="1193" alt="스크린샷 2024-09-02 오후 8 30 47" src="https://github.com/user-attachments/assets/bd612a26-7fd4-41ca-a99e-23d3c35286eb">
+<img width="1193" alt="스크린샷 2024-09-02 오후 8 30 47" src="https://github.com/user-attachments/assets/81b22645-9181-43b4-8c6e-69c174357118">
 
 <br>
 
