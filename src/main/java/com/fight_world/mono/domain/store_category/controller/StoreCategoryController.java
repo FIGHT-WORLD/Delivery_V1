@@ -14,6 +14,7 @@ import com.fight_world.mono.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,7 @@ public class StoreCategoryController {
     /**
      * 카테고리 추가 api
      */
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_MASTER')")
     @PostMapping("")
     public ResponseEntity<? extends CommonResponse> addStoreCategory(
             @Valid @RequestBody StoreCategoryAddRequestDto requestDto,
@@ -47,6 +49,7 @@ public class StoreCategoryController {
     /**
      * 카테고리 수정 api
      */
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_MASTER')")
     @PutMapping("/{categoryId}")
     public ResponseEntity<? extends CommonResponse> modifyStoreCategory(
             @PathVariable(name = "categoryId") String categoryId,
@@ -61,6 +64,7 @@ public class StoreCategoryController {
     /**
      * 카테고리 삭제 api
      */
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_MASTER')")
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<? extends CommonResponse> deleteStoreCategory(
             @PathVariable(name = "categoryId") String categoryId,
