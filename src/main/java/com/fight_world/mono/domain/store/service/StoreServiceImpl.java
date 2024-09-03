@@ -35,7 +35,6 @@ public class StoreServiceImpl implements StoreService {
     public StoreResponseDto registerStore(UserDetailsImpl userDetails,
             RegisterStoreRequestDto requestDto) {
 
-//        User user = userService.findByUserId(1L);
         User user = userService.findById(userDetails.getUserId());
 
         StoreCategory storeCategory = storeCategoryService.findById(requestDto.storeCategoryId());
@@ -60,7 +59,6 @@ public class StoreServiceImpl implements StoreService {
     @Transactional(readOnly = true)
     public Page<StoreResponseDto> getStores(String storeCategoryId, Pageable pageable) {
 
-//        Pageable pageable = PageRequest.of(page, size);
         Page<Store> stores = null;
 
         if(storeCategoryId.isBlank()) {
@@ -79,7 +77,6 @@ public class StoreServiceImpl implements StoreService {
     @Transactional(readOnly = true)
     public Page<StoreResponseDto> searchStores(Pageable pageable, String query) {
 
-//        Pageable pageable = PageRequest.of(page, size);
         Page<Store> stores = storeRepository.findByNameContainingAndDeletedAtIsNull(query, pageable);
 
         return stores.map(StoreResponseDto::from);
