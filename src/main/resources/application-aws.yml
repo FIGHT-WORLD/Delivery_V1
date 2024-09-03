@@ -1,0 +1,25 @@
+spring:
+  config:
+    activate:
+      on-profile: aws
+
+  datasource:
+    url: ${AWS_DB_URL}
+    username: ${AWS_DB_USERNAME}
+    password: ${AWS_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+jwt:
+  secret:
+    key: ${AWS_JWT_SECRET_KEY}
+
+gemini:
+  base-url: ${AWS_GEMINI_BASE_URL}
+
+googleai:
+  api:
+    key: ${AWS_GEMINI_API_KEY}
