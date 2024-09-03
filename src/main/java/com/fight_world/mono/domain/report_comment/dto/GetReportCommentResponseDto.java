@@ -9,7 +9,9 @@ public record GetReportCommentResponseDto(
         Long userId,
         String commentId,
         String content,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+
+        LocalDateTime deletedAt
 ) {
 
     public static GetReportCommentResponseDto from(ReportComment reportComment) {
@@ -18,6 +20,7 @@ public record GetReportCommentResponseDto(
                 .commentId(reportComment.getId())
                 .content(reportComment.getContent())
                 .createdAt(reportComment.getCreatedAt())
+                .deletedAt(reportComment.getDeletedAt())
                 .build();
     }
 }

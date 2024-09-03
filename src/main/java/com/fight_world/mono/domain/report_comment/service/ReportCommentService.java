@@ -21,4 +21,6 @@ public interface ReportCommentService {
 
     DeleteReportCommentResponseDto deleteReportComment(String commentId,
             UserDetailsImpl userDetails);
+
+    List<GetReportCommentResponseDto> getCommentsByReportId(String reportId, UserDetailsImpl userDetails);
 }

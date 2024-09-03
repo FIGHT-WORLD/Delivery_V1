@@ -81,6 +81,18 @@ public class ReportCommentServiceImpV1 implements ReportCommentService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public List<GetReportCommentResponseDto> getCommentsByReportId(String reportId, UserDetailsImpl userDetails) {
+        if (userDetails.getUser().getRole() != UserRole.MASTER) {
+            throw new ReportException(com.fight_world.mono.domain.report.message.ExceptionMessage.REPORT_ADMIN);
+        }
+
+        List<ReportComment> reportComments = reportCommentRepository.findByReportId(reportId);
+
+        return reportComments.stream()
+                .map(GetReportCommentResponseDto::from)
+                .collect(Collectors.toList());
+    }
 
     // 신고 답변 삭제
     @Transactional
@@ -96,6 +108,8 @@ public class ReportCommentServiceImpV1 implements ReportCommentService {
 
         return DeleteReportCommentResponseDto.from(reportComment);
     }
+
+
 
 
     @Transactional
