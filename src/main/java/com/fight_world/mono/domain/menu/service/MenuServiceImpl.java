@@ -18,7 +18,6 @@ import com.fight_world.mono.domain.user.service.UserService;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,9 +52,8 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public Page<MenuResponseDto> getMenus(String storeId, int page, int size) {
+    public Page<MenuResponseDto> getMenus(String storeId, Pageable pageable) {
 
-        Pageable pageable = PageRequest.of(page, size);
         Page<Menu> menus = menuRepository.findAllByStoreIdAndDeletedAtIsNull(storeId, pageable);
 
         return menus.map(MenuResponseDto::from);

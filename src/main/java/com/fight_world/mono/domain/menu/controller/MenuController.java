@@ -12,10 +12,14 @@ import com.fight_world.mono.domain.menu.dto.request.AddMenuRequestDto;
 import com.fight_world.mono.domain.menu.dto.request.ChangeMenuStatusRequestDto;
 import com.fight_world.mono.domain.menu.dto.request.ModifyMenuRequestDto;
 import com.fight_world.mono.domain.menu.service.MenuService;
+import com.fight_world.mono.global.aop.page.PageSizeLimit;
 import com.fight_world.mono.global.response.CommonResponse;
 import com.fight_world.mono.global.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -46,15 +50,14 @@ public class MenuController {
     }
 
     @GetMapping("")
+    @PageSizeLimit
     public ResponseEntity<? extends CommonResponse> getMenus(
             @RequestParam(value = "storeId") String storeId,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size
-    ) {
+            @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
 
         return ResponseEntity.status(SUCCESS_GET_STORE_MENUS.getHttpStatus())
                              .body(success(SUCCESS_GET_STORE_MENUS.getMessage(),
-                                    menuService.getMenus(storeId, page, size)));
+                                    menuService.getMenus(storeId, pageable)));
     }
 
     @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
