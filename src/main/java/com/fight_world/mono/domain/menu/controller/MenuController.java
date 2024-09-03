@@ -41,6 +41,9 @@ public class MenuController {
 
     private final MenuService menuService;
 
+    /**
+     * 메뉴 단건 조회
+     */
     @GetMapping("/{menuId}")
     public ResponseEntity<? extends CommonResponse> getMenu(
             @PathVariable(name = "menuId") String menuId) {
@@ -49,6 +52,9 @@ public class MenuController {
                 .body(success(SUCCESS_GET_ONE_MENU.getMessage(), menuService.getMenu(menuId)));
     }
 
+    /**
+     * 메뉴 목록 조회(가게의)
+     */
     @GetMapping("")
     @PageSizeLimit
     public ResponseEntity<? extends CommonResponse> getMenus(
@@ -60,6 +66,9 @@ public class MenuController {
                                     menuService.getMenus(storeId, pageable)));
     }
 
+    /**
+     * 메뉴 등록
+     */
     @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @PostMapping("")
     public ResponseEntity<? extends CommonResponse> addMenu(
@@ -71,6 +80,9 @@ public class MenuController {
                                     menuService.addMenu(userDetails, requestDto)));
     }
 
+    /**
+     * 메뉴 수정
+     */
     @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @PutMapping("/{menuId}")
     public ResponseEntity<? extends CommonResponse> modifyMenu(
@@ -84,6 +96,9 @@ public class MenuController {
 
     }
 
+    /**
+     * 메뉴 가능여부 상태 변경
+     */
     @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @PatchMapping("/{menuId}/status")
     public ResponseEntity<? extends CommonResponse> changeMenuStatus(
@@ -98,6 +113,9 @@ public class MenuController {
 
     }
 
+    /**
+     * 메뉴 삭제
+     */
     @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_MANAGER', 'ROLE_MASTER')")
     @DeleteMapping("/{menuId}")
     public ResponseEntity<? extends CommonResponse> deleteMenu(
